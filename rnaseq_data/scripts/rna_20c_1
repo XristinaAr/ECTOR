@@ -1,0 +1,61 @@
+
+The following have been reloaded with a version change:
+  1) GCCcore/5.4.0 => GCCcore/8.3.0
+  2) binutils/2.26-GCCcore-5.4.0 => binutils/2.32-GCCcore-8.3.0
+
+text/plain
+Started analysis of ostta_20C_100uE_1.fastq.gz
+Approx 5% complete for ostta_20C_100uE_1.fastq.gz
+Approx 10% complete for ostta_20C_100uE_1.fastq.gz
+Approx 15% complete for ostta_20C_100uE_1.fastq.gz
+Approx 20% complete for ostta_20C_100uE_1.fastq.gz
+Approx 25% complete for ostta_20C_100uE_1.fastq.gz
+Approx 30% complete for ostta_20C_100uE_1.fastq.gz
+Approx 35% complete for ostta_20C_100uE_1.fastq.gz
+Approx 40% complete for ostta_20C_100uE_1.fastq.gz
+Approx 45% complete for ostta_20C_100uE_1.fastq.gz
+Approx 50% complete for ostta_20C_100uE_1.fastq.gz
+Approx 55% complete for ostta_20C_100uE_1.fastq.gz
+Approx 60% complete for ostta_20C_100uE_1.fastq.gz
+Approx 65% complete for ostta_20C_100uE_1.fastq.gz
+Approx 70% complete for ostta_20C_100uE_1.fastq.gz
+Approx 75% complete for ostta_20C_100uE_1.fastq.gz
+Approx 80% complete for ostta_20C_100uE_1.fastq.gz
+Approx 85% complete for ostta_20C_100uE_1.fastq.gz
+Approx 90% complete for ostta_20C_100uE_1.fastq.gz
+Approx 95% complete for ostta_20C_100uE_1.fastq.gz
+Analysis complete for ostta_20C_100uE_1.fastq.gz
+14097934 reads; of these:
+  14097934 (100.00%) were unpaired; of these:
+    223708 (1.59%) aligned 0 times
+    13351684 (94.71%) aligned exactly 1 time
+    522542 (3.71%) aligned >1 times
+98.41% overall alignment rate
+[bam_sort_core] merging from 5 files and 1 in-memory blocks...
+normalization: CPM
+bamFilesList: ['ostta_20C_100uE_1.bam']
+binLength: 5
+numberOfSamples: None
+blackListFileName: None
+skipZeroOverZero: False
+bed_and_bin: False
+genomeChunkSize: None
+defaultFragmentLength: read length
+numberOfProcessors: 1
+verbose: False
+region: None
+bedFile: None
+minMappingQuality: None
+ignoreDuplicates: False
+chrsToSkip: []
+stepSize: 5
+center_read: False
+samFlag_include: None
+samFlag_exclude: None
+minFragmentLength: 0
+maxFragmentLength: 0
+zerosToNans: False
+smoothLength: None
+save_data: False
+out_file_for_raw_data: None
+maxPairedFragmentLength: 1000
