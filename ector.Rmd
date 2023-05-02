@@ -1,0 +1,121 @@
+---
+title: "Epigenetic Control of Temperature Response in Ostreococcus tauri (ECTOR)"
+author: "Christina Arvanitidou"
+date: "2023-05-02"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading data and preprocessing
+
+```{r }
+mapped.reads.k27.10c.1 <- 6764067/1E6 
+mapped.reads.k27.10c.2 <- 6429853/1E6
+mapped.reads.k27.10c.3 <- 6625634/1E6
+
+mapped.reads.k27.26c.1 <- 5635098/1E6 
+mapped.reads.k27.26c.2 <- 4986577/1E6
+mapped.reads.k27.26c.3 <-4586942/1E6
+
+read.counts.temp10c.1 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp10c/h3k27me3_10_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.temp10c.2 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp10c/h3k27me3_10_chip_2_counts.bed", header = F, sep = "\t" )
+read.counts.temp10c.3 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp10c/h3k27me3_10_chip_3_counts.bed", header = F, sep = "\t" )
+
+read.counts.temp26c.1 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp26c/h3k27me3_26_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.temp26c.2 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp26c/h3k27me3_26_chip_2_counts.bed", header = F, sep = "\t" )
+read.counts.temp26c.3 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp26c/h3k27me3_26_chip_3_counts.bed", header = F, sep = "\t" )
+
+```
+```{r}
+peak.cpm <- matrix(data = NA, nrow = nrow(read.counts.temp10c.1), ncol = 9 )
+colnames(peak.cpm) <-c("chr","start","end","k27_temp10_1","k27_temp10_2","k27_temp10_3","k27_temp26_1","k27_temp26_2","k27_temp26_3")
+
+peak.cpm[,1]<- read.counts.temp10c.1[,1]
+peak.cpm[,2]<- read.counts.temp10c.1[,2]
+peak.cpm[,3]<- read.counts.temp10c.1[,3]
+peak.cpm[,4]<- read.counts.temp10c.1[,4]/mapped.reads.k27.10c.1
+peak.cpm[,5]<- read.counts.temp10c.2[,4]/mapped.reads.k27.10c.2
+peak.cpm[,6]<- read.counts.temp10c.3[,4]/mapped.reads.k27.10c.3
+peak.cpm[,7]<- read.counts.temp26c.1[,4]/mapped.reads.k27.26c.1
+peak.cpm[,8]<- read.counts.temp26c.2[,4]/mapped.reads.k27.26c.2
+peak.cpm[,9]<- read.counts.temp26c.3[,4]/mapped.reads.k27.26c.3
+
+peak.cpm
+
+peak.cpm <- as.data.frame(peak.cpm)
+
+```
+
+```{r}
+plot(x= log2(read.counts.temp10c.1$V4), y = log2(read.counts.temp10c.2$V4), pch = 20 )
+plot(x= log2(read.counts.temp26c.1$V4), y = log2(read.counts.temp26c.2$V4), pch = 20 )
+plot(y= log2(read.counts.temp26c.1$V4), x = log2(read.counts.temp10c.1$V4), pch = 20 )
+
+
+plot(x = log2(peak.cpm$k27_temp10_1), y= log2(peak.cpm$k27_temp26_1), pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+```
+```{r}
+peak.names <- paste(paste(peak.cpm$chr, peak.cpm$start, sep = "_"), peak.cpm$end, sep = "_")
+log2.peak.cpm <- matrix(data = NA, nrow = nrow(read.counts.temp10c.1), ncol = 6)
+colnames(log2.peak.cpm) <- c("k27_temp10_1","k27_temp10_2","k27_temp10_3","k27_temp26_1","k27_temp26_2","k27_temp26_3")
+rownames(log2.peak.cpm) <- peak.names 
+
+log2.peak.cpm[,"k27_temp10_1"] <- log2(peak.cpm$k27_temp10_1)
+log2.peak.cpm[,"k27_temp10_2"] <- log2(peak.cpm$k27_temp10_2)
+log2.peak.cpm[,"k27_temp10_3"] <- log2(peak.cpm$k27_temp10_3)
+log2.peak.cpm[,"k27_temp26_1"] <- log2(peak.cpm$k27_temp26_1)
+log2.peak.cpm[,"k27_temp26_2"] <- log2(peak.cpm$k27_temp26_2)
+log2.peak.cpm[,"k27_temp26_3"] <- log2(peak.cpm$k27_temp26_3)
+```
+
+
+
+
+
+
+```{r}
+library(limma)
+
+experimental.design <- model.matrix(~ -1+factor(c(1,1,1,2,2,2)))
+colnames(experimental.design) <- c("k27_temp10","k27_temp26")
+
+experimental.design
+
+linear.fit <- lmFit(log2.peak.cpm, experimental.design)
+contrast.matrix <- makeContrasts(k27_temp26-k27_temp10,levels=c("k27_temp10","k27_temp26"))
+
+contrast.linear.fit <- contrasts.fit(linear.fit, contrast.matrix)
+contrast.results <- eBayes(contrast.linear.fit)
+
+
+temp26.vs.temp10 <- topTable(contrast.results, number=nrow(log2.peak.cpm),coef=1,sort.by="logFC")
+head(temp26.vs.temp10)
+peak.ids.26.10 <- rownames(temp26.vs.temp10) 
+fold.change.26.10 <- temp26.vs.temp10$logFC
+q.value.26.10 <- temp26.vs.temp10$adj.P.Val
+
+activated.peaks.temp26.vs.temp10 <- peak.ids.26.10[fold.change.26.10 > 1 & q.value.26.10 < 0.05]
+repressed.peaks.temp26.vs.temp10 <- peak.ids.26.10[fold.change.26.10 < - 1 & q.value.26.10 < 0.05]
+
+activated.peaks.temp26.vs.temp10.1.5 <- peak.ids.26.10[fold.change.26.10 > log2(1.5) & q.value.26.10 < 0.05]
+repressed.peaks.temp26.vs.temp10.1.5 <- peak.ids.26.10[fold.change.26.10 < - log2(1.5) & q.value.26.10 < 0.05]
+length(activated.peaks.temp26.vs.temp10)
+length(activated.peaks.temp26.vs.temp10.1.5)
+length(repressed.peaks.temp26.vs.temp10)
+length(repressed.peaks.temp26.vs.temp10.1.5)
+
+```
+
+
+
+
+
+
+
+
+
+
