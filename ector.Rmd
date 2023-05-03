@@ -468,26 +468,6 @@ fviz_dend(res.hcpc, k= 8, palette = "jco",
 ```
 ```
 
-```{r limma volcano plot}
-
-
-temp10c <-(log2(peak.cpm$k27_temp10_1)+ log2(peak.cpm$k27_temp10_2) + log2(peak.cpm$k27_temp10_3))/3
-temp14c <- (log2(peak.cpm$k27_temp14_1)+ log2(peak.cpm$k27_temp14_2) + log2(peak.cpm$k27_temp14_3))/3
-temp20c <- (log2(peak.cpm$k27_temp20_1)+ log2(peak.cpm$k27_temp20_zt8_1)+log2(peak.cpm$k27_temp20_zt8_2)+log2(peak.cpm$k27_temp20_zt16_1)+ log2(peak.cpm$k27_temp20_zt16_1)+log2(peak.cpm$k27_temp20_zt16_2))/5
-temp26c <- (log2(peak.cpm$k27_temp26_1)+ log2(peak.cpm$k27_temp26_2) + log2(peak.cpm$k27_temp26_3))/3
-
-mean.reads.peak <- matrix(c(temp10c,temp14c,temp20c,temp26c),ncol=4)
-conditions.id <- c("temp10c","temp14c","temp20c","temp26c")
-rownames(mean.reads.peak) <- peak.names
-colnames(mean.reads.peak) <- conditions.id
-head(mean.reads.peak)
-
-
-plot(x = temp20c, y = temp10c,pch=19,cex=0.5,col="grey",xlab="temp20c",ylab="temp10c")
-points(temp10c[activated.peaks.temp10c.vs.temp20c],temp20c[activated.peaks.temp10c.vs.temp20c],pch=19,cex=0.5,col="red")
-points(temp20c[repressed.peaks.temp10c.vs.temp20c],temp10c[repressed.peaks.temp10c.vs.temp20c],pch=19,cex=0.5,col="blue")
-```
-
 
 
 
@@ -585,6 +565,53 @@ write(x = repressed.genes.26.10.deseq2, file = "repressed.genes.26.10.deseq2.txt
 
 
 
+
+
+#####Under process
+
+
+Los volcano plots nos permiten representar en un único gráfico el fold change y la significancia estadística. Estos gráficos se utilizan para representar los DEGs cuando se usa el método que combina fold-change e inferencia estadística.
+```{r volcano}
+names(fold.change.WFR22C.WL22C) <- genes.ids.WFR22C.WL22C
+log.p.value.WFR22C.WL22C <- -log10(p.value.WFR22C.WL22C)
+names(log.p.value.WFR22C.WL22C)  <- genes.ids.WFR22C.WL22C
+
+plot(fold.change.WFR22C.WL22C,log.p.value.WFR22C.WL22C,pch=19,cex=0.5,col="grey",ylab="-log10(p value)",xlab="log2 fold change")
+points(fold.change.WFR22C.WL22C[activated.genes.WFR22C.WL22C],log.p.value.WFR22C.WL22C[activated.genes.WFR22C.WL22C],pch=19,cex=0.5,col="green")
+points(fold.change.WFR22C.WL22C[repressed.genes.WFR22C.WL22C],log.p.value.WFR22C.WL22C[repressed.genes.WFR22C.WL22C],pch=19,cex=0.5,col="red")
+
+text(fold.change.WFR22C.WL22C["264638_at"],log.p.value.WFR22C.WL22C["264638_at"],"FT", col="black")
+text(fold.change.WFR22C.WL22C["246525_at"]+0.1,log.p.value.WFR22C.WL22C["246525_at"]+0.1,"CO", col="black")
+```
+```
+
+
+```{r limma volcano plot}
+
+
+temp10c <-(log2(peak.cpm$k27_temp10_1)+ log2(peak.cpm$k27_temp10_2) + log2(peak.cpm$k27_temp10_3))/3
+temp14c <- (log2(peak.cpm$k27_temp14_1)+ log2(peak.cpm$k27_temp14_2) + log2(peak.cpm$k27_temp14_3))/3
+temp20c <- (log2(peak.cpm$k27_temp20_1)+ log2(peak.cpm$k27_temp20_zt8_1)+log2(peak.cpm$k27_temp20_zt8_2)+log2(peak.cpm$k27_temp20_zt16_1)+ log2(peak.cpm$k27_temp20_zt16_1)+log2(peak.cpm$k27_temp20_zt16_2))/5
+temp26c <- (log2(peak.cpm$k27_temp26_1)+ log2(peak.cpm$k27_temp26_2) + log2(peak.cpm$k27_temp26_3))/3
+
+mean.reads.peak <- matrix(c(temp10c,temp14c,temp20c,temp26c),ncol=4)
+conditions.id <- c("temp10c","temp14c","temp20c","temp26c")
+rownames(mean.reads.peak) <- peak.names
+colnames(mean.reads.peak) <- conditions.id
+head(mean.reads.peak)
+
+
+plot(x = temp20c, y = temp10c,pch=19,cex=0.5,col="grey",xlab="temp20c",ylab="temp10c")
+points(temp10c[activated.peaks.temp10c.vs.temp20c],temp20c[activated.peaks.temp10c.vs.temp20c],pch=19,cex=0.5,col="red")
+points(temp20c[repressed.peaks.temp10c.vs.temp20c],temp10c[repressed.peaks.temp10c.vs.temp20c],pch=19,cex=0.5,col="blue")
+
+
+plot(wfr.22C,wfr.26C,pch=19,cex=0.5,col="grey",xlab="Red Light 22ºC",ylab="Red Light 26ºC",cex.lab=1.5)
+points(wfr.22C[activated.genes.WFR26C.WFR22C],wfr.26C[activated.genes.WFR26C.WFR22C],pch=19,cex=0.5,col="green")
+points(wfr.22C[repressed.genes.WFR26C.WFR22C],wfr.26C[repressed.genes.WFR26C.WFR22C],pch=19,cex=0.5,col="red")
+
+
+```
 
 
 
