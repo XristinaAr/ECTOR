@@ -236,6 +236,7 @@ log2.peak.cpm.with[,"k27_temp26_3"] <- log2(peak.cpm$k27_temp26_3)
 
 head(log2.peak.cpm.with)
 
+boxplot(log2.peak.cpm.with, las=2)
 
 ```
 
@@ -267,11 +268,12 @@ q.value.14c.10c.with <- temp14c.vs.temp10c.with$adj.P.Val
 activated.peaks.temp14c.vs.temp10c.with <- peak.ids.14c.10c.with[fold.change.14c.10c.with > 1 & q.value.14c.10c.with < 0.05]
 repressed.peaks.temp14c.vs.temp10c.with <- peak.ids.14c.10c.with[fold.change.14c.10c.with < - 1 & q.value.14c.10c.with < 0.05]
 
-length(activated.peaks.temp14c.vs.temp10c)
-length(repressed.peaks.temp14c.vs.temp10c)
-
+length(activated.peaks.temp14c.vs.temp10c.with)
+length(repressed.peaks.temp14c.vs.temp10c.with)
 
 ```
+
+
 ```{r temp20c-temp10c contrast}
 temp20c.vs.temp10c.with <- topTable(contrast.results.with, number=nrow(log2.peak.cpm.with),coef=2,sort.by="logFC")
 head(temp20c.vs.temp10c.with)
@@ -282,11 +284,12 @@ q.value.20c.10c.with <- temp20c.vs.temp10c.with$adj.P.Val
 activated.peaks.temp20c.vs.temp10c.with <- peak.ids.20c.10c.with[fold.change.20c.10c.with > 1 & q.value.20c.10c.with < 0.05]
 repressed.peaks.temp20c.vs.temp10c.with <- peak.ids.20c.10c.with[fold.change.20c.10c.with < - 1 & q.value.20c.10c.with < 0.05]
 
-length(activated.peaks.temp20c.vs.temp10c)
-length(repressed.peaks.temp20c.vs.temp10c)
+length(activated.peaks.temp20c.vs.temp10c.with)
+length(repressed.peaks.temp20c.vs.temp10c.with)
 
 
 ```
+
 ```{r temp26c-temp10c contrast}
 temp26c.vs.temp10c.with <- topTable(contrast.results.with, number=nrow(log2.peak.cpm.with),coef=3,sort.by="logFC")
 head(temp26c.vs.temp10c.with)
@@ -297,11 +300,55 @@ q.value.26c.10c.with <- temp26c.vs.temp10c.with$adj.P.Val
 activated.peaks.temp26c.vs.temp10c.with <- peak.ids.26c.10c.with[fold.change.26c.10c.with > 1 & q.value.26c.10c.with < 0.05]
 repressed.peaks.temp26c.vs.temp10c.with <- peak.ids.26c.10c.with[fold.change.26c.10c.with < - 1 & q.value.26c.10c.with < 0.05]
 
-length(activated.peaks.temp26c.vs.temp10c)
-length(repressed.peaks.temp26c.vs.temp10c)
+length(activated.peaks.temp26c.vs.temp10c.with)
+length(repressed.peaks.temp26c.vs.temp10c.with)
 
+length(peak.names)
+length(activated.peaks.temp26c.vs.temp10c.with)/length(peak.names)
+
+strsplit(x = activated.peaks.temp26c.vs.temp10c.with, split = "_")
+matrix.activated.peaks.temp26c.vs.temp10c.with <- as.matrix(t(as.data.frame(strsplit(x = activated.peaks.temp26c.vs.temp10c.with, split = "_"))))
+head(matrix.activated.peaks.temp26c.vs.temp10c.with)
+rownames(matrix.activated.peaks.temp26c.vs.temp10c.with) <- NULL
+head(matrix.activated.peaks.temp26c.vs.temp10c.with)
+
+activated.peaks.temp26c.vs.temp10c.with[1:3]
+head(matrix.activated.peaks.temp26c.vs.temp10c.with, n=3)
+
+write.table(matrix.activated.peaks.temp26c.vs.temp10c.with, file = "chipseq_results/activated.peaks.temp26.vs.temp10.bed", sep = "\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
+
+library(ChIPseeker)
+library(TxDb.Otauri.JGI)
+txdb <- TxDb.Otauri.JGI
+
+temp26.vs.temp10.peaks <- readPeakFile(peakfile = "chipseq_results/activated.peaks.temp26.vs.temp10.bed",header=FALSE)
+promoter <- getPromoters(TxDb=txdb, 
+                         upstream=1000, 
+                         downstream=1000)
+temp26.vs.temp10.peakAnno <- annotatePeak(peak = temp26.vs.temp10.peaks, 
+                             tssRegion=c(-1000, 1000),
+                             TxDb=txdb)
+
+plotAnnoPie(temp26.vs.temp10.peakAnno)
+plotAnnoBar(temp26.vs.temp10.peakAnno)
+plotDistToTSS(temp26.vs.temp10.peakAnno,
+              title="Distribution of genomic loci relative to TSS",
+              ylab = "Genomic Loci (%) (5' -> 3')")
+
+temp26.vs.temp10.annotation <- as.data.frame(temp26.vs.temp10.peakAnno)
+head(temp26.vs.temp10.annotation)
+
+target.genes <- temp26.vs.temp10.annotation$geneId[temp26.vs.temp10.annotation$annotation != "Distal Intergenic"]
+length(target.genes)
+
+write(x = target.genes,file = "chipseq_results/temp26.vs.temp10.activated.peaks.txt")
 
 ```
+ostta02g01020, ostta09g00730, ostta13g00710 hsps
+ostta01g05160  mads ap2 factores de transcripción
+ciclos celular
+síntesis de proteinas/ribosomas/rna
+acidos grasos
 
 
 ```{r limma PCA analysis with replicates 2 and 3 temp20}
