@@ -322,44 +322,6 @@ repressed.peaks.temp24c.vs.temp10c <- peak.ids.24c.10c[fold.change.24c.10c < - 1
 length(activated.peaks.temp24c.vs.temp10c)
 length(repressed.peaks.temp24c.vs.temp10c)
 
-
-strsplit(x = activated.peaks.temp24c.vs.temp10c, split = "_")
-matrix.activated.peaks.temp24c.vs.temp10c <- as.matrix(t(as.data.frame(strsplit(x = activated.peaks.temp24c.vs.temp10c, split = "_"))))
-head(matrix.activated.peaks.temp24c.vs.temp10c)
-rownames(matrix.activated.peaks.temp24c.vs.temp10c) <- NULL
-head(matrix.activated.peaks.temp24c.vs.temp10c)
-
-activated.peaks.temp24c.vs.temp10c[1:3]
-head(matrix.activated.peaks.temp24c.vs.temp10c, n=3)
-
-write.table(matrix.activated.peaks.temp24c.vs.temp10c, file = "chipseq_results/h3k4me3/k4.activated.peaks.temp24.vs.temp10.bed", sep = "\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
-
-library(ChIPseeker)
-library(TxDb.Otauri.JGI)
-txdb <- TxDb.Otauri.JGI
-
-temp24.vs.temp10.peaks <- readPeakFile(peakfile = "chipseq_results/h3k4me3/k4.activated.peaks.temp24.vs.temp10.bed",header=FALSE)
-promoter <- getPromoters(TxDb=txdb, 
-                         upstream=1000, 
-                         downstream=1000)
-temp24.vs.temp10.peakAnno <- annotatePeak(peak = temp24.vs.temp10.peaks, 
-                             tssRegion=c(-1000, 1000),
-                             TxDb=txdb)
-
-plotAnnoPie(temp24.vs.temp10.peakAnno)
-plotAnnoBar(temp24.vs.temp10.peakAnno)
-plotDistToTSS(temp24.vs.temp10.peakAnno,
-              title="Distribution of genomic loci relative to TSS",
-              ylab = "Genomic Loci (%) (5' -> 3')")
-
-temp24.vs.temp10.annotation <- as.data.frame(temp24.vs.temp10.peakAnno)
-head(temp24.vs.temp10.annotation)
-
-target.genes <- temp24.vs.temp10.annotation$geneId[temp24.vs.temp10.annotation$annotation != "Distal Intergenic"]
-length(target.genes)
-
-write(x = target.genes,file = "chipseq_results/h3k4me3/k4.temp24.vs.temp10.activated.peaks.genes.txt")
-
 ```
 
 
@@ -390,13 +352,13 @@ head(matrix.activated.peaks.temp26c.vs.temp10c)
 activated.peaks.temp26c.vs.temp10c[1:3]
 head(matrix.activated.peaks.temp26c.vs.temp10c, n=3)
 
-write.table(matrix.activated.peaks.temp26c.vs.temp10c, file = "chipseq_results/h3k4me3/k4.activated.peaks.temp26.vs.temp10.bed", sep = "\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
+write.table(matrix.activated.peaks.temp26c.vs.temp10c, file = "chipseq_results/h3k4me3/limma.k4.activated.peaks.temp26.vs.temp10.bed", sep = "\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
 
 library(ChIPseeker)
 library(TxDb.Otauri.JGI)
 txdb <- TxDb.Otauri.JGI
 
-temp26.vs.temp10.peaks <- readPeakFile(peakfile = "chipseq_results/h3k4me3/k4.activated.peaks.temp26.vs.temp10.bed",header=FALSE)
+temp26.vs.temp10.peaks <- readPeakFile(peakfile = "chipseq_results/h3k4me3/limma.k4.activated.peaks.temp26.vs.temp10.bed",header=FALSE)
 promoter <- getPromoters(TxDb=txdb, 
                          upstream=1000, 
                          downstream=1000)
@@ -412,11 +374,16 @@ plotDistToTSS(temp26.vs.temp10.peakAnno,
 
 temp26.vs.temp10.annotation <- as.data.frame(temp26.vs.temp10.peakAnno)
 head(temp26.vs.temp10.annotation)
+length(temp26.vs.temp10.annotation$geneId)
 
-target.genes <- temp26.vs.temp10.annotation$geneId[temp26.vs.temp10.annotation$annotation != "Distal Intergenic"]
-length(target.genes)
+write(x = temp26.vs.temp10.annotation$geneId,file = "chipseq_results/h3k4me3/limma.k4.temp26.vs.temp10.activated.peaks.genes.txt")
 
-write(x = target.genes,file = "chipseq_results/h3k4me3/k4.temp26.vs.temp10.activated.peaks.genes.txt")
+
+
+ostta2atha.deseq.26.vs.10.activated.genes.peaks<- read.table(file = "chipseq_results/h3k4me3/ostta2atha_deseq_k4_26_vs_10_activated_peak_genes.txt", header = F)
+ostta2atha.deseq.26.vs.10.activated.genes.peaks <-ostta2atha.deseq.26.vs.10.activated.genes.peaks[,2]
+write(x = ostta2atha.deseq.26.vs.10.activated.genes.peaks,file = "chipseq_results/h3k4me3/ostta2atha.final.deseq.26.vs.10.activated.genes.peaks.txt")
+
 
 ```
 
@@ -535,15 +502,15 @@ names(q.value) <- rownames(temp20vstemp10)
 
 activated.peaks.20.10.deseq2 <- rownames(temp20vstemp10)[log.fold.change > 1 & q.value < 0.05]
 length(activated.peaks.20.10.deseq2)
-write(x = activated.peaks.20.10.deseq2, file = "chipseq_results/h3k4me3/k4.activated.peaks.20.10.deseq2.txt", sep = "_")
+write(x = activated.peaks.20.10.deseq2, file = "chipseq_results/h3k4me3/deseq2.k4.activated.peaks.20.10.txt", sep = "_")
 
 repressed.genes.20.10.deseq2 <- rownames(temp20vstemp10)[log.fold.change < -  1 & q.value < 0.05]
 length(repressed.genes.20.10.deseq2)
-write(x = repressed.genes.20.10.deseq2, file = "chipseq_results/h3k4me3/k4.repressed.genes.20.10.deseq2.txt")
+
 ```
 
 ```{r deseq2 temp24 vs temp10}
-temp24vstemp10 <- results(dds, contrast = c("temperature", "temp26", "temp10"))
+temp24vstemp10 <- results(dds, contrast = c("temperature", "temp24", "temp10"))
 
 log.fold.change <- temp24vstemp10$log2FoldChange
 q.value <- temp24vstemp10$padj
@@ -552,7 +519,7 @@ names(q.value) <- rownames(temp24vstemp10)
 
 activated.peaks.24.10.deseq2 <- rownames(temp24vstemp10)[log.fold.change > 1 & q.value < 0.05]
 length(activated.peaks.24.10.deseq2)
-write(x = activated.peaks.24.10.deseq2, file = "chipseq_results/h3k4me3/k4.activated.peaks.24.10.deseq2.txt", sep = "_")
+write(x = activated.peaks.24.10.deseq2, file = "chipseq_results/h3k4me3/deseq2.k4.activated.peaks.24.10.txt", sep = "_")
 
 repressed.genes.24.10.deseq2 <- rownames(temp24vstemp10)[log.fold.change < -  1 & q.value < 0.05]
 length(repressed.genes.24.10.deseq2)
@@ -561,17 +528,17 @@ length(repressed.genes.24.10.deseq2)
 
 
 ```{r deseq2 temp26 vs temp10}
-temp26vstemp10.deseq <- results(dds, contrast = c("temperature", "temp26", "temp10"))
+temp26vstemp10 <- results(dds, contrast = c("temperature", "temp26", "temp10"))
 
-log.fold.change <- temp26vstemp10.deseq$log2FoldChange
-q.value <- temp26vstemp10.deseq$padj
-names(log.fold.change) <- rownames(temp26vstemp10.deseq)
-names(q.value) <- rownames(temp26vstemp10.deseq)
+log.fold.change <- temp26vstemp10$log2FoldChange
+q.value <- temp26vstemp10$padj
+names(log.fold.change) <- rownames(temp26vstemp10)
+names(q.value) <- rownames(temp26vstemp10)
 
-activated.peaks.26.10.deseq2 <- rownames(temp26vstemp10.deseq)[log.fold.change > 1 & q.value < 0.05]
+activated.peaks.26.10.deseq2 <- rownames(temp26vstemp10)[log.fold.change > 1 & q.value < 0.05]
 length(activated.peaks.26.10.deseq2)
 
-repressed.genes.26.10.deseq2 <- rownames(temp26vstemp10.deseq)[log.fold.change < -  1 & q.value < 0.05]
+repressed.genes.26.10.deseq2 <- rownames(temp26vstemp10)[log.fold.change < -  1 & q.value < 0.05]
 length(repressed.genes.26.10.deseq2)
 
 strsplit(x = activated.peaks.26.10.deseq2, split = "_")
@@ -583,10 +550,10 @@ head(matrix.activated.peaks.26.10.deseq2)
 matrix.activated.peaks.26.10.deseq2[1:3]
 head(matrix.activated.peaks.26.10.deseq2, n=3)
 
-write.table(matrix.activated.peaks.26.10.deseq2, file = "chipseq_results/h3k4me3/deseq2.k4.activated.peaks.temp26.vs.temp10.bed", sep = "\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
+write.table(matrix.activated.peaks.26.10.deseq2, file = "chipseq_results/h3k4me3/deseq2.k4.activated.peaks.26.10.bed", sep = "\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
 
 
-deseq.temp26.vs.temp10.peaks <- readPeakFile(peakfile = "chipseq_results/h3k4me3/deseq2.k4.activated.peaks.temp26.vs.temp10.bed", header=FALSE)
+deseq.temp26.vs.temp10.peaks <- readPeakFile(peakfile = "chipseq_results/h3k4me3/deseq2.k4.activated.peaks.26.10.bed", header=FALSE)
 promoter <- getPromoters(TxDb=txdb, 
                          upstream=1000, 
                          downstream=1000)
@@ -605,12 +572,6 @@ head(deseq.temp26.vs.temp10.annotation)
 
 
 write(x = deseq.temp26.vs.temp10.annotation$geneId,file = "chipseq_results/h3k4me3/deseq.k4.temp26.vs.temp10.activated.peaks.genes.txt")
-
-
-ostta2atha.deseq.26.vs.10.activated.genes.peaks<- read.table(file = "chipseq_results/h3k4me3/ostta2atha_deseq_k4_26_vs_10_activated_peak_genes.txt", header = F)
-ostta2atha.deseq.26.vs.10.activated.genes.peaks <-ostta2atha.deseq.26.vs.10.activated.genes.peaks[,2]
-write(x = ostta2atha.deseq.26.vs.10.activated.genes.peaks,file = "chipseq_results/h3k4me3/ostta2atha.final.deseq.26.vs.10.activated.genes.peaks.txt")
-
 
 ```
 
