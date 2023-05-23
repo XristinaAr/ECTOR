@@ -561,17 +561,17 @@ length(repressed.genes.24.10.deseq2)
 
 
 ```{r deseq2 temp26 vs temp10}
-temp26vstemp10 <- results(dds, contrast = c("temperature", "temp26", "temp10"))
+temp26vstemp10.deseq <- results(dds, contrast = c("temperature", "temp26", "temp10"))
 
-log.fold.change <- temp26vstemp10$log2FoldChange
-q.value <- temp26vstemp10$padj
-names(log.fold.change) <- rownames(temp26vstemp10)
-names(q.value) <- rownames(temp26vstemp10)
+log.fold.change <- temp26vstemp10.deseq$log2FoldChange
+q.value <- temp26vstemp10.deseq$padj
+names(log.fold.change) <- rownames(temp26vstemp10.deseq)
+names(q.value) <- rownames(temp26vstemp10.deseq)
 
-activated.peaks.26.10.deseq2 <- rownames(temp26vstemp10)[log.fold.change > 1 & q.value < 0.05]
+activated.peaks.26.10.deseq2 <- rownames(temp26vstemp10.deseq)[log.fold.change > 1 & q.value < 0.05]
 length(activated.peaks.26.10.deseq2)
 
-repressed.genes.26.10.deseq2 <- rownames(temp26vstemp10)[log.fold.change < -  1 & q.value < 0.05]
+repressed.genes.26.10.deseq2 <- rownames(temp26vstemp10.deseq)[log.fold.change < -  1 & q.value < 0.05]
 length(repressed.genes.26.10.deseq2)
 
 strsplit(x = activated.peaks.26.10.deseq2, split = "_")
@@ -603,10 +603,9 @@ plotDistToTSS(deseq.temp26.vs.temp10.peakAnno,
 deseq.temp26.vs.temp10.annotation <- as.data.frame(deseq.temp26.vs.temp10.peakAnno)
 head(deseq.temp26.vs.temp10.annotation)
 
-deseq.target.genes <- deseq.temp26.vs.temp10.annotation$geneId[deseq.temp26.vs.temp10.annotation$annotation != "Distal Intergenic"]
-length(deseq.target.genes)
 
-write(x = target.genes,file = "chipseq_results/h3k4me3/deseq.k4.temp26.vs.temp10.activated.peaks.genes.txt")
+write(x = deseq.temp26.vs.temp10.annotation$geneId,file = "chipseq_results/h3k4me3/deseq.k4.temp26.vs.temp10.activated.peaks.genes.txt")
+
 
 ostta2atha.deseq.26.vs.10.activated.genes.peaks<- read.table(file = "chipseq_results/h3k4me3/ostta2atha_deseq_k4_26_vs_10_activated_peak_genes.txt", header = F)
 ostta2atha.deseq.26.vs.10.activated.genes.peaks <-ostta2atha.deseq.26.vs.10.activated.genes.peaks[,2]
