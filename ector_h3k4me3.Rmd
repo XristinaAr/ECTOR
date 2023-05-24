@@ -92,10 +92,6 @@ peak.cpm <- as.data.frame(peak.cpm)
 
 #Temperature 10ºC scatterplots
 ```{r temp10c replicates scatterplots}
-plot(x= log2(read.counts.k4.temp10c.1$V4), y = log2(read.counts.k4.temp10c.2$V4), pch = 20 )
-plot(x= log2(read.counts.k4.temp26c.1$V4), y = log2(read.counts.k4.temp26c.2$V4), pch = 20 )
-plot(y= log2(read.counts.k4.temp26c.1$V4), x = log2(read.counts.k4.temp10c.1$V4), pch = 20 )
-
 
 plot(x = log2(peak.cpm$k4_temp10_1), y= log2(peak.cpm$k4_temp10_2), pch = 20)
 lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
@@ -197,7 +193,7 @@ boxplot(log2((peak.cpm$k4_temp10_1 + peak.cpm$k4_temp10_2 +peak.cpm$k4_temp10_3)
        log2((peak.cpm$k4_temp26_1 + peak.cpm$k4_temp26_2 + peak.cpm$k4_temp26_3)/3))
 ```
 
-```{r}
+```{r boxplot global cpm}
 boxplot((peak.cpm$k4_temp10_1 + peak.cpm$k4_temp10_2 +peak.cpm$k4_temp10_3)/3,
         (peak.cpm$k4_temp14_1 + peak.cpm$k4_temp14_2 +peak.cpm$k4_temp14_3)/3,
         (peak.cpm$k4_temp20_1 + peak.cpm$k4_temp20_2 +peak.cpm$k4_temp20_3)/3,
@@ -441,6 +437,40 @@ fviz_pca_ind(res.pca, col.ind = pheno.data$temperature[1:15],
 
 
 ```
+
+
+```{r}
+ostta2atha <- read.table(file = "chipseq_results/h3k4me3/raw_ostta2atha.tsv", header = F)
+ostta.limma.26.10.genes <-  read.table(file = "chipseq_results/h3k4me3/limma.k4.temp26.vs.temp10.activated.peaks.genes.txt", header = F)
+
+
+#ostta2atha.limma.26.10.genes <- ostta2atha$V2[ostta.limma.26.10.genes$V1 == ostta2atha$V1]
+ostta2atha.limma.26.10.genes <- ostta2atha[ostta2atha$V1 %in% ostta.limma.26.10.genes$V1, ]
+ostta2atha.limma.26.10.genes <- ostta2atha.limma.26.10.genes[,1:2]
+length(ostta2atha.limma.26.10.genes)
+rownames(ostta2atha.limma.26.10.genes) <- NULL
+head(ostta2atha.limma.26.10.genes)
+dim(ostta2atha.limma.26.10.genes)
+write.table(x = ostta2atha.limma.26.10.genes, file = "chipseq_results/h3k4me3/ostta2atha.limma.26.10.genes.txt", sep = "\t")
+
+
+```
+stress response and heat shock proteins
+AT1G64550.1 ostta06g03620
+AT4G17090.1 ostta02g04570
+AT4G17040.1 ostta02g00380
+AT1G27980.1 ostta02g02240
+AT5G56000.1 ostta10g01280 hsp
+AT3G20670.1 ostta16g01060
+AT1G62740.1 ostta09g01040
+AT4G37930.1 ostta12g01860
+
+
+fatty acid metabolism
+AT3G03540.1 ostta08g02280
+AT1G62740.1 ostta09g01040
+AT2G43710.1 ostta04g03510?
+
 
 
 
