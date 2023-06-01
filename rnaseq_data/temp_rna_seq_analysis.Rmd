@@ -1,0 +1,81 @@
+---
+title: "Epigenetic Control of Temperature Response in Ostreococcus tauri (ECTOR)"
+author: "Christina Arvanitidou"
+date: "2023-06-01"
+output: pdf_document
+---
+
+
+```{r setup}
+library(ballgown)
+library(NormalyzerDE)
+```
+
+```{r data read}
+experimental.design <- read.csv("experimental_design.csv", header = T, sep = "\t")
+experimental.design
+
+
+bg.data <- ballgown(dataDir = ".", samplePattern = "sample", pData=pheno.data)
+bg.data
+sampleNames(bg.data)
+```
+
+```{r gene levels extraction}
+gene.expression <- gexpr(bg.data)
+head(gene.expression)
+dim(gene.expression)
+gene.names <- rownames(gene.expression)
+
+colnames(gene.expression) <- c("temp10_1","temp10_2","temp10_3","temp14_1","temp14_2","temp14_3","temp20_1","temp20_2","temp20_3","temp26_1","temp26_2","temp26_3")
+gene.names <- rownames(gene.expression)
+write(x = gene.names,file = "ostta_temp_gene_names.txt")
+
+gene.expression.1 <- gene.expression + 1
+
+```
+
+
+
+```{r Representation of global gene expression}
+boxplot(gene.expression, outline=F,col=rainbow(12),ylab="Gene Expression (FPKM)",
+        cex.lab=1.5)
+
+boxplot(log2(gene.expression.1), outline=F,col=rainbow(12),
+        ylab="log2(Gene Expression)",
+        cex.lab=1.5)
+```
+
+```{r Normalization with the R library NormalyzerDE}
+
+design <- data.frame(sample=colnames(gene.expression),
+                     group=c(rep("temp10",3),rep("temp14",3),rep("temp20",3),rep("temp26",3)))
+
+write.table(x = design,file = "normalyzer_design.tsv",quote = F,row.names = F,
+            sep = "\t")
+
+normalyzer(jobName = "temp_normalization",designPath = "normalyzer_design.tsv",
+           dataPath = "temp_gene_expression.tsv",outputDir = ".")
+
+
+normalized.gene.expression <- read.table(file="temp_normalization/Quantile-normalized.txt", header=T)
+head(normalized.gene.expression)
+rownames(normalized.gene.expression) <- gene.names
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
