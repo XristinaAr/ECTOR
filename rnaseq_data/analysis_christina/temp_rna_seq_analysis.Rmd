@@ -9,14 +9,17 @@ output: pdf_document
 ```{r setup}
 library(ballgown)
 library(NormalyzerDE)
+library(FactoMineR)
+library(factoextra)
+library(limma)
 ```
 
 ```{r data read}
-experimental.design <- read.csv("experimental_design.csv", header = T, sep = "\t")
+experimental.design <- read.csv("experimental_design.csv", header = T, sep = "\t", stringsAsFactors = T)
 experimental.design
 
 
-bg.data <- ballgown(dataDir = ".", samplePattern = "sample", pData=pheno.data)
+bg.data <- ballgown(dataDir = ".", samplePattern = "sample", pData=experimental.design)
 bg.data
 sampleNames(bg.data)
 ```
@@ -31,7 +34,10 @@ colnames(gene.expression) <- c("temp10_1","temp10_2","temp10_3","temp14_1","temp
 gene.names <- rownames(gene.expression)
 write(x = gene.names,file = "ostta_temp_gene_names.txt")
 
+
 gene.expression.1 <- gene.expression + 1
+write.table(x = gene.expression.1, file = "temp_gene_expression.tsv", 
+      sep = "\t", quote = F,row.names = F)
 
 ```
 
@@ -62,13 +68,108 @@ normalized.gene.expression <- read.table(file="temp_normalization/Quantile-norma
 head(normalized.gene.expression)
 rownames(normalized.gene.expression) <- gene.names
 
+```
+
+```{r Boxplot represation of global distribution of gene expression}
+
+boxplot(normalized.gene.expression,outline = F, col = rainbow(12), ylab="log2(FPKM + 1)",cex.lab=1.5)
+```
+
+
+```{r PCA analysis}
 
 
 
 ```
 
 
+```{r Hierarchical clustering}
 
+
+
+```
+
+
+```{r Differential expression analysis with limma}
+limma.experimental.design <- model.matrix(~ -1+factor(c(1,1,1,2,2,2,3,3,3,4,4,4)))
+colnames(limma.experimental.design) <- c("temp10", "temp14", "temp20", "temp26")
+
+linear.fit <- lmFit(normalized.gene.expression, limma.experimental.design)
+
+contrast.matrix <- makeContrasts(temp14-temp10,temp20-temp10,temp26-temp10, levels = c("temp10", "temp14", "temp20", "temp26"))
+                                 
+contrast.linear.fit <- contrasts.fit(linear.fit, contrast.matrix)
+contrast.results <- eBayes(contrast.linear.fit)                               
+                           
+```
+
+
+```{r DEGs for contrast temp14 vs temp10}
+
+temp14.vs.temp10 <- topTable(contrast.results, number=nrow(normalized.gene.expression), coef = 1, sort.by = "logFC", )
+head(temp14.vs.temp10)
+dim(temp14.vs.temp10)
+gene.id.temp14.vs.temp10 <- rownames(temp14.vs.temp10) 
+
+temp14.vs.temp10.log.fold.change <- temp14.vs.temp10$logFC
+temp14.vs.temp10.qvalor <- temp14.vs.temp10$adj.P.Val
+names(temp14.vs.temp10.log.fold.change) <- gene.id.temp14.vs.temp10
+names(temp14.vs.temp10.qvalor) <- gene.id.temp14.vs.temp10
+
+activated.genes.14.vs.10 <- gene.id.temp14.vs.temp10[temp14.vs.temp10.log.fold.change > 1 & temp14.vs.temp10.qvalor < 0.001]
+length(activated.genes.14.vs.10)
+write(activated.genes.14.vs.10, file = "activated.genes.14.vs.10.txt")
+
+repressed.genes.14.vs.10 <- gene.id.temp14.vs.temp10[temp14.vs.temp10.log.fold.change < 1 & temp14.vs.temp10.qvalor < 0.001]
+length(repressed.genes.14.vs.10)
+write(repressed.genes.14.vs.10, file = "repressed.genes.14.vs.10.txt")
+
+```
+
+```{r DEGs for contrast temp20 vs temp10}
+temp20.vs.temp10 <- topTable(contrast.results, number=nrow(normalized.gene.expression), coef = 2, sort.by = "logFC", )
+head(temp20.vs.temp10)
+dim(temp20.vs.temp10)
+gene.id.temp20.vs.temp10 <- rownames(temp20.vs.temp10) 
+
+temp20.vs.temp10.log.fold.change <- temp20.vs.temp10$logFC
+temp20.vs.temp10.qvalor <- temp20.vs.temp10$adj.P.Val
+names(temp20.vs.temp10.log.fold.change) <- gene.id.temp20.vs.temp10
+names(temp20.vs.temp10.qvalor) <- gene.id.temp20.vs.temp10
+
+activated.genes.20.vs.10 <- gene.id.temp20.vs.temp10[temp20.vs.temp10.log.fold.change > 1 & temp20.vs.temp10.qvalor < 0.001]
+length(activated.genes.20.vs.10)
+write(activated.genes.20.vs.10, file = "activated.genes.20.vs.10.txt")
+
+repressed.genes.20.vs.10 <- gene.id.temp20.vs.temp10[temp20.vs.temp10.log.fold.change < 1 & temp20.vs.temp10.qvalor < 0.001]
+length(repressed.genes.20.vs.10)
+write(repressed.genes.20.vs.10, file = "repressed.genes.20.vs.10.txt")
+
+```
+
+```{r DEGs for contrast temp26 vs temp10}
+temp26.vs.temp10 <- topTable(contrast.results, number=nrow(normalized.gene.expression), coef = 3, sort.by = "logFC", )
+head(temp26.vs.temp10)
+dim(temp26.vs.temp10)
+gene.id.temp26.vs.temp10 <- rownames(temp26.vs.temp10) 
+
+temp26.vs.temp10.log.fold.change <- temp26.vs.temp10$logFC
+temp26.vs.temp10.qvalor <- temp26.vs.temp10$adj.P.Val
+names(temp26.vs.temp10.log.fold.change) <- gene.id.temp26.vs.temp10
+names(temp26.vs.temp10.qvalor) <- gene.id.temp26.vs.temp10
+
+activated.genes.26.vs.10 <- gene.id.temp26.vs.temp10[temp26.vs.temp10.log.fold.change > 1 & temp26.vs.temp10.qvalor < 0.001]
+length(activated.genes.26.vs.10)
+write(activated.genes.26.vs.10, file = "activated.genes.26.vs.10.txt")
+
+repressed.genes.26.vs.10 <- gene.id.temp20.vs.temp10[temp26.vs.temp10.log.fold.change < 1 & temp26.vs.temp10.qvalor < 0.001]
+length(repressed.genes.26.vs.10)
+write(repressed.genes.26.vs.10, file = "repressed.genes.26.vs.10.txt")
+```
+
+```{r boxplot representation of gene expression of marked genes}
+boxplot()
+```
 
 
 
