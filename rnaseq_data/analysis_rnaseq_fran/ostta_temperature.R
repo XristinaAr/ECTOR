@@ -162,7 +162,7 @@ for(i in 1:length(target.genes))
 
 
 
-gene.expression.barplot(gene="ostta05g04180", gene.name="RNA helicase",expression.matrix)
+gene.expression.barplot(gene="ostta06g02340",expression.matrix)
 gene.expression.barplot(gene="ostta10g00010", gene.name="ostta10g00010",expression.matrix)
 
 gene.expression.barplot(gene="ostta10g02060", gene.name="ostta10g02060",expression.matrix)
