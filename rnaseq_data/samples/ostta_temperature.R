@@ -160,7 +160,32 @@ for(i in 1:length(target.genes))
  dev.off()
 }
 
+gene.expression.barplot(gene="ostta02g00020", expression.matrix)
+gene.expression.barplot(gene="ostta02g00035", expression.matrix)
+gene.expression.barplot(gene="ostta02g00037", expression.matrix)
+gene.expression.barplot(gene="ostta02g00980", expression.matrix)
+gene.expression.barplot(gene="ostta02g00990", expression.matrix)
+gene.expression.barplot(gene="ostta02g01580", expression.matrix)
+gene.expression.barplot(gene="ostta02g01710", expression.matrix)
+gene.expression.barplot(gene="ostta02g01440", expression.matrix)
 
+gene.expression.barplot(gene="ostta02g05440", expression.matrix)
+gene.expression.barplot(gene="ostta02g05450", expression.matrix)
+gene.expression.barplot(gene="ostta02g05530", expression.matrix)
+
+gene.expression.barplot(gene="ostta02g01245", expression.matrix)
+gene.expression.barplot(gene="ostta01g05160", expression.matrix)
+
+gene.expression.barplot(gene="ostta01g05480", expression.matrix)
+
+
+
+gene.expression.barplot(gene="ostta06g02340", expression.matrix)
+gene.expression.barplot(gene="ostta06g02940", expression.matrix)
+gene.expression.barplot(gene="ostta07g03440", expression.matrix)
+
+gene.expression.barplot(gene="ostta02g00350", expression.matrix)
+gene.expression.barplot(gene="ostta02g00360", expression.matrix)
 
 gene.expression.barplot(gene="ostta05g04180", gene.name="RNA helicase",expression.matrix)
 gene.expression.barplot(gene="ostta10g00010", gene.name="ostta10g00010",expression.matrix)
