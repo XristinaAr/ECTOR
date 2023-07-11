@@ -182,7 +182,7 @@ lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
 
 
 
-plot(x = log2((peak.cpm$k4_temp10_1 + peak.cpm$k4_temp10_2 +peak.cpm$k4_temp10_3)/3), y= log2((peak.cpm$k4_temp26_1 + peak.cpm$k4_temp26_2 + peak.cpm$k4_temp26_3)/3), pch = 20,xlab="Temperature 10ºC (CPM)",ylab="Temperature 26C (CPM)",main="26ºC vs 10ºC")
+plot(x = log2((peak.cpm$k4_temp10_1 + peak.cpm$k4_temp10_2 +peak.cpm$k4_temp10_3)/3), y= log2((peak.cpm$k4_temp26_1 + peak.cpm$k4_temp26_2 + peak.cpm$k4_temp26_3)/3), pch = 20,xlab="Temperature 10ºC (CPM)",ylab="Temperature 26ºC (CPM)",main="26ºC vs 10ºC")
 lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
 
 boxplot(log2((peak.cpm$k4_temp10_1 + peak.cpm$k4_temp10_2 +peak.cpm$k4_temp10_3)/3),
