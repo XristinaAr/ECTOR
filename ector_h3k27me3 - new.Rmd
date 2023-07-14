@@ -95,13 +95,17 @@ peak.cpm[,22]<- read.counts.k27.temp26c.3[,4]/mapped.reads.k27.26c.3
 head(peak.cpm)
 
 peak.cpm <- as.data.frame(peak.cpm)
+```
+
+```{r}
+
+library(NormalyzerDE)
+
+#temp10
 
 write.table(x = peak.cpm[,4:6],file = "peak_cpm_temp10.tsv" ,
             quote = F,row.names = F,
             sep = "\t")
-
-
-library(NormalyzerDE)
 
 design.10 <- data.frame(sample= paste("k27_temp10", 1:3, sep = "_"),
                      group=c(rep("temp10",3)))
@@ -109,7 +113,6 @@ design.10 <- data.frame(sample= paste("k27_temp10", 1:3, sep = "_"),
 write.table(x = design.10,file = "normalyzer_design_temp10.tsv",quote = F,row.names = F,
             sep = "\t")
 
-#manual página 32
 normalyzer(jobName = "temp10_normalization",designPath = "normalyzer_design_temp10.tsv",
            dataPath = "peak_cpm_temp10.tsv",outputDir = ".", requireReplicates = FALSE)
 
@@ -117,19 +120,57 @@ normalyzer(jobName = "temp10_normalization",designPath = "normalyzer_design_temp
 normalized.peak.cpm.temp10 <- read.table(file="temp10_normalization/Quantile-normalized.txt", header=T)
 head(normalized.peak.cpm.temp10)
 
-rownames(normalized.gene.expression.temp10) <- gene.names
- 
-## Representación de la distribución global de la expresión génica tras 
-## normalización
-boxplot(normalized.peak.cpm.temp10, outline=F,col=rainbow(4),
-        ylab="log2(FPKM + 1)",cex.lab=1.5)
+
+boxplot(normalized.peak.cpm.temp10, outline=F,col=rainbow(3),
+        cex.lab=1.5)
+
+#temp14
+
+write.table(x = peak.cpm[,7:9],file = "peak_cpm_temp14.tsv" ,
+            quote = F,row.names = F,
+            sep = "\t")
+
+design.14 <- data.frame(sample= paste("k27_temp14", 1:3, sep = "_"),
+                     group=c(rep("temp14",3)))
+
+write.table(x = design.14,file = "normalyzer_design_temp14.tsv",quote = F,row.names = F,
+            sep = "\t")
+
+normalyzer(jobName = "temp14_normalization",designPath = "normalyzer_design_temp14.tsv",
+           dataPath = "peak_cpm_temp14.tsv",outputDir = ".", requireReplicates = FALSE, noLogTransform =T)
 
 
+normalized.peak.cpm.temp14 <- read.table(file="temp14_normalization/Quantile-normalized.txt", header=T)
+head(normalized.peak.cpm.temp14)
 
 
+boxplot(normalized.peak.cpm.temp14, outline=F,col=rainbow(3),
+        cex.lab=1.5)
+
+#temp20
+
+write.table(x = peak.cpm[,10:12],file = "peak_cpm_temp20.tsv" ,
+            quote = F,row.names = F,
+            sep = "\t")
+
+design.20 <- data.frame(sample= paste("k27_temp20", 1:3, sep = "_"),
+                     group=c(rep("temp20",3)))
+
+write.table(x = design.20,file = "normalyzer_design_temp20.tsv",quote = F,row.names = F,
+            sep = "\t")
+
+normalyzer(jobName = "temp20_normalization",designPath = "normalyzer_design_temp20.tsv",
+           dataPath = "peak_cpm_temp20.tsv",outputDir = ".", requireReplicates = FALSE)
 
 
+normalized.peak.cpm.temp20 <- read.table(file="temp20_normalization/Quantile-normalized.txt", header=T)
+head(normalized.peak.cpm.temp20)
 
+
+boxplot(normalized.peak.cpm.temp20, outline=F,col=rainbow(3),
+        cex.lab=1.5)
+
+#temp24
 
 write.table(x = peak.cpm[,17:19],file = "peak_cpm_temp24.tsv" ,
             quote = F,row.names = F,
@@ -142,21 +183,61 @@ design.24 <- data.frame(sample= paste("k27_temp24", 1:3, sep = "_"),
 write.table(x = design.24,file = "normalyzer_design_temp24.tsv",quote = F,row.names = F,
             sep = "\t")
 
-#manual página 32
 normalyzer(jobName = "temp24_normalization",designPath = "normalyzer_design_temp24.tsv",
            dataPath = "peak_cpm_temp24.tsv",outputDir = ".", requireReplicates = FALSE, noLogTransform =T)
 
 
-normalized.peak.cpm.temp10 <- read.table(file="temp10_normalization/Quantile-normalized.txt", header=T)
-head(normalized.peak.cpm.temp10)
+normalized.peak.cpm.temp24 <- read.table(file="temp24_normalization/Quantile-normalized.txt", header=T)
+head(normalized.peak.cpm.temp24)
 
-rownames(normalized.gene.expression.temp10) <- gene.names
+
+boxplot(normalized.peak.cpm.temp24, outline=F,col=rainbow(4),
+        cex.lab=1.5)
+
+
+#temp26
+
+write.table(x = peak.cpm[,20:22],file = "peak_cpm_temp26.tsv" ,
+            quote = F,row.names = F,
+            sep = "\t")
+
  
-## Representación de la distribución global de la expresión génica tras 
-## normalización
-boxplot(normalized.peak.cpm.temp10, outline=F,col=rainbow(4),
-        ylab="log2(FPKM + 1)",cex.lab=1.5)
+design.26 <- data.frame(sample= paste("k27_temp26", 1:3, sep = "_"),
+                     group=c(rep("temp26",3)))
+
+write.table(x = design.26,file = "normalyzer_design_temp26.tsv",quote = F,row.names = F,
+            sep = "\t")
+
+normalyzer(jobName = "temp26_normalization",designPath = "normalyzer_design_temp26.tsv",
+           dataPath = "peak_cpm_temp26.tsv",outputDir = ".", requireReplicates = FALSE)
+
+
+normalized.peak.cpm.temp26 <- read.table(file="temp26_normalization/Quantile-normalized.txt", header=T)
+head(normalized.peak.cpm.temp26)
+
+
+
+boxplot(normalized.peak.cpm.temp26, outline=F,col=rainbow(4),
+        cex.lab=1.5)
 ```
+
+
+```{r}
+is.data.frame(normalized.peak.cpm.temp26)
+normalized.peak.cpm <- cbind(normalized.peak.cpm.temp10,normalized.peak.cpm.temp14,normalized.peak.cpm.temp20,normalized.peak.cpm.temp24,normalized.peak.cpm.temp26)
+head(normalized.peak.cpm)
+
+peak.cpm[,1]<- read.counts.k27.temp10c.1[,1]
+peak.cpm[,2]<- read.counts.k27.temp10c.1[,2]
+peak.cpm[,3]<- read.counts.k27.temp10c.1[,3]
+
+
+normalized.peak.cpm <-  cbind(peak.cpm[,1], peak.cpm[,2], peak.cpm[,3], normalized.peak.cpm)
+colnames(normalized.peak.cpm)[1:3] <- c("chr", "start", "end")
+head(normalized.peak.cpm)
+
+```
+
 
 #Temperature 10ºC scatterplots
 ```{r temp10c replicates scatterplots}
