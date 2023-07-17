@@ -215,39 +215,196 @@ boxplot((peak.cpm$k4_temp10_1 + peak.cpm$k4_temp10_2 +peak.cpm$k4_temp10_3)/3,
         outline=F,col=c("#00FFFF","#6699FF","#CC33FF","#FF0000","blue"),ylab="CPM",names=c("10ºC","14ºC","20ºC","24ºC","26ºC"),las=2,cex.lab=2)
 
 ```
+```{r}
 
+library(NormalyzerDE)
+
+#temp10
+
+write.table(x = peak.cpm[,4:6],file = "peak_cpm_temp10.tsv" ,
+            quote = F,row.names = F,
+            sep = "\t")
+
+design.10 <- data.frame(sample= paste("k4_temp10", 1:3, sep = "_"),
+                     group=c(rep("temp10",3)))
+
+write.table(x = design.10,file = "normalyzer_design_k4_temp10.tsv",quote = F,row.names = F,
+            sep = "\t")
+
+normalyzer(jobName = "temp10_k4_normalization",designPath = "normalyzer_design_k4_temp10.tsv",
+           dataPath = "peak_cpm_temp10.tsv",outputDir = ".", requireReplicates = FALSE)
+
+
+normalized.peak.cpm.temp10 <- read.table(file="temp10_k4_normalization/Quantile-normalized.txt", header=T)
+head(normalized.peak.cpm.temp10)
+
+
+boxplot(normalized.peak.cpm.temp10, outline=F,col=rainbow(3),
+        cex.lab=1.5)
+
+#temp14
+
+write.table(x = peak.cpm[,7:9],file = "peak_cpm_temp14.tsv" ,
+            quote = F,row.names = F,
+            sep = "\t")
+
+design.14 <- data.frame(sample= paste("k4_temp14", 1:3, sep = "_"),
+                     group=c(rep("temp14",3)))
+
+write.table(x = design.14,file = "normalyzer_design_k4_temp14.tsv",quote = F,row.names = F,
+            sep = "\t")
+
+normalyzer(jobName = "temp14_k4_normalization",designPath = "normalyzer_design_k4_temp14.tsv",
+           dataPath = "peak_cpm_temp14.tsv",outputDir = ".", requireReplicates = FALSE)
+
+
+normalized.peak.cpm.temp14 <- read.table(file="temp14_k4_normalization/Quantile-normalized.txt", header=T)
+head(normalized.peak.cpm.temp14)
+
+
+boxplot(normalized.peak.cpm.temp14, outline=F,col=rainbow(3),
+        cex.lab=1.5)
+
+#temp20
+
+write.table(x = peak.cpm[,10:12],file = "peak_cpm_temp20.tsv" ,
+            quote = F,row.names = F,
+            sep = "\t")
+
+design.20 <- data.frame(sample= paste("k4_temp20", 1:3, sep = "_"),
+                     group=c(rep("temp20",3)))
+
+write.table(x = design.20,file = "normalyzer_design_k4_temp20.tsv",quote = F,row.names = F,
+            sep = "\t")
+
+normalyzer(jobName = "temp20_k4_normalization",designPath = "normalyzer_design_k4_temp20.tsv",
+           dataPath = "peak_cpm_temp20.tsv",outputDir = ".", requireReplicates = FALSE)
+
+
+normalized.peak.cpm.temp20 <- read.table(file="temp20_k4_normalization/Quantile-normalized.txt", header=T)
+head(normalized.peak.cpm.temp20)
+
+
+boxplot(normalized.peak.cpm.temp20, outline=F,col=rainbow(3),
+        cex.lab=1.5)
+
+#temp24
+
+write.table(x = peak.cpm[,13:15],file = "peak_cpm_temp24.tsv" ,
+            quote = F,row.names = F,
+            sep = "\t")
+
+ 
+design.24 <- data.frame(sample= paste("k4_temp24", 1:3, sep = "_"),
+                     group=c(rep("temp24",3)))
+
+write.table(x = design.24,file = "normalyzer_design_k4_temp24.tsv",quote = F,row.names = F,
+            sep = "\t")
+
+normalyzer(jobName = "temp24_k4_normalization",designPath = "normalyzer_design_k4_temp24.tsv",
+           dataPath = "peak_cpm_temp24.tsv",outputDir = ".", requireReplicates = FALSE)
+
+
+normalized.peak.cpm.temp24 <- read.table(file="temp24_k4_normalization/Quantile-normalized.txt", header=T)
+head(normalized.peak.cpm.temp24)
+
+
+boxplot(normalized.peak.cpm.temp24, outline=F,col=rainbow(4),
+        cex.lab=1.5)
+
+
+#temp26
+
+write.table(x = peak.cpm[,16:18],file = "peak_cpm_temp26.tsv" ,
+            quote = F,row.names = F,
+            sep = "\t")
+
+ 
+design.26 <- data.frame(sample= paste("k4_temp26", 1:3, sep = "_"),
+                     group=c(rep("temp26",3)))
+
+write.table(x = design.26,file = "normalyzer_design_k4_temp26.tsv",quote = F,row.names = F,
+            sep = "\t")
+
+normalyzer(jobName = "temp26_k4_normalization",designPath = "normalyzer_design_k4_temp26.tsv",
+           dataPath = "peak_cpm_temp26.tsv",outputDir = ".", requireReplicates = FALSE)
+
+
+normalized.peak.cpm.temp26 <- read.table(file="temp26_k4_normalization/Quantile-normalized.txt", header=T)
+head(normalized.peak.cpm.temp26)
+
+
+
+boxplot(normalized.peak.cpm.temp26, outline=F,col=rainbow(4),
+        cex.lab=1.5)
+```
+
+```{r}
+
+normalized.peak.cpm <- cbind(normalized.peak.cpm.temp10,normalized.peak.cpm.temp14,normalized.peak.cpm.temp20,normalized.peak.cpm.temp24,normalized.peak.cpm.temp26)
+head(normalized.peak.cpm)
+
+peak.cpm[,1]<- read.counts.k4.temp10c.1[,1]
+peak.cpm[,2]<- read.counts.k4.temp10c.1[,2]
+peak.cpm[,3]<- read.counts.k4.temp10c.1[,3]
+
+
+normalized.peak.cpm <-  cbind(peak.cpm[,1], peak.cpm[,2], peak.cpm[,3], normalized.peak.cpm)
+colnames(normalized.peak.cpm)[1:3] <- c("chr", "start", "end")
+head(normalized.peak.cpm)
+
+
+
+boxplot((normalized.peak.cpm$k4_temp10_1 + normalized.peak.cpm$k4_temp10_2 +normalized.peak.cpm$k4_temp10_3)/3,
+        (normalized.peak.cpm$k4_temp14_1 + normalized.peak.cpm$k4_temp14_2 +normalized.peak.cpm$k4_temp14_3)/3,
+        (normalized.peak.cpm$k4_temp20_1 + normalized.peak.cpm$k4_temp20_2 +normalized.peak.cpm$k4_temp20_3)/3,
+        (normalized.peak.cpm$k4_temp24_1 + normalized.peak.cpm$k4_temp24_2 +normalized.peak.cpm$k4_temp24_3)/3,
+        (normalized.peak.cpm$k4_temp26_1 + normalized.peak.cpm$k4_temp26_2 +normalized.peak.cpm$k4_temp26_3)/3,
+        outline=F,col=c("#00FFFF","#6699FF","#CC33FF","#FF0000","blue"),ylab="CPM",names=c("10ºC","14ºC","20ºC","24ºC","26ºC"),las=2,cex.lab=2)
+
+
+
+
+
+```
+```{r}
+normalized.peak.names <- paste(paste(normalized.peak.cpm$chr, normalized.peak.cpm$start, sep = "_"), normalized.peak.cpm$end, sep = "_")
+mat.normalized.peak.cpm <- as.matrix(normalized.peak.cpm[,4:18])
+rownames(mat.normalized.peak.cpm) <- normalized.peak.names
+head(mat.normalized.peak.cpm)
+```
 
 #Creating matrix 
 ```{r}
-peak.names <- paste(paste(peak.cpm$chr, peak.cpm$start, sep = "_"), peak.cpm$end, sep = "_")
-log2.peak.cpm <- matrix(data = NA, nrow = nrow(read.counts.k4.temp10c.1), ncol = 15)
-colnames(log2.peak.cpm) <- c("k4_temp10_1","k4_temp10_2","k4_temp10_3", "k4_temp14_1","k4_temp14_2","k4_temp14_3","k4_temp20_1","k4_temp20_2","k4_temp20_3","k4_temp24_1","k4_temp24_2","k4_temp24_3","k4_temp26_1","k4_temp26_2","k4_temp26_3")
-rownames(log2.peak.cpm) <- peak.names 
+#peak.names <- paste(paste(peak.cpm$chr, peak.cpm$start, sep = "_"), peak.cpm$end, sep = "_")
+#log2.peak.cpm <- matrix(data = NA, nrow = nrow(read.counts.k4.temp10c.1), ncol = 15)
+#colnames(log2.peak.cpm) <- c("k4_temp10_1","k4_temp10_2","k4_temp10_3", "k4_temp14_1","k4_temp14_2","k4_temp14_3","k4_temp20_1","k4_temp20_2","k4_temp20_3","k4_temp24_1","k4_temp24_2","k4_temp24_3","k4_temp26_1","k4_temp26_2","k4_temp26_3")
+#rownames(log2.peak.cpm) <- peak.names 
 
-log2.peak.cpm[,"k4_temp10_1"] <- log2(peak.cpm$k4_temp10_1)
-log2.peak.cpm[,"k4_temp10_2"] <- log2(peak.cpm$k4_temp10_2)
-log2.peak.cpm[,"k4_temp10_3"] <- log2(peak.cpm$k4_temp10_3)
+#log2.peak.cpm[,"k4_temp10_1"] <- log2(peak.cpm$k4_temp10_1)
+#log2.peak.cpm[,"k4_temp10_2"] <- log2(peak.cpm$k4_temp10_2)
+#log2.peak.cpm[,"k4_temp10_3"] <- log2(peak.cpm$k4_temp10_3)
 
-log2.peak.cpm[,"k4_temp14_1"] <- log2(peak.cpm$k4_temp14_1)
-log2.peak.cpm[,"k4_temp14_2"] <- log2(peak.cpm$k4_temp14_2)
-log2.peak.cpm[,"k4_temp14_3"] <- log2(peak.cpm$k4_temp14_3)
+#log2.peak.cpm[,"k4_temp14_1"] <- log2(peak.cpm$k4_temp14_1)
+#log2.peak.cpm[,"k4_temp14_2"] <- log2(peak.cpm$k4_temp14_2)
+#log2.peak.cpm[,"k4_temp14_3"] <- log2(peak.cpm$k4_temp14_3)
 
-log2.peak.cpm[,"k4_temp20_1"] <- log2(peak.cpm$k4_temp20_1)
-log2.peak.cpm[,"k4_temp20_2"] <- log2(peak.cpm$k4_temp20_2)
-log2.peak.cpm[,"k4_temp20_3"] <- log2(peak.cpm$k4_temp20_3)
+#log2.peak.cpm[,"k4_temp20_1"] <- log2(peak.cpm$k4_temp20_1)
+#log2.peak.cpm[,"k4_temp20_2"] <- log2(peak.cpm$k4_temp20_2)
+#log2.peak.cpm[,"k4_temp20_3"] <- log2(peak.cpm$k4_temp20_3)
 
-log2.peak.cpm[,"k4_temp24_1"] <- log2(peak.cpm$k4_temp24_1)
-log2.peak.cpm[,"k4_temp24_2"] <- log2(peak.cpm$k4_temp24_2)
-log2.peak.cpm[,"k4_temp24_3"] <- log2(peak.cpm$k4_temp24_3)
+#log2.peak.cpm[,"k4_temp24_1"] <- log2(peak.cpm$k4_temp24_1)
+#log2.peak.cpm[,"k4_temp24_2"] <- log2(peak.cpm$k4_temp24_2)
+#log2.peak.cpm[,"k4_temp24_3"] <- log2(peak.cpm$k4_temp24_3)
 
-log2.peak.cpm[,"k4_temp26_1"] <- log2(peak.cpm$k4_temp26_1)
-log2.peak.cpm[,"k4_temp26_2"] <- log2(peak.cpm$k4_temp26_2)
-log2.peak.cpm[,"k4_temp26_3"] <- log2(peak.cpm$k4_temp26_3)
+#log2.peak.cpm[,"k4_temp26_1"] <- log2(peak.cpm$k4_temp26_1)
+#log2.peak.cpm[,"k4_temp26_2"] <- log2(peak.cpm$k4_temp26_2)
+#log2.peak.cpm[,"k4_temp26_3"] <- log2(peak.cpm$k4_temp26_3)
 
 
-head(log2.peak.cpm)
+#head(log2.peak.cpm)
 
-boxplot(log2.peak.cpm, las=2)
+#boxplot(log2.peak.cpm, las=2)
 
 ```
 
@@ -260,7 +417,7 @@ colnames(experimental.design) <- c("k4_temp10","k4_temp14","k4_temp20","k4_temp2
 
 experimental.design
 
-linear.fit <- lmFit(log2.peak.cpm, experimental.design)
+linear.fit <- lmFit(mat.normalized.peak.cpm, experimental.design)
 
 contrast.matrix <- makeContrasts(k4_temp14-k4_temp10,k4_temp20-k4_temp10,k4_temp24-k4_temp10,k4_temp26-k4_temp10,levels=c("k4_temp10","k4_temp14","k4_temp20","k4_temp24","k4_temp26"))
 
@@ -270,7 +427,7 @@ contrast.results <- eBayes(contrast.linear.fit)
 ```
 
 ```{r temp14c-temp10c contrast}
-temp14c.vs.temp10c <- topTable(contrast.results, number=nrow(log2.peak.cpm),coef=1,sort.by="logFC")
+temp14c.vs.temp10c <- topTable(contrast.results, number=nrow(mat.normalized.peak.cpm),coef=1,sort.by="logFC")
 head(temp14c.vs.temp10c)
 peak.ids.14c.10c <- rownames(temp14c.vs.temp10c) 
 fold.change.14c.10c <- temp14c.vs.temp10c$logFC
@@ -286,7 +443,7 @@ length(repressed.peaks.temp14c.vs.temp10c)
 
 
 ```{r temp20c-temp10c contrast}
-temp20c.vs.temp10c <- topTable(contrast.results, number=nrow(log2.peak.cpm),coef=2,sort.by="logFC")
+temp20c.vs.temp10c <- topTable(contrast.results, number=nrow(mat.normalized.peak.cpm),coef=2,sort.by="logFC")
 head(temp20c.vs.temp10c)
 peak.ids.20c.10c <- rownames(temp20c.vs.temp10c) 
 fold.change.20c.10c <- temp20c.vs.temp10c$logFC
@@ -302,7 +459,7 @@ length(repressed.peaks.temp20c.vs.temp10c)
 ```
 
 ```{r temp24c-temp10c contrast}
-temp24c.vs.temp10c <- topTable(contrast.results, number=nrow(log2.peak.cpm),coef=3,sort.by="logFC")
+temp24c.vs.temp10c <- topTable(contrast.results, number=nrow(mat.normalized.peak.cpm),coef=3,sort.by="logFC")
 head(temp24c.vs.temp10c)
 peak.ids.24c.10c <- rownames(temp24c.vs.temp10c) 
 fold.change.24c.10c <- temp24c.vs.temp10c$logFC
@@ -318,7 +475,7 @@ length(repressed.peaks.temp24c.vs.temp10c)
 
 
 ```{r temp26c-temp10c contrast}
-temp26c.vs.temp10c <- topTable(contrast.results, number=nrow(log2.peak.cpm),coef=4,sort.by="logFC")
+temp26c.vs.temp10c <- topTable(contrast.results, number=nrow(mat.normalized.peak.cpm),coef=4,sort.by="logFC")
 head(temp26c.vs.temp10c)
 peak.ids.26c.10c <- rownames(temp26c.vs.temp10c) 
 fold.change.26c.10c <- temp26c.vs.temp10c$logFC
@@ -420,6 +577,13 @@ rowMeans(expression.matrix[target.genes,paste("T20",1:3,sep="_")]),
 rowMeans(expression.matrix[target.genes,paste("T26",1:3,sep="_")]),outline=F,col=c("#00FFFF","#6699FF", "#CC33FF","#FF0000"),ylab="FPKM",names=c("10ºC","14ºC","20ºC","26ºC"),las=2,cex.lab=1.2, main = "H3K4me3 Differentially Marked Genes" )
 
 head(expression.matrix)
+```
+```{r}
+boxplot(rowMeans(2^mat.normalized.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k4_temp10",1:3,sep="_")]),
+rowMeans(2^mat.normalized.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k4_temp14",1:3,sep="_")]),
+rowMeans(2^mat.normalized.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k4_temp20",1:3,sep="_")]),
+rowMeans(2^mat.normalized.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k4_temp24",1:3,sep="_")]),
+rowMeans(2^mat.normalized.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k4_temp26",1:3,sep="_")]),outline=F,col=c("#00FFFF","#6699FF", "#CC33FF","#FF0000", "grey"),ylab="CPM",names=c("10ºC","14ºC","20ºC","24ºC","26ºC"),las=2,cex.lab=1)
 ```
 
 
