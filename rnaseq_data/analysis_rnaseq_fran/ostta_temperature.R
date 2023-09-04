@@ -164,6 +164,7 @@ for(i in 1:length(target.genes))
 
 
 gene.expression.barplot(gene="ostta02g01020",expression.matrix)
+gene.expression.barplot(gene="ostta02g00380",expression.matrix)
 
 gene.expression.barplot(gene="ostta10g00010", gene.name="ostta10g00010",expression.matrix)
 
