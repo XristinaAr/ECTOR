@@ -1,0 +1,4 @@
+type	description	begin	end	length	accession	biological description
+DOMAIN	PF00400.35	126	165	39	ostta17g00590	WD domain, G-beta repeat
+DOMAIN	PF00400.35	118	157	39	AT3G20740	WD domain, G-beta repeat
+DOMAIN	PF00400.35	161	203	42	AT3G20740	WD domain, G-beta repeat
