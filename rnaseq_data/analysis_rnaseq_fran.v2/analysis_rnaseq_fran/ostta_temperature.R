@@ -53,7 +53,6 @@ boxplot(log2(gene.expression.1), outline=F,col=rainbow(12),
 
 ## Data Normalization
 library(NormalyzerDE)
-library(RcmdrPlugin.TeachStat)
 
 ## The experimental desing needs to be specified in a different way for
 ## the package normalyzerDE

@@ -11,7 +11,7 @@ library(ballgown)
 
 ## In order to load the data it is necessary to specify the experimental
 ## design.
-experimental.design <- read.csv("experimental_design.csv",stringsAsFactors = T)
+experimental.design <- read.csv("experimental_design.csv",stringsAsFactors = T, sep = "\t")
 experimental.design
 
 ## Load the gene expression estimation data
@@ -30,7 +30,8 @@ write(x = gene.names,file = "ostta_temp_gene_names.txt")
 colnames(gene.expression) <- c(paste("T10ºC",1:3,sep="_"),
                                paste("T14ºC",1:3,sep="_"),
                                paste("T20ºC",1:3,sep="_"),
-                               paste("T26ºC",1:3,sep="_"))
+                               paste("T26ºC",1:3,sep="_"),
+                               paste("T24ºC",1:3,sep="_"))
 
 ## Adding 1 to the gene expression matrix so we can apply log2 transformation
 ## during normalization (log2(0) is not defined)
@@ -53,7 +54,6 @@ boxplot(log2(gene.expression.1), outline=F,col=rainbow(12),
 
 ## Data Normalization
 library(NormalyzerDE)
-library(RcmdrPlugin.TeachStat)
 
 ## The experimental desing needs to be specified in a different way for
 ## the package normalyzerDE
