@@ -27,11 +27,11 @@ gene.names <- rownames(gene.expression)
 write(x = gene.names,file = "ostta_temp_gene_names.txt")
 
 ## Naming columns according to the experimental design 
-colnames(gene.expression) <- c(paste("T10ºC",1:3,sep="_"),
-                               paste("T14ºC",1:3,sep="_"),
-                               paste("T20ºC",1:3,sep="_"),
-                               paste("T26ºC",1:3,sep="_"),
-                               paste("T24ºC",1:3,sep="_"))
+colnames(gene.expression) <- c(paste("T10",1:3,sep="_"),
+                               paste("T14",1:3,sep="_"),
+                               paste("T20",1:3,sep="_"),
+                               paste("T26",1:3,sep="_"),
+                               paste("T24",1:3,sep="_"))
 
 ## Adding 1 to the gene expression matrix so we can apply log2 transformation
 ## during normalization (log2(0) is not defined)
@@ -65,7 +65,7 @@ write.table(x = design,file = "normalyzer_design.tsv",quote = F,row.names = F,
 
 ## Apply normalization and generate reports with their evaluation
 normalyzer(jobName = "temperature_normalization",designPath = "normalyzer_design.tsv",
-           dataPath = "temperature_gene_expression.tsv",outputDir = ".")
+           dataPath = "temperature_gene_expression.tsv",outputDir = ".", skipAnalysis = T)
 
 ## Quantile normalization is chosen as the best method for our data
 normalized.gene.expression <- read.table(file="temperature_normalization/Quantile-normalized.txt", header=T)
