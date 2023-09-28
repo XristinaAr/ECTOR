@@ -1,0 +1,17 @@
+type	description	begin	end	length	accession	biological description
+DOMAIN	PF00400.35	14	51	37	AT3G49660	WD domain, G-beta repeat
+DOMAIN	PF00400.35	61	99	38	AT3G49660	WD domain, G-beta repeat
+DOMAIN	PF00400.35	103	141	38	AT3G49660	WD domain, G-beta repeat
+DOMAIN	PF00400.35	145	183	38	AT3G49660	WD domain, G-beta repeat
+DOMAIN	PF00400.35	185	226	41	AT3G49660	WD domain, G-beta repeat
+DOMAIN	PF00400.35	230	271	41	AT3G49660	WD domain, G-beta repeat
+DOMAIN	PF00400.35	275	313	38	AT3G49660	WD domain, G-beta repeat
+DOMAIN	PF08662.14	40	187	147	AT3G49660	Eukaryotic translation initiation factor eIF2A
+DOMAIN	PF00400.35	33	71	38	AT4G02730	WD domain, G-beta repeat
+DOMAIN	PF00400.35	75	113	38	AT4G02730	WD domain, G-beta repeat
+DOMAIN	PF00400.35	118	156	38	AT4G02730	WD domain, G-beta repeat
+DOMAIN	PF00400.35	160	198	38	AT4G02730	WD domain, G-beta repeat
+DOMAIN	PF00400.35	245	286	41	AT4G02730	WD domain, G-beta repeat
+DOMAIN	PF00400.35	290	330	40	AT4G02730	WD domain, G-beta repeat
+DOMAIN	PF12894.10	33	96	63	AT4G02730	Anaphase-promoting complex subunit 4 WD40 domain
+DOMAIN	PF08662.14	126	255	129	AT4G02730	Eukaryotic translation initiation factor eIF2A
