@@ -27,7 +27,7 @@ promoter <- getPromoters(TxDb=txdb,
 
 
 ## Anotación de los picos
-k27.consensus.peakAnno <- annotatePeak(peak = peaks.ld, 
+k27.consensus.peakAnno <- annotatePeak(peak = peaks.k27.consensus, 
                              tssRegion=c(-1000, 1000),
                              TxDb=txdb)
 
@@ -44,7 +44,8 @@ k27.consensus.annotation <- as.data.frame(k27.consensus.peakAnno)
 head(k27.consensus.annotation)
 
 #Guardar los genes dianas de k27 en LD 
-target.genes.k27.consensus <-k27.consensus.annotation$geneId[k27.consensus.annotation$distanceToTSS == 0]
+target.genes.k27.consensus <-k27.consensus.annotation$geneId[k27.consensus.annotation$annotation != "Distal Intergenic"]
+unique(k27.consensus.annotation$annotation)
 length(target.genes.k27.consensus)
 write(x = target.genes.k27.consensus,file = "chipseq_results/h3k27me3/k27_target_genes_consensus.txt") 
 

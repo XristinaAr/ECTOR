@@ -28,25 +28,25 @@ mapped.reads.k4.26c.1 <- 6059862/1E6
 mapped.reads.k4.26c.2 <- 5263311/1E6
 mapped.reads.k4.26c.3 <- 4251439/1E6
 
-read.counts.k4.temp10c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp10c/h3k4me3_10_chip_1_count_con24cons.bed", header = F, sep = "\t" )
-read.counts.k4.temp10c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp10c/h3k4me3_10_chip_2_count_con24cons.bed", header = F, sep = "\t" )
-read.counts.k4.temp10c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp10c/h3k4me3_10_chip_3_count_con24cons.bed", header = F, sep = "\t" )
+read.counts.k4.temp10c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp10c/h3k4me3_10_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp10c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp10c/h3k4me3_10_chip_2_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp10c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp10c/h3k4me3_10_chip_3_counts.bed", header = F, sep = "\t" )
 
-read.counts.k4.temp14c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp14c/h3k4me3_14_chip_1_count_con24cons.bed", header = F, sep = "\t" )
-read.counts.k4.temp14c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp14c/h3k4me3_14_chip_2_count_con24cons.bed", header = F, sep = "\t" )
-read.counts.k4.temp14c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp14c/h3k4me3_14_chip_3_count_con24cons.bed", header = F, sep = "\t" )
+read.counts.k4.temp14c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp14c/h3k4me3_14_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp14c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp14c/h3k4me3_14_chip_2_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp14c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp14c/h3k4me3_14_chip_3_counts.bed", header = F, sep = "\t" )
 
-read.counts.k4.temp20c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp20c/h3k4me3_20_chip_1_count_con24cons.bed", header = F, sep = "\t" )
-read.counts.k4.temp20c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp20c/h3k4me3_20_chip_2_count_con24cons.bed", header = F, sep = "\t" )
-read.counts.k4.temp20c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp20c/h3k4me3_20_chip_3_count_con24cons.bed", header = F, sep = "\t" )
+read.counts.k4.temp20c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp20c/h3k4me3_20_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp20c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp20c/h3k4me3_20_chip_2_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp20c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp20c/h3k4me3_20_chip_3_counts.bed", header = F, sep = "\t" )
 
 read.counts.k4.temp24c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp24c/h3k4me3_24_chip_1n_counts.bed", header = F, sep = "\t" )
 read.counts.k4.temp24c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp24c/h3k4me3_24_chip_2n_counts.bed", header = F, sep = "\t" )
-read.counts.k4.temp24c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp24c/h3k4me3_24_chip_3_count.bed", header = F, sep = "\t" )
+read.counts.k4.temp24c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp24c/h3k4me3_24_chip_3_counts.bed", header = F, sep = "\t" )
 
-read.counts.k4.temp26c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp26c/h3k4me3_26_chip_1_count_con24cons.bed", header = F, sep = "\t" )
-read.counts.k4.temp26c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp26c/h3k4me3_26_chip_2_count_con24cons.bed", header = F, sep = "\t" )
-read.counts.k4.temp26c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp26c/h3k4me3_26_chip_3_count_con24cons.bed", header = F, sep = "\t" )
+read.counts.k4.temp26c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp26c/h3k4me3_26_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp26c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp26c/h3k4me3_26_chip_2_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp26c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp26c/h3k4me3_26_chip_3_counts.bed", header = F, sep = "\t" )
 
 ```
 
@@ -230,6 +230,13 @@ boxplot((peak.cpm$k4_temp10_1 + peak.cpm$k4_temp10_2 +peak.cpm$k4_temp10_3)/3,
         (peak.cpm$k4_temp26_1 + peak.cpm$k4_temp26_2 +peak.cpm$k4_temp26_3)/3,
         outline=F,col=c("#00FFFF","#6699FF","#CC33FF","#FF0000","blue"),ylab="CPM",names=c("10ºC","14ºC","20ºC","24ºC","26ºC"),las=2,cex.lab=2)
 
+
+boxplot((peak.cpm$k4_temp10_1 + peak.cpm$k4_temp10_2 +peak.cpm$k4_temp10_3)/3,
+        (peak.cpm$k4_temp14_1 + peak.cpm$k4_temp14_2 +peak.cpm$k4_temp14_3)/3,
+        (peak.cpm$k4_temp20_1 + peak.cpm$k4_temp20_2 +peak.cpm$k4_temp20_3)/3,
+        (peak.cpm$k4_temp24_2 +peak.cpm$k4_temp24_3)/2,
+        (peak.cpm$k4_temp26_1 + peak.cpm$k4_temp26_2 +peak.cpm$k4_temp26_3)/3,
+        outline=F,col=c("#00FFFF","#6699FF","#CC33FF","#FF0000","blue"),ylab="CPM",names=c("10ºC","14ºC","20ºC","24ºC","26ºC"),las=2,cex.lab=2)
 ```
 
 
@@ -725,24 +732,6 @@ head(deseq.temp26.vs.temp10.annotation)
 write(x = deseq.temp26.vs.temp10.annotation$geneId,file = "chipseq_results/h3k4me3/deseq.k4.temp26.vs.temp10.activated.peaks.genes.txt")
 
 ```
-
-ostta03g01360	AT3G10800 heat response in atha
-ostta13g00885 AT4G04330 chaperone
-
-
-ostta12g01900	length:700 (mRNA) (n/a)  (Carotene isomerase)
-ostta06g02290	length:432 (mRNA) (n/a)  (Cobalamin (vitamin B12) biosynthesis CobW-like, C-terminal)
-ostta02g00420	length:485 (mRNA) (n/a)  (Kinetochore protein Ndc80) (n/a)  (Kinetochore protein Ndc80)
-ostta07g03640
-ostta18g01570	length:375 (mRNA) (n/a)  (Cyclin A/B/D/E)
-
-
-
-
-#####Volcano plot
-
-
-
 
 
 
