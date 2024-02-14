@@ -65,7 +65,7 @@ write.table(x = design,file = "normalyzer_design.tsv",quote = F,row.names = F,
 
 ## Apply normalization and generate reports with their evaluation
 normalyzer(jobName = "temperature_normalization",designPath = "normalyzer_design.tsv",
-           dataPath = "temperature_gene_expression.tsv",outputDir = ".", skipAnalysis = T)
+           dataPath = "temperature_gene_expression.tsv",outputDir = ".")#, skipAnalysis = T)
 
 ## Quantile normalization is chosen as the best method for our data
 normalized.gene.expression <- read.table(file="temperature_normalization/Quantile-normalized.txt", header=T)

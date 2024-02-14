@@ -53,7 +53,6 @@ boxplot(log2(gene.expression.1), outline=F,col=rainbow(12),
 
 ## Data Normalization
 library(NormalyzerDE)
-library(RcmdrPlugin.TeachStat)
 
 ## The experimental desing needs to be specified in a different way for
 ## the package normalyzerDE
@@ -165,7 +164,6 @@ for(i in 1:length(target.genes))
 
 
 gene.expression.barplot(gene="ostta02g01020",expression.matrix)
-gene.expression.barplot(gene="ostta02g00380",expression.matrix)
 
 gene.expression.barplot(gene="ostta10g00010", gene.name="ostta10g00010",expression.matrix)
 
@@ -177,6 +175,41 @@ gene.expression.barplot(gene="ostta12g02370", gene.name="ostta02g05010",expressi
 
 
 gene.expression.barplot(gene="ostta08g00390", gene.name="?",expression.matrix,cond.names=c("T14","T20","T26"))
+
+
+## Polycomb
+gene.expression.barplot(gene="ostta08g00200", expression.matrix) #H3.3
+gene.expression.barplot(gene="ostta05g03770", expression.matrix) #H3.1
+gene.expression.barplot(gene="ostta11g02150", expression.matrix) #H3.1
+
+gene.expression.barplot(gene="ostta01g03890", expression.matrix) #CENH3
+
+gene.expression.barplot(gene="ostta06g02890", expression.matrix) #PCNA
+gene.expression.barplot(gene="ostta01g02580", expression.matrix) #MCM6
+gene.expression.barplot(gene="ostta05g02940", expression.matrix) #TOP6B
+gene.expression.barplot(gene="ostta08g03680", expression.matrix) #POLAB
+
+gene.expression.barplot(gene="ostta01g04610", expression.matrix) #CAF1
+
+##JMJ
+gene.expression.barplot(gene="ostta03g03390", expression.matrix)
+gene.expression.barplot(gene="ostta13g02150", expression.matrix)
+gene.expression.barplot(gene="ostta08g01150", expression.matrix)
+gene.expression.barplot(gene="ostta02g02900", expression.matrix)
+gene.expression.barplot(gene="ostta03g03890", expression.matrix)
+gene.expression.barplot(gene="ostta18g01660", expression.matrix)
+
+gene.expression.barplot(gene="ostta14g01410", expression.matrix) #CLF
+gene.expression.barplot(gene="ostta14g02330", expression.matrix) #VRN2
+gene.expression.barplot(gene="ostta05g04640", expression.matrix) #VRN2
+gene.expression.barplot(gene="ostta17g00590", expression.matrix) #FIE
+
+
+gene.expression.barplot(gene="ostta03g01090", expression.matrix) #Trx
+gene.expression.barplot(gene="ostta15g00020", expression.matrix) #ATXR2
+
+gene.expression.barplot(gene="ostta11g01290", expression.matrix) #ATXR3
+gene.expression.barplot(gene="ostta06g04340", expression.matrix) #ATXR3
 
 
 

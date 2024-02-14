@@ -200,6 +200,17 @@ gene.expression.barplot(gene="ostta12g02370", gene.name="ostta02g05010",expressi
 gene.expression.barplot(gene="ostta08g00390", gene.name="?",expression.matrix,cond.names=c("T14","T20","T26"))
 
 
+ostta.tf <- read.table(file="transcription_factors_list.tsv",header=T,as.is=T)[[2]]
+target.genes <- ostta.tf
+for(i in 1:length(target.genes))
+{
+ current.gene <- target.genes[i]
+ png(filename = paste0(paste0("tf_barplots/",current.gene),".png"))
+ gene.expression.barplot(gene=current.gene, expression.matrix)
+ dev.off()
+}
+
+
 
 ## The package limma is used for differential gene expression.
 library(limma)
