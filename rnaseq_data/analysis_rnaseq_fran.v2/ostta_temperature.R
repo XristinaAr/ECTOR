@@ -65,7 +65,7 @@ write.table(x = design,file = "normalyzer_design.tsv",quote = F,row.names = F,
 
 ## Apply normalization and generate reports with their evaluation
 normalyzer(jobName = "temperature_normalization",designPath = "normalyzer_design.tsv",
-           dataPath = "temperature_gene_expression.tsv",outputDir = ".")#, skipAnalysis = T)
+          dataPath = "temperature_gene_expression.tsv",outputDir = ".", skipAnalysis = T)
 
 ## Quantile normalization is chosen as the best method for our data
 normalized.gene.expression <- read.table(file="temperature_normalization/Quantile-normalized.txt", header=T)
@@ -124,7 +124,7 @@ expression.matrix <- 2^normalized.gene.expression - 1
 
 gene.expression.barplot <- function(gene,expression.matrix)
 {
- cond.names <- c("T10ºC","T14ºC","T20ºC","T26ºC")
+ cond.names <- c("T10","T14","T20","T26", "T24")
  gene.expr <- matrix(nrow=length(cond.names),ncol=3)
  rownames(gene.expr) <- cond.names
  for(i in 1:length(cond.names))
@@ -142,9 +142,9 @@ gene.expression.barplot <- function(gene,expression.matrix)
  
  
  
- xpos <- barplot(means,ylim=c(0,1.2*max(arrow.top)),col=c("#00FFFF","#6699FF", "#CC33FF","#FF0000"), #rainbow(length(cond.names)),
+ xpos <- barplot(means,ylim=c(0,1.2*max(arrow.top)),col=c("#00FFFF","#6699FF", "#CC33FF","#FF0000", "gray"), #rainbow(length(cond.names)),
                  main=gene,
-                 names.arg = c("10ºC","14ºC","20ºC","26ºC"),cex.main=2,
+                 names.arg = c("10ºC","14ºC","20ºC","26ºC", "24ºC"),cex.main=2,
                  ylab="FPKM",las=2)
  arrows(xpos, arrow.top, xpos, arrow.bottom,code = 3,angle=90,length=0.05)
  box()
