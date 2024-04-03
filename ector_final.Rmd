@@ -1,0 +1,764 @@
+---
+title: "Epigenetic Control of Temperature Response in Ostreococcus tauri (ECTOR)"
+author: "Christina Arvanitidou (carvanitidou@us.es) and Francisco J. Romero-Campero (fran@us.es)"
+date: '2024-03-15'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## H3K27 genome wide distribution analysis
+
+We load the genome of Ostreococcus tauri and compute the length of its chromosomes. We determine the length of the largest chromosome and for technical reasons we reverse the verctor of lenghts. This will be used to represent graphically the genome wide distribution of H3K27me3. 
+
+```{r load_genome}
+library(seqinr)
+
+ostta.genome <- read.fasta(file = "ostta_genome/ostreococcus_tauri.fa",seqtype = "DNA")
+chr.lens <- sapply(X = getSequence(ostta.genome),FUN = length)
+
+number.chrs <- length(getSequence(ostta.genome))
+max.chr.len <- max(chr.lens)
+chr.lens <- rev(chr.lens)
+```
+
+We load the H3K27me3 peaks identified in cultures grown under constant light at 20ºC. We repreent each chromosome using a rectangle. Each H3K27me3 peak its represented in its precise genome location using a blue rectangle. 
+
+```{r visualization of H3K27me3 genome wide distribution}
+ll.20 <- read.table(file="chipseq_data/bed_data/h3k27me3/h3k27me3_ll_20.bed",
+                       header = F)
+
+ll.20 <- ll.20[,1:3]
+
+nrow(ll.20)
+
+#jpeg(filename = "images/h3k27me3_genome_wide_distribution_ll_20.jpg",res = 300,width = 900,height = 900)
+#par(mar=c(0,0,0,0))
+plot(x=c(0,max.chr.len), y=c(0,4*number.chrs), col = "white", xlab = "", ylab = "", axes=F)  
+
+for(i in 1:number.chrs)
+{
+ polygon(x = c(0, chr.lens[i], chr.lens[i], 0),   
+         y = c(4*i+1, 4*i+1, 4*i-1, 4*i-1),    
+         col = "white") 
+}
+
+for(i in 1:nrow(ll.20))
+{
+ current.chr <- ll.20[i,1]
+ current.start <- ll.20[i,2]
+ current.end <- ll.20[i,3]
+
+ current.line <- (20:1)[current.chr]
+ 
+ polygon(x = c(current.start, current.end, current.end, current.start),   
+         y = c(4*current.line+1, 4*current.line+1, 4*current.line-1, 4*current.line-1),    
+         col = "blue",border="blue")
+}
+#dev.off()
+```
+
+We identified 480 genomic regions significantly occupied by H3K27me3 in the three different independent biological replicates. We compute the percentage of the whole genome occupied by H3K27me3 and the percentage in each chromosome. A barplot is used to represent the percentage of H3K27me3 in each chromosome. Z-scores and p-values are computed for each chromosome. A gradient from white to blue is used to represent significance levels.  
+
+```{r k27_in_chrs}
+h3k27me3.peaks.len <- ll.20$V3 - ll.20$V2
+sum(h3k27me3.peaks.len)/sum(chr.lens)
+ll.20 <- cbind(ll.20,h3k27me3.peaks.len)
+colnames(ll.20) <- c("chr","start","end","length")
+head(ll.20)
+number.of.h3k27.peaks.chr <- vector(mode = "numeric",length = 20)
+peaks.len.chr <- vector(mode = "numeric",length = 20)
+
+for(i in 1:20)
+{
+ number.of.h3k27.peaks.chr[i] <- nrow(subset(ll.20, chr == i))
+ peaks.len.chr[i] <- sum(subset(ll.20, chr == i)[,4]) 
+}
+
+percentage.chr.k27 <- peaks.len.chr/rev(chr.lens)
+
+z.scores <- (percentage.chr.k27 - mean(percentage.chr.k27))/sd(percentage.chr.k27)
+
+which(z.scores > 2.5)
+
+p.vals <- pnorm((percentage.chr.k27 - mean(percentage.chr.k27[-19]))/sd(percentage.chr.k27[-19]),lower.tail = F)
+
+p.vals
+
+values.for.colors <- round(-log10(p.vals)*40)
+values.for.colors[19] <- 100
+
+white.blue.palette <- colorRampPalette(c('white','blue'))
+
+#jpeg(filename = "images/h3k27me3_chr_barplot_ll_20.jpg",res = 300,width = 1800,height = 900)
+barplot(100*percentage.chr.k27,border="black",names.arg = paste0("Chr",1:20),las=2,col=white.blue.palette(100)[values.for.colors]
+)
+abline(h = 100*mean(percentage.chr.k27[-19]),lty=5)
+#dev.off()
+```
+
+Approximately 7.2% of the Ostreococcus genome is occupied by H3K27me3. 
+H3K27me3 is mostly uniformly distributed over the different chromosome although it significantly accumulates (p-value < 0.01) in Chr2 (sexual chromosome) and Chr19 (viral resistance chromosome) with p-values 6.68x10^-3^ and 2.06x10^-90^ respectively. 
+
+We determine the gene features occupied by each H3K27me3 mark and the H3K27me3 marked genes. 
+
+```{r k27_peaks_annotation}
+library(TxDb.Otauri.JGI)
+txdb <- TxDb.Otauri.JGI
+
+ostta.genes <- as.data.frame(genes(txdb))
+head(ostta.genes)
+
+target.genes <- vector(mode = "character",length = nrow(ll.20))
+peak.annotation <- vector(mode = "character",length = nrow(ll.20))
+
+for(i in 1:nrow(ll.20))
+{
+ current.chr <- ll.20[i,1]
+ current.start <- ll.20[i,2]
+ current.end <- ll.20[i,3]
+
+ complete.gene.body <- subset(ostta.genes, 
+                              seqnames == current.chr & 
+                               start >= current.start & 
+                               end <= current.end)
+ 
+ overlap.tss.pos.strand <- subset(ostta.genes, 
+                              seqnames == current.chr & 
+                              start >= current.start & start <= current.end & 
+                              strand == "+")
+ 
+ overlap.tss.neg.strand <- subset(ostta.genes, 
+                              seqnames == current.chr & 
+                              end >= current.start & end <= current.end & 
+                              strand == "-")
+ 
+ overlap.tes.pos.strand <- subset(ostta.genes, 
+                              seqnames == current.chr & 
+                              end >= current.start & end <= current.end & 
+                              strand == "+")
+ 
+ overlap.tes.neg.strand <- subset(ostta.genes, 
+                              seqnames == current.chr & 
+                              start >= current.start & start <= current.end & 
+                              strand == "-")
+
+ inside.gene.body <- subset(ostta.genes, seqnames == current.chr & 
+                             start <= current.start & end >= current.end)
+ 
+ 
+ if(nrow(complete.gene.body) > 0)
+ {
+  target.genes[i] <- paste(unlist(complete.gene.body$gene_id),collapse = ",")
+  peak.annotation[i] <- "gene.body"
+ } else if(nrow(overlap.tss.pos.strand) > 0)
+ {
+  target.genes[i] <- paste(unlist(overlap.tss.pos.strand$gene_id),collapse = ",")
+  peak.annotation[i] <- "TSS"
+ } else if(nrow(overlap.tss.neg.strand) > 0)
+ {
+  target.genes[i] <- paste(unlist(overlap.tss.neg.strand$gene_id),collapse = ",")
+  peak.annotation[i] <- "TSS"
+ } else if(nrow(overlap.tes.pos.strand) > 0)
+ {
+  target.genes[i] <- paste(unlist(overlap.tes.pos.strand$gene_id),collapse = ",")
+  peak.annotation[i] <- "TES"
+ } else if(nrow(overlap.tes.neg.strand) > 0)
+ {
+  target.genes[i] <- paste(unlist(overlap.tes.neg.strand$gene_id),collapse = ",")
+  peak.annotation[i] <- "TES"
+ } else if(nrow(inside.gene.body) > 0)
+ {
+  target.genes[i] <- paste(unlist(inside.gene.body$gene_id),collapse = ",")
+  peak.annotation[i] <- "internal.gene.body"
+ } else
+ {
+  peak.annotation[i] <- "intergenic"
+ }
+}
+
+freq.peak.annotation <- table(peak.annotation)
+#jpeg(filename = "images/h3k27me3_pie_chart_ll_20.jpg",res = 300,width = 900,height = 900)
+#par(mar=c(0,0,0,0))
+pie(freq.peak.annotation[c("gene.body",
+                           "internal.gene.body",
+                           "TSS", 
+                           "TES",
+                           "intergenic")],
+    labels = c("Full Gene Body", 
+               "Gene Body", 
+               "TSS", 
+               "TES", 
+               "Intergenic"),
+    clockwise = T,border = "black",col=c("blue","cyan","green","red","grey"))
+#dev.off()
+
+percentage.freq.peak.annotation <- 100*freq.peak.annotation/sum(freq.peak.annotation)
+
+
+percentage.freq.peak.annotation["gene.body"] +
+percentage.freq.peak.annotation["internal.gene.body"]
+
+percentage.freq.peak.annotation
+
+ll.20.peak.annotation <- cbind(ll.20[,1:3],data.frame(peak.annotation,target.genes))
+
+head(ll.20.peak.annotation)
+
+write.table(x = ll.20.peak.annotation,file = "tables/H3K27me3_LL_20C_peak_annotation.tsv",quote = F,sep = "\t",row.names = F)
+
+all.k27.genes <- (unlist(sapply(X =ll.20.peak.annotation$target.genes,
+                                FUN = function(x) {strsplit(x,",")[[1]]})))
+names(all.k27.genes) <- NULL
+length(all.k27.genes)
+length(all.k27.genes)/7668
+```
+We found 491 genes associated to H3K27me3 marks corresponding to 6.4% of the entire Ostreococcus genome. H3K27me3 is mostly located occupying either the entire gene body (23.75%) or internal regions of gene body (41.86%). Although some regions occupied by H3K27me3 has been found overlapping only with the TSS (11.04%) or the TES (15.42%). H3K27me3 was found in intergenic regions only in 7.92% of the cases. 
+
+Next we use metageneplots to determine the shape of the H3K27me3 over its occupied genes. We consider three different sets of marked genes, genes with their entire gene body marked, genes with H3K27 inside their gene body with no overlap in the TSS or TES and genes with H3K27me3 overlapping their TSS or TES
+
+```{r k27_metageneplots}
+## Function to compute ChIP signal over different tiles
+ntile.signal <- function(signal.vector,number.tiles)
+{
+ step.len <- floor(length(signal.vector)/number.tiles)
+ number.plus.1 <- length(signal.vector) %% number.tiles
+ pos.plus.1 <- sort(sample(1:100,number.plus.1,replace = F))
+ 
+ acum <- c(0)
+ for(i in 1:number.tiles)
+ {
+  if(i %in% pos.plus.1)
+  {
+   acum <- c(acum,acum[i]+step.len+1)
+  } else
+  {
+   acum <- c(acum,acum[i]+step.len)
+  }
+ }
+ 
+ acum[1] <- 1
+ 
+ n.tile.signal.vector <- vector(mode = "numeric",length = number.tiles)
+ for(i in 2:length(acum))
+ {
+  n.tile.signal.vector[(i-1)] <- mean(signal.vector[acum[i-1]:acum[i]])
+ }
+ 
+ return(n.tile.signal.vector)
+}
+
+## Function to generate the data for a metageneplot
+metageneplot <- function(gene.names,genes,bw.file.name,ntile.txs,ntile.gene.body)
+{
+ res <- matrix(nrow=length(gene.names),ncol=2*ntile.txs+ntile.gene.body)
+ rownames(res) <- gene.names
+ 
+ bw.file <- import.bw(con = bw.file.name)
+ bw.file <- as.data.frame(bw.file)
+ 
+ for(i in 1:length(gene.names))
+ {
+  #print(i)
+  current.gene.chr <- genes[gene.names[i],"seqnames"]
+  current.gene.start <- genes[gene.names[i],"start"]
+  current.gene.end <- genes[gene.names[i],"end"]
+  current.gene.strand <- genes[gene.names[i],"strand"]
+  
+  gene.body.signal <- subset(bw.file, seqnames == current.gene.chr & 
+                              start >= current.gene.start & 
+                              end <= current.gene.end)[["score"]]
+
+  upstream.start.signal <- subset(bw.file, seqnames == current.gene.chr & 
+                                   start >= (current.gene.start - 2000) & 
+                                   end <= current.gene.start)[["score"]]
+  
+  downstream.end.signal <- subset(bw.file, seqnames == current.gene.chr & 
+                                   start >= current.gene.end & 
+                                   end <= (current.gene.end + 2000))[["score"]]
+  
+  ntile.signal.complete <- 
+   c(ntile.signal(signal.vector = upstream.start.signal,number.tiles = ntile.txs),
+     ntile.signal(signal.vector = gene.body.signal,number.tiles = ntile.gene.body),
+     ntile.signal(signal.vector = downstream.end.signal,number.tiles = ntile.txs))
+  
+  if(current.gene.strand == "+")
+  {
+   res[i,] <- ntile.signal.complete
+  } else
+  {
+   res[i,] <- rev(ntile.signal.complete)
+  }
+ }
+ 
+ return(res)
+}
+
+## Genes with their entire gene body marked
+k27.gene.body <- (unlist(sapply(X = subset(ll.20.peak.annotation, peak.annotation == "gene.body")[["target.genes"]],
+                                FUN = function(x) {strsplit(x,",")[[1]]})))
+names(k27.gene.body) <- NULL
+length(k27.gene.body)
+
+## Genes with H3K27 inside their gene body with no overlap
+## in the TSS or TES.
+k27.internal.gene.body <- (unlist(sapply(X = subset(ll.20.peak.annotation, peak.annotation == "internal.gene.body")[["target.genes"]],
+                                FUN = function(x) {strsplit(x,",")[[1]]})))
+names(k27.internal.gene.body) <- NULL
+length(k27.internal.gene.body)
+
+## Genes with H3K27me3 overlapping their TSS
+k27.tss <- (unlist(sapply(X = subset(ll.20.peak.annotation, peak.annotation == "TSS")[["target.genes"]],
+                                         FUN = function(x) {strsplit(x,",")[[1]]})))
+names(k27.tss) <- NULL
+length(k27.tss)
+
+## Genes with H3K27me3 overlapping their TES
+k27.tes <- (unlist(sapply(X = subset(ll.20.peak.annotation, peak.annotation == "TES")[["target.genes"]],
+                          FUN = function(x) {strsplit(x,",")[[1]]})))
+names(k27.tes) <- NULL
+length(k27.tes)
+```
+
+Next we generate the metageneplots for genes where the H3K27me3 occupies their entire gene body including TSS and TES. 
+
+```{r k27_metageneplots_gene_body}
+library(rtracklayer)
+## Genes with their entire gene body marked
+k27.gene.body <- (unlist(sapply(X = subset(ll.20.peak.annotation, peak.annotation == "gene.body")[["target.genes"]],
+                                FUN = function(x) {strsplit(x,",")[[1]]})))
+names(k27.gene.body) <- NULL
+length(k27.gene.body)
+
+## Genes with H3K27 inside their gene body with no overlap
+## in the TSS or TES.
+k27.internal.gene.body <- (unlist(sapply(X = subset(ll.20.peak.annotation, peak.annotation == "internal.gene.body")[["target.genes"]],
+                                FUN = function(x) {strsplit(x,",")[[1]]})))
+names(k27.internal.gene.body) <- NULL
+length(k27.internal.gene.body)
+
+## Genes with H3K27me3 overlapping their TSS
+k27.tss <- (unlist(sapply(X = subset(ll.20.peak.annotation, peak.annotation == "TSS")[["target.genes"]],
+                                         FUN = function(x) {strsplit(x,",")[[1]]})))
+names(k27.tss) <- NULL
+length(k27.tss)
+
+## Genes with H3K27me3 overlapping their TES
+k27.tes <- (unlist(sapply(X = subset(ll.20.peak.annotation, peak.annotation == "TES")[["target.genes"]],
+                          FUN = function(x) {strsplit(x,",")[[1]]})))
+names(k27.tes) <- NULL
+length(k27.tes)
+
+metageneplot.data.k27.gene.body.1 <- 
+ metageneplot(gene.names = k27.gene.body,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.gene.body.1 <- 
+ apply(X = metageneplot.data.k27.gene.body.1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.gene.body.2 <- 
+ metageneplot(gene.names = k27.gene.body,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.gene.body.2 <- 
+ apply(X = metageneplot.data.k27.gene.body.2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.gene.body.3 <- 
+ metageneplot(gene.names = k27.gene.body,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.gene.body.3 <- 
+ apply(X = metageneplot.data.k27.gene.body.3,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+median.metageneplot.data.k27.gene.body <- (median.metageneplot.data.k27.gene.body.1 + median.metageneplot.data.k27.gene.body.2 +                                            median.metageneplot.data.k27.gene.body.3)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.gene.body,spar = 0.5),
+     type="l",col="blue",lwd=3,ylim=c(0,45),axes=F,xlab="",ylab="")
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+```
+Next we generate the metageneplots for genes where the H3K27me3 occupies part of the gene body without overlapping with the TSS and TES. 
+
+```{r k27_metageneplots_internal_gene_body}
+metageneplot.data.k27.internal.gene.body.1 <- 
+ metageneplot(gene.names = k27.internal.gene.body,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.internal.gene.body.1 <- 
+ apply(X = metageneplot.data.k27.internal.gene.body.1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.internal.gene.body.2 <- 
+ metageneplot(gene.names = k27.internal.gene.body,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.internal.gene.body.2 <- 
+ apply(X = metageneplot.data.k27.internal.gene.body.2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.internal.gene.body.3 <- 
+ metageneplot(gene.names = k27.internal.gene.body,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.internal.gene.body.3 <- 
+ apply(X = metageneplot.data.k27.internal.gene.body.3,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+median.metageneplot.data.k27.internal.gene.body <- (median.metageneplot.data.k27.internal.gene.body.1 + 
+ median.metageneplot.data.k27.internal.gene.body.2 +                                            median.metageneplot.data.k27.internal.gene.body.3)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.internal.gene.body,spar = 0.5),
+     type="l",col="cyan",lwd=3,ylim=c(0,10),axes=F,xlab="",ylab="")
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+```
+
+Next we generate the metageneplots for genes where the H3K27me3 occupies only the TSS and the beginning of the gene.  
+
+```{r k27_metageneplots_tss}
+metageneplot.data.k27.tss.1 <- 
+ metageneplot(gene.names = k27.tss,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.tss.1 <- 
+ apply(X = metageneplot.data.k27.tss.1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.tss.2 <- 
+ metageneplot(gene.names = k27.tss,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.tss.2 <- 
+ apply(X = metageneplot.data.k27.tss.2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.tss.3 <- 
+ metageneplot(gene.names = k27.tss,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.tss.3 <- 
+ apply(X = metageneplot.data.k27.tss.3,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+
+
+median.metageneplot.data.k27.tss <- 
+ (median.metageneplot.data.k27.tss.1 + 
+ median.metageneplot.data.k27.tss.2 +                                            median.metageneplot.data.k27.tss.3)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tss,spar = 0.5),
+     type="l",col="green",lwd=3,ylim=c(0,20),axes=F,xlab="",ylab="")
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+```
+
+Next we generate the metageneplots for genes where the H3K27me3 occupies only the TSS and the beginning of the gene.  
+
+```{r k27_metageneplots_tes}
+metageneplot.data.k27.tes.1 <- 
+ metageneplot(gene.names = k27.tes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.tes.1 <- 
+ apply(X = metageneplot.data.k27.tes.1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.tes.2 <- 
+ metageneplot(gene.names = k27.tes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.tes.2 <- 
+ apply(X = metageneplot.data.k27.tes.2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.tes.3 <- 
+ metageneplot(gene.names = k27.tes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.tes.3 <- 
+ apply(X = metageneplot.data.k27.tes.3,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+
+
+median.metageneplot.data.k27.tes <- 
+ (median.metageneplot.data.k27.tes.1 + 
+ median.metageneplot.data.k27.tes.2 +                                            median.metageneplot.data.k27.tes.3)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tes,spar = 0.5),
+     type="l",col="red",lwd=3,ylim=c(0,20),axes=F,xlab="",ylab="")
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+```
+
+In order to compare the different metageneplots are represented in the same plot.
+
+```{r all_k27_metageneplots}
+#jpeg(filename = "images/h3k27me3_metageneplots.jpg",res = 250,width = 900,height = 900)
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.gene.body,spar = 0.5),
+     type="l",col="blue",lwd=3,ylim=c(0,45),axes=F,xlab="",ylab="")
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.internal.gene.body,spar = 0.5),
+      type="l",col="cyan",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tss,spar = 0.5),
+      type="l",col="green",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tes,spar = 0.5),
+      type="l",col="red",lwd=3)
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+#dev.off()
+```
+
+It can be observed that the level of H3K27me3 mark varies depending on the part of gene that it occupies. Next we check if these differences are significant.  
+
+```{r metageneplots_significance}
+max.metageneplot.data.k27.gene.body.1 <- 
+ apply(X = metageneplot.data.k27.gene.body.1,
+       MARGIN = 1,
+       FUN = max,na.rm = T)
+max.metageneplot.data.k27.gene.body.2 <- 
+ apply(X = metageneplot.data.k27.gene.body.2,
+       MARGIN = 1,
+       FUN = max,na.rm = T)
+max.metageneplot.data.k27.gene.body.3 <- 
+ apply(X = metageneplot.data.k27.gene.body.3,
+       MARGIN = 1,
+       FUN = max,na.rm = T)
+
+max.metageneplot.data.k27.gene.body <- (max.metageneplot.data.k27.gene.body.1 + 
+                                   max.metageneplot.data.k27.gene.body.2 +
+                                   max.metageneplot.data.k27.gene.body.3)/3
+
+max.metageneplot.data.k27.internal.gene.body.1 <- 
+ apply(X = metageneplot.data.k27.internal.gene.body.1,
+       MARGIN = 1,
+       FUN = max,na.rm = T)
+max.metageneplot.data.k27.internal.gene.body.2 <- 
+ apply(X = metageneplot.data.k27.internal.gene.body.2,
+       MARGIN = 1,
+       FUN = max,na.rm = T)
+max.metageneplot.data.k27.internal.gene.body.3 <- 
+ apply(X = metageneplot.data.k27.internal.gene.body.3,
+       MARGIN = 1,
+       FUN = max,na.rm = T)
+
+max.metageneplot.data.k27.internal.gene.body <- (max.metageneplot.data.k27.internal.gene.body.1 + 
+                                         max.metageneplot.data.k27.internal.gene.body.2 +
+                                         max.metageneplot.data.k27.internal.gene.body.3)/3
+
+
+max.metageneplot.data.k27.tss.1 <- 
+ apply(X = metageneplot.data.k27.tss.1,
+       MARGIN = 1,
+       FUN = max,na.rm = T)
+max.metageneplot.data.k27.tss.2 <- 
+ apply(X = metageneplot.data.k27.tss.2,
+       MARGIN = 1,
+       FUN = max,na.rm = T)
+max.metageneplot.data.k27.tss.3 <- 
+ apply(X = metageneplot.data.k27.tss.3,
+       MARGIN = 1,
+       FUN = max,na.rm = T)
+max.metageneplot.data.k27.tss <- (max.metageneplot.data.k27.tss.1 + 
+                                   max.metageneplot.data.k27.tss.2 +
+                                   max.metageneplot.data.k27.tss.3)/3
+
+max.metageneplot.data.k27.tes.1 <- 
+ apply(X = metageneplot.data.k27.tes.1,
+       MARGIN = 1,
+       FUN = max,na.rm = T)
+max.metageneplot.data.k27.tes.2 <- 
+ apply(X = metageneplot.data.k27.tes.2,
+       MARGIN = 1,
+       FUN = max,na.rm = T)
+max.metageneplot.data.k27.tes.3 <- 
+ apply(X = metageneplot.data.k27.tes.3,
+       MARGIN = 1,
+       FUN = max,na.rm = T)
+max.metageneplot.data.k27.tes <- (max.metageneplot.data.k27.tes.1 + 
+                                  max.metageneplot.data.k27.tes.2 +
+                                  max.metageneplot.data.k27.tes.3)/3
+
+shapiro.test(max.metageneplot.data.k27.gene.body)
+shapiro.test(max.metageneplot.data.k27.internal.gene.body)
+shapiro.test(max.metageneplot.data.k27.tss)
+shapiro.test(max.metageneplot.data.k27.tes)
+
+wilcox.test(x = max.metageneplot.data.k27.gene.body,
+            y = max.metageneplot.data.k27.internal.gene.body,
+            alternative = "greater")$p.value
+wilcox.test(x = max.metageneplot.data.k27.gene.body,
+            y = max.metageneplot.data.k27.tss,
+            alternative = "greater")
+wilcox.test(x = max.metageneplot.data.k27.gene.body,
+            y = max.metageneplot.data.k27.tes,
+            alternative = "greater")
+wilcox.test(x = max.metageneplot.data.k27.tss,
+            y = max.metageneplot.data.k27.tes)
+wilcox.test(x = max.metageneplot.data.k27.tss,
+            y = max.metageneplot.data.k27.tes)
+```
+
+Indeed the differences between the metageneplots are highly significant except the ones corresponding to the marks overlapping with the TSS or TES. 
+
+Now we analyse the gene expression level of marked genes.
+
+```{r h3k27me3_gene_expression}
+temp.gene.expression <- read.table(file="rnaseq_data/ostta_temperature_gene_expression.tsv",header = T,sep = "\t")
+
+gene.expression.20 <- 
+ (temp.gene.expression$T20_1 + 
+  temp.gene.expression$T20_2 + 
+  temp.gene.expression$T20_3)/3
+
+names(gene.expression.20) <- rownames(temp.gene.expression)
+
+non.k27.genes <- setdiff(names(gene.expression.20),c(k27.gene.body,k27.tss,k27.tes,k27.internal.gene.body))
+
+
+summary(gene.expression.20[k27.gene.body])
+summary(gene.expression.20[k27.internal.gene.body])
+summary(gene.expression.20[k27.tss])
+summary(gene.expression.20[k27.tes])
+summary(gene.expression.20[non.k27.genes])
+
+#jpeg(filename = "images/h3k27me3_expression_barplot_different_genes.jpg",res = 250,width = 600,height = 1000)
+boxplot(gene.expression.20[k27.gene.body],
+        gene.expression.20[k27.tss],
+        gene.expression.20[k27.internal.gene.body],
+        gene.expression.20[k27.tes],
+        gene.expression.20[non.k27.genes],
+        col=c("blue","green","cyan","red","grey"),
+        outline=F)
+#dev.off()
+
+wilcox.test(x = gene.expression.20[k27.gene.body], 
+            y = gene.expression.20[k27.tss],
+            alternative = "less")
+wilcox.test(x = gene.expression.20[k27.tss], 
+            y = gene.expression.20[k27.internal.gene.body],
+            alternative = "less")
+
+wilcox.test(x = gene.expression.20[k27.internal.gene.body],
+            y = gene.expression.20[k27.tes],
+            alternative = "less")
+
+wilcox.test(x = gene.expression.20[k27.tes],
+            y = gene.expression.20[non.k27.genes],
+            alternative = "less")
+```
+
+We can see all H3K27me3 genes present levels of expression significantly lower than non-marked genes. Specifically, genes whose entire gene body or TSS is occupied by H3K27me3 are completely repressed. Whereas, genes where only the TES or gene body is occupied by H3K27me3 are expressed although at a significantly lower level than non-marked genes.  
+
+In what follows we perform a functional analysis over the H3K27me3 marked genes. First, we analyze the relationship between H3K27me3 peaks and transposable elements. 
+
+```{r transposable_elements}
+dna.transposons <- read.table(file="te_analysis/dna_transposons_unsorted.bed",sep="\t",header=F)
+nrow(dna.transposons)
+
+ltr.transposons <- read.table(file="te_analysis/ltr_transposons_unsorted.bed",sep="\t", header=F)
+nrow(ltr.transposons)
+
+unclassified.transposons <- read.table(file="te_analysis/unknown_transposons_unsorted.bed", sep="\t",header = F)
+nrow(unclassified.transposons)
+
+overlapping.peaks <- function(target.peak, peaks)
+{
+ subset(peaks, V1 == target.peak[1] & (
+             (V2 >= target.peak[2] & V2 <= target.peak[3]) |
+             (V3 >= target.peak[2] & V3 <= target.peak[3]) |
+             (V2 <= target.peak[2] & V3 >= target.peak[3])))
+}
+
+
+peak.te <- vector(mode = "character",length = nrow(ll.20.peak.annotation))
+
+for(i in 1:nrow(ll.20.peak.annotation))
+{
+ current.peak <- unlist(ll.20.peak.annotation[i,1:3])
+ 
+ if(nrow(overlapping.peaks(current.peak,dna.transposons)) > 0)
+ {
+  peak.te[i] <- "DNA_transposon"
+ } else if (nrow(overlapping.peaks(current.peak,ltr.transposons)) > 0)
+ {
+  peak.te[i] <- "LTR_transposon"
+ } else if (nrow(overlapping.peaks(current.peak,unclassified.transposons)) > 0)
+ {
+  peak.te[i] <- "Unclassified_transposon"
+ } else
+ {
+  peak.te[i] <- "No_transposon"
+ }
+}
+
+100*table(peak.te)/sum(table(peak.te))
+
+pie(table(peak.te), col=c("black","grey","white","lightblue"))
+
+nrow(dna.transposons)
+100*table(peak.te)["DNA_transposon"]/nrow(dna.transposons)
+
+nrow(ltr.transposons)
+100*table(peak.te)["LTR_transposon"]/nrow(ltr.transposons)
+
+nrow(unclassified.transposons)
+100*table(peak.te)["Unclassified_transposon"]/nrow(unclassified.transposons)
+
+
+table(ll.20.peak.annotation$peak.annotation[peak.te == "DNA_transposon"])
+table(ll.20.peak.annotation$peak.annotation[peak.te == "LTR_transposon"])
+table(ll.20.peak.annotation$peak.annotation[peak.te == "Unclassified_transposon"])
+
+table(ll.20.peak.annotation$peak.annotation)
+
+(table(ll.20.peak.annotation$peak.annotation[peak.te == "DNA_transposon"])["intergenic"] +
+table(ll.20.peak.annotation$peak.annotation[peak.te == "LTR_transposon"])["intergenic"] +
+table(ll.20.peak.annotation$peak.annotation[peak.te == "Unclassified_transposon"])["intergenic"]) / table(ll.20.peak.annotation$peak.annotation)["intergenic"]
+
+ll.20.peak.annotation <- cbind(ll.20.peak.annotation,peak.te)
+write.table(x = ll.20.peak.annotation,file = "tables/H3K27me3_LL_20C_peak_annotation.tsv",quote = F,sep = "\t",row.names = F)
+```
+
+H3K27me3 is only partially associated with Transposable Elements. More than 81% of the peaks did not overlap with any TE. Only 1.5%, 0.6% and 17.3% of the H3K27me3 peaks were found overlapping with DNA, LTR and unclassified transposons respectively. Most TE were neither associated with H3K27me3 peaks, specifically 7 out of 35 (20%) DNA transposons, 3 out of 69 (4.3%) LTR transposons and 83 out of 988 unclassified transposons were H3K27me3 marked. Most H3K27me3 marks located at intergenic regions (81.6%) were associated with transposons    
+

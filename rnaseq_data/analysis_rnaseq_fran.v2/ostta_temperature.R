@@ -71,7 +71,7 @@ normalyzer(jobName = "temperature_normalization",designPath = "normalyzer_design
 normalized.gene.expression <- read.table(file="temperature_normalization/Quantile-normalized.txt", header=T)
 head(normalized.gene.expression)
 rownames(normalized.gene.expression) <- gene.names
- 
+
 ## Boxplot representing normalized global gene expression over all samples
 boxplot(normalized.gene.expression, outline=F,col=rainbow(12),
         ylab="log2(FPKM + 1)",cex.lab=1.5,las=2)
@@ -113,14 +113,15 @@ png(filename = "pca.png")
 fviz_pca_ind(res.pca, col.ind = experimental.design[,2], 
              pointsize=2, pointshape=21,fill="black",
              repel = TRUE, 
-             addEllipses = T,
+             addEllipses = F,
              legend.title="Temperature",
              title="",
-             show_legend=TRUE,show_guide=TRUE) + scale_color_manual(values=c("#00FFFF","#6699FF", "#CC33FF","#FF0000"))
+             show_legend=TRUE,show_guide=TRUE) #+ scale_color_manual(values=c("#00FFFF","#6699FF", "#CC33FF","#FF0000"))
 dev.off()
 
 expression.matrix <- 2^normalized.gene.expression - 1
 
+write.table(x = expression.matrix,file = "ostta_temperature_gene_expression.tsv",quote = F,sep = "\t")
 
 gene.expression.barplot <- function(gene,expression.matrix)
 {
