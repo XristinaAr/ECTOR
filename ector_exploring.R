@@ -259,7 +259,7 @@ genes <- k27.gene.body
 length(genes)
 
 
-
+library(rtracklayer)
 bw.file <- import.bw(con = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw")
 bw.file <- as.data.frame(bw.file)
 head(bw.file)
@@ -642,6 +642,19 @@ enrichment.df[enrichment.df$Count == 21,]
 enrichment.df[enrichment.df$Count == 20,]
 enrichment.df[enrichment.df$Count == 18,]
 
+enrichment.df[enrichment.df$Description == "cilium organization",]
+enrichment.df[enrichment.df$Description == "locomotion",]
+
+
+enrichment.df[enrichment.df$Description == "regulation of gene expression",]
+
+
+barplot(c(gene.expression.20["ostta14g00070"],gene.expression.10["ostta14g00070"]))
+barplot(c(gene.expression.20["ostta06g04460"],gene.expression.10["ostta06g04460"]))
+
+gene.id <- "ostta11g02490"
+barplot(c(gene.expression.20[gene.id],gene.expression.10[gene.id]))
+
 jpeg(filename = "images/h3k27me3_treeplot.jpg",res = 250,width = 3600,height = 2000)
 treeplot(x = pairwise_termsim(enrichment))
 dev.off()
@@ -805,3 +818,1512 @@ treemap(
 dev.off()
 
 
+
+k4.ll.20
+ll.20
+
+
+
+
+gene.expression.10 <- 
+ (temp.gene.expression$T10_1 + 
+   temp.gene.expression$T10_2 + 
+   temp.gene.expression$T10_3)/3
+
+gene.expression.20[""]
+
+count.1 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp20c/k27_20_ll_chip_1_counts.bed",header = F,sep = "\t")
+count.2 <- read.table(file="chipseq_data/bed_data/h3k27me3/temp20c/k27_20_ll_chip_2n_counts.bed",header = F,sep = "\t")
+count.3 <- read.table(file="chipseq_data/bed_data/h3k27me3/temp20c/k27_20_ll_chip_3n_counts.bed",header = F,sep = "\t")
+count.1 <- count.1[,c(1:3,10)]
+count.2 <- count.2[,c(1:3,10)]
+count.3 <- count.3[,c(1:3,10)]
+
+mapped.reads.k27.20c.1 <- 3146662/1E6 
+mapped.reads.k27.20c.2 <- 5697849/1E6
+mapped.reads.k27.20c.3 <- 5157582/1E6
+
+rpm.1 <- count.1
+rpm.2 <- count.2
+rpm.3 <- count.3
+
+rpm.1[,4] <- rpm.1[,4]/mapped.reads.k27.20c.1
+rpm.2[,4] <- rpm.2[,4]/mapped.reads.k27.20c.2
+rpm.3[,4] <- rpm.3[,4]/mapped.reads.k27.20c.3
+
+
+plot(log2(rpm.1[,4]),log2(rpm.2[,4]))
+plot(log2(rpm.1[,4]),log2(rpm.3[,4]))
+plot(log2(rpm.2[,4]),log2(rpm.3[,4]))
+
+rpm <- rpm.1
+rpm[,4] <- (rpm.1[,4] + rpm.2[,4] + rpm.3[,4])/3
+
+rpkm <- rpm
+rpkm[,4] <- (rpm[,4]/(rpm[,3]-rpm[,2]))
+
+summary(rpkm[,4])
+quantile(rpkm[,4])
+genes.020 <- ll.20.peak.annotation$target.genes[which(rpkm[,4] < 0.20)]
+genes.020 <- genes.020[genes.020 != ""]
+
+genes.030 <- ll.20.peak.annotation$target.genes[which(rpkm[,4] < 0.30)]
+genes.030 <- genes.030[genes.030 != ""]
+genes.030 <- unlist(strsplit(genes.030,split = ","))
+length(genes.030)
+
+genes.060 <- ll.20.peak.annotation$target.genes[which(rpkm[,4] < 0.60 & rpkm[,4] > 0.30)]
+genes.060 <- genes.060[genes.060 != ""]
+genes.060 <- unlist(strsplit(genes.060,split = ","))
+length(genes.060)
+
+genes.090 <- ll.20.peak.annotation$target.genes[which(rpkm[,4] > 0.60)]
+genes.090 <- genes.090[genes.090 != ""]
+genes.090 <- unlist(strsplit(genes.090,split = ","))
+length(genes.090)
+
+
+boxplot(gene.expression.20[genes.030],
+        gene.expression.20[genes.060],
+        gene.expression.20[genes.090],outline=F)
+
+
+
+genes.020 <- ll.20.peak.annotation$target.genes[which(rpkm[,4] < 0.20)]
+genes.020 <- genes.020[genes.020 != ""]
+genes.020 <- unlist(strsplit(genes.020,split = ","))
+length(genes.020)
+
+genes.030 <- ll.20.peak.annotation$target.genes[which(rpkm[,4] < 0.30)]
+genes.030 <- genes.030[genes.030 != ""]
+genes.030 <- unlist(strsplit(genes.030,split = ","))
+length(genes.030)
+
+genes.040 <- ll.20.peak.annotation$target.genes[which(rpkm[,4] < 0.40 & rpkm[,4] >= 0.30)]
+genes.040 <- genes.040[genes.040 != ""]
+genes.040 <- unlist(strsplit(genes.040,split = ","))
+length(genes.040)
+
+
+genes.050 <- ll.20.peak.annotation$target.genes[which(rpkm[,4] < 0.50 & rpkm[,4] >= 0.40)]
+genes.050 <- genes.050[genes.050 != ""]
+genes.050 <- unlist(strsplit(genes.050,split = ","))
+length(genes.050)
+
+genes.060 <- ll.20.peak.annotation$target.genes[which(rpkm[,4] >= 0.60)]
+genes.060 <- genes.060[genes.060 != ""]
+genes.060 <- unlist(strsplit(genes.060,split = ","))
+length(genes.060)
+
+
+genes.m060 <- ll.20.peak.annotation$target.genes[which(rpkm[,4] >= 0.60)]
+genes.m060 <- genes.m060[genes.m060 != ""]
+genes.m060 <- unlist(strsplit(genes.m060,split = ","))
+length(genes.m060)
+
+
+
+boxplot(gene.expression.20[genes.030],
+        gene.expression.20[genes.040],
+        gene.expression.20[genes.050],
+        gene.expression.20[genes.060]
+        #gene.expression.20[genes.m060]
+        ,outline=F)
+
+quantile(rpkm[ll.20.peak.annotation$peak.annotation == "gene.body",4])
+
+genes.040 <- ll.20.peak.annotation$target.genes[which(rpkm[,4] < 0.40)]
+genes.040 <- genes.040[genes.040 != ""]
+genes.040 <- unlist(strsplit(genes.040,split = ","))
+genes.040 <- intersect(genes.040, k27.gene.body)
+length(genes.040)
+
+genes.050 <- ll.20.peak.annotation$target.genes[which(rpkm[,4] < 0.60 & rpkm[,4] >= 0.40)]
+genes.050 <- genes.050[genes.050 != ""]
+genes.050 <- unlist(strsplit(genes.050,split = ","))
+genes.050 <- intersect(genes.050, k27.gene.body)
+length(genes.050)
+
+genes.060 <- ll.20.peak.annotation$target.genes[which(rpkm[,4] < 0.80 & rpkm[,4] >= 0.60)]
+genes.060 <- genes.060[genes.060 != ""]
+genes.060 <- unlist(strsplit(genes.060,split = ","))
+genes.060 <- intersect(genes.060, k27.gene.body)
+length(genes.060)
+
+# genes.m050 <- ll.20.peak.annotation$target.genes[which(rpkm[,4] >= 0.8)]
+# genes.m050 <- genes.m050[genes.m050 != ""]
+# genes.m050 <- unlist(strsplit(genes.m050,split = ","))
+# genes.m050 <- intersect(genes.m050, k27.gene.body)
+# length(genes.m050)
+
+gene.set <- k27.gene.body
+boxplot(gene.expression.20[intersect(genes.040,gene.set)],
+        gene.expression.20[intersect(genes.050,gene.set)],
+        gene.expression.20[intersect(genes.060,gene.set)]#,
+#        gene.expression.20[intersect(genes.m050,gene.set)]
+#        gene.expression.20[genes.m050]
+        ,outline=F)
+
+
+quantile(rpkm[ll.20.peak.annotation$peak.annotation == "TSS",4])
+
+genes.1 <- ll.20.peak.annotation$target.genes[which(rpkm[,4] < 0.25)]
+genes.1 <- genes.1[genes.1 != ""]
+genes.1 <- unlist(strsplit(genes.1,split = ","))
+genes.1 <- intersect(genes.1, k27.tss)
+length(genes.1)
+
+genes.2 <- ll.20.peak.annotation$target.genes[which(rpkm[,4] < 0.4 & rpkm[,4] >= 0.25)]
+genes.2 <- genes.2[genes.2 != ""]
+genes.2 <- unlist(strsplit(genes.2,split = ","))
+genes.2 <- intersect(genes.2, k27.internal.gene.body)
+length(genes.2)
+
+genes.3 <- ll.20.peak.annotation$target.genes[which(rpkm[,4] >= 0.4)]
+genes.3 <- genes.3[genes.3 != ""]
+genes.3 <- unlist(strsplit(genes.3,split = ","))
+genes.3 <- intersect(genes.3, k27.tss)
+length(genes.3)
+
+gene.set <- k27.tss
+boxplot(gene.expression.20[intersect(genes.1,gene.set)],
+        gene.expression.20[intersect(genes.2,gene.set)],
+        gene.expression.20[intersect(genes.3,gene.set)]#,
+        #gene.expression.20[intersect(genes.m050,gene.set)]
+        #gene.expression.20[genes.m060]
+        ,outline=F)
+
+
+
+quantile(rpkm[ll.20.peak.annotation$peak.annotation == "internal.gene.body",4])
+
+genes.018 <- ll.20.peak.annotation$target.genes[which(rpkm[,4] < 0.2)]
+genes.018 <- genes.018[genes.018 != ""]
+genes.018 <- unlist(strsplit(genes.018,split = ","))
+genes.018 <- intersect(genes.018, k27.internal.gene.body)
+length(genes.018)
+
+genes.020 <- ll.20.peak.annotation$target.genes[which(rpkm[,4] < 0.3 & rpkm[,4] >= 0.2)]
+genes.020 <- genes.020[genes.020 != ""]
+genes.020 <- unlist(strsplit(genes.020,split = ","))
+genes.020 <- intersect(genes.020, k27.internal.gene.body)
+length(genes.020)
+
+
+genes.030 <- ll.20.peak.annotation$target.genes[which(rpkm[,4] < 0.3 & rpkm[,4] >= 0.20)]
+genes.030 <- genes.030[genes.030 != ""]
+genes.030 <- unlist(strsplit(genes.030,split = ","))
+genes.030 <- intersect(genes.030, k27.internal.gene.body)
+length(genes.030)
+
+genes.060 <- ll.20.peak.annotation$target.genes[which(rpkm[,4] < 0.60 & rpkm[,4] >= 0.50)]
+genes.060 <- genes.060[genes.060 != ""]
+genes.060 <- unlist(strsplit(genes.060,split = ","))
+genes.060 <- intersect(genes.060, k27.gene.body)
+length(genes.060)
+
+genes.m050 <- ll.20.peak.annotation$target.genes[which(rpkm[,4] >= 0.50)]
+genes.m050 <- genes.m050[genes.m060 != ""]
+genes.m050 <- unlist(strsplit(genes.m050,split = ","))
+genes.m050 <- intersect(genes.m050, k27.gene.body)
+length(genes.m050)
+
+
+gene.set <- k27.internal.gene.body
+boxplot(gene.expression.20[intersect(genes.018,gene.set)],
+ gene.expression.20[intersect(genes.020,gene.set)],
+        gene.expression.20[intersect(genes.030,gene.set)]#,
+        #gene.expression.20[intersect(genes.m050,gene.set)]
+        #gene.expression.20[genes.m060]
+        ,outline=F)
+
+
+
+
+
+quantile(rpkm[,4])
+
+
+plot(log2(rpkm[,4]),log2(gene.expression.20[ll.20.peak.annotation$target.genes]+1))
+plot(rpkm[,4],log2(gene.expression.20[ll.20.peak.annotation$target.genes]+1),pch=19,cex=0.5,xlim=c(0,1))
+summary(lm(log2(gene.expression.20[ll.20.peak.annotation$target.genes]+1) ~ rpkm[,4]))
+abline(lm(log2(gene.expression.20[ll.20.peak.annotation$target.genes]+1) ~ rpkm[,4]))
+
+
+
+plot(rpkm[ll.20.peak.annotation$peak.annotation == "internal.gene.body",4],
+     log2(gene.expression.20[ll.20.peak.annotation$target.genes[ll.20.peak.annotation$peak.annotation == "internal.gene.body"]
+]+1),pch=19,cex=0.5,xlim=c(0,1),main="internal")
+
+plot(rpkm[ll.20.peak.annotation$peak.annotation == "gene.body",4],
+     log2(gene.expression.20[ll.20.peak.annotation$target.genes[ll.20.peak.annotation$peak.annotation == "gene.body"]
+     ]+1),pch=19,cex=0.5,xlim=c(0,1), main="gene_body")
+
+
+plot(rpkm[ll.20.peak.annotation$peak.annotation == "TSS",4],
+     log2(gene.expression.20[ll.20.peak.annotation$target.genes[ll.20.peak.annotation$peak.annotation == "TSS"]
+     ]+1),pch=19,cex=0.5, main = "TSS")
+
+
+library(rtracklayer)
+bw.file.name.1 <- "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw"
+bw.data.1 <- import.bw(con = bw.file.name.1)
+bw.data.1 <- as.data.frame(bw.data.1)
+
+bw.file.name.2 <- "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw"
+bw.data.2 <- import.bw(con = bw.file.name.2)
+bw.data.2 <- as.data.frame(bw.data.2)
+
+bw.file.name.3 <- "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw"
+bw.data.3 <- import.bw(con = bw.file.name.3)
+bw.data.3 <- as.data.frame(bw.data.3)
+
+
+peak.signal <- vector(mode = "numeric",length = nrow(ll.20))
+for(i in 1:nrow(ll.20))
+{
+ print(i)
+ current.peak <- ll.20[i,]
+ 
+ current.peak.chr <- current.peak[[1]]
+ current.peak.start <- current.peak[[2]]
+ current.peak.end <- current.peak[[3]]
+ 
+ peak.signal.1 <- max(subset(bw.data.1, seqnames == current.peak.chr & 
+                              start >= current.peak.start & 
+                              end <= current.peak.end)[["score"]])
+ 
+ peak.signal.2 <- max(subset(bw.data.2, seqnames == current.peak.chr & 
+                              start >= current.peak.start & 
+                              end <= current.peak.end)[["score"]])
+ 
+ peak.signal.3 <- max(subset(bw.data.3, seqnames == current.peak.chr & 
+                              start >= current.peak.start & 
+                              end <= current.peak.end)[["score"]])
+ 
+ peak.signal[i] <- mean(c(peak.signal.1,peak.signal.2,peak.signal.3))
+}
+
+
+
+plot(log2(peak.signal),log2(gene.expression.20[ll.20.peak.annotation$target.genes]+1),pch=19,cex=0.6)
+summary(lm(log2(gene.expression.20[ll.20.peak.annotation$target.genes]+1) ~ peak.signal))
+abline(lm(log2(gene.expression.20[ll.20.peak.annotation$target.genes]+1) ~ peak.signal))
+
+
+plot(log2(peak.signal[ll.20.peak.annotation$peak.annotation == "gene.body"]),
+     log2(gene.expression.20[ll.20.peak.annotation$target.genes[ll.20.peak.annotation$peak.annotation == "gene.body"]
+     ]+1),pch=19,cex=0.5, main="gene_body")
+summary(lm(log2(gene.expression.20[ll.20.peak.annotation$target.genes[ll.20.peak.annotation$peak.annotation == "gene.body"]
+]+1) ~ log2(peak.signal[ll.20.peak.annotation$peak.annotation == "gene.body"])))
+abline(lm(log2(gene.expression.20[ll.20.peak.annotation$target.genes[ll.20.peak.annotation$peak.annotation == "gene.body"]
+]+1) ~ log2(peak.signal[ll.20.peak.annotation$peak.annotation == "gene.body"])))
+
+
+plot(log2(peak.signal[ll.20.peak.annotation$peak.annotation == "TSS"]),
+     log2(gene.expression.20[ll.20.peak.annotation$target.genes[ll.20.peak.annotation$peak.annotation == "TSS"]
+     ]+1),pch=19,cex=0.5, main="TSS")
+summary(lm(log2(gene.expression.20[ll.20.peak.annotation$target.genes[ll.20.peak.annotation$peak.annotation == "TSS"]
+]+1) ~ log2(peak.signal[ll.20.peak.annotation$peak.annotation == "TSS"])))
+abline(lm(log2(gene.expression.20[ll.20.peak.annotation$target.genes[ll.20.peak.annotation$peak.annotation == "TSS"]
+]+1) ~ log2(peak.signal[ll.20.peak.annotation$peak.annotation == "TSS"])))
+
+
+
+
+k4.ll.20 <- read.table(file="chipseq_data/bed_data/h3k4me3/h3k4me3_ll_20.bed",
+                       header = F)
+
+k4.ll.20 <- k4.ll.20[,1:3]
+
+nrow(k4.ll.20)
+
+jpeg(filename = "images/h3k4me3_genome_wide_distribution_ll_20.jpg",res = 300,width = 900,height = 900)
+par(mar=c(0,0,0,0))
+plot(x=c(0,max.chr.len), y=c(0,4*number.chrs), col = "white", xlab = "", ylab = "", axes=F)  
+
+for(i in 1:number.chrs)
+{
+ polygon(x = c(0, chr.lens[i], chr.lens[i], 0),   
+         y = c(4*i+1, 4*i+1, 4*i-1, 4*i-1),    
+         col = "white") 
+}
+
+for(i in 1:nrow(k4.ll.20))
+{
+ current.chr <- k4.ll.20[i,1]
+ current.start <- k4.ll.20[i,2]
+ current.end <- k4.ll.20[i,3]
+ 
+ current.line <- (20:1)[current.chr]
+ 
+ polygon(x = c(current.start, current.end, current.end, current.start),   
+         y = c(4*current.line+1, 4*current.line+1, 4*current.line-1, 4*current.line-1),    
+         col = "darkorange",border="darkorange")
+}
+dev.off()
+
+
+
+
+
+
+
+
+
+
+
+h3k4me3.peaks.len <- k4.ll.20$V3 - k4.ll.20$V2
+sum(h3k4me3.peaks.len)/sum(chr.lens)
+k4.ll.20 <- cbind(k4.ll.20,h3k4me3.peaks.len)
+colnames(k4.ll.20) <- c("chr","start","end","length")
+head(k4.ll.20)
+number.of.h3k4.peaks.chr <- vector(mode = "numeric",length = 20)
+k4.peaks.len.chr <- vector(mode = "numeric",length = 20)
+
+for(i in 1:20)
+{
+ number.of.h3k4.peaks.chr[i] <- nrow(subset(k4.ll.20, chr == i))
+ k4.peaks.len.chr[i] <- sum(subset(k4.ll.20, chr == i)[,4]) 
+}
+
+percentage.chr.k4 <- k4.peaks.len.chr/rev(chr.lens)
+
+k4.z.scores <- (percentage.chr.k4 - mean(percentage.chr.k4))/sd(percentage.chr.k4)
+
+which(k4.z.scores > 2.5)
+which(k4.z.scores < -2.5)
+
+p.vals <- pnorm((percentage.chr.k4 - mean(percentage.chr.k4[-20]))/sd(percentage.chr.k4[-20]),
+                lower.tail = F)
+
+p.vals
+
+values.for.colors <- round(-log10(p.vals)*40+1)
+typeof(values.for.colors)
+values.for.colors[20] <- 100
+length(values.for.colors)
+white.darkorange.palette <- colorRampPalette(c('white','darkorange'))
+white.to.darkorange <- white.darkorange.palette(100)
+
+white.to.darkorange[values.for.colors]
+
+jpeg(filename = "images/h3k4me3_chr_barplot_ll_20.jpg",res = 300,width = 1800,height = 900)
+barplot(100*percentage.chr.k4,border="black",names.arg = paste0("Chr",1:20),las=2,col=white.darkorange.palette(100)[values.for.colors]
+)
+abline(h = 100*mean(percentage.chr.k4[-20]),lty=5)
+dev.off()
+
+
+
+
+target.genes <- vector(mode = "character",length = nrow(k4.ll.20))
+peak.annotation <- vector(mode = "character",length = nrow(k4.ll.20))
+i <- 1
+for(i in 1:nrow(k4.ll.20))
+{
+ current.chr <- k4.ll.20[i,1]
+ current.start <- k4.ll.20[i,2]
+ current.end <- k4.ll.20[i,3]
+ 
+ complete.gene.body <- subset(ostta.genes, 
+                              seqnames == current.chr & 
+                               start >= current.start & 
+                               end <= current.end)
+ 
+ overlap.tss.pos.strand <- subset(ostta.genes, 
+                                  seqnames == current.chr & 
+                                   start >= current.start & start <= current.end & 
+                                   strand == "+")
+ 
+ overlap.tss.neg.strand <- subset(ostta.genes, 
+                                  seqnames == current.chr & 
+                                   end >= current.start & end <= current.end & 
+                                   strand == "-")
+ 
+ overlap.tes.pos.strand <- subset(ostta.genes, 
+                                  seqnames == current.chr & 
+                                   end >= current.start & end <= current.end & 
+                                   strand == "+")
+ 
+ overlap.tes.neg.strand <- subset(ostta.genes, 
+                                  seqnames == current.chr & 
+                                   start >= current.start & start <= current.end & 
+                                   strand == "-")
+ 
+ inside.gene.body <- subset(ostta.genes, seqnames == current.chr & 
+                             start <= current.start & end >= current.end)
+ 
+ 
+ if(nrow(complete.gene.body) > 0)
+ {
+  target.genes[i] <- paste(unlist(complete.gene.body$gene_id),collapse = ",")
+  peak.annotation[i] <- "gene.body"
+ } else if((nrow(overlap.tss.pos.strand) > 0) | (nrow(overlap.tss.neg.strand) > 0))
+ {
+  target.genes[i] <- paste(c(unlist(overlap.tss.pos.strand$gene_id),
+                             unlist(overlap.tss.neg.strand$gene_id)),collapse = ",")
+  peak.annotation[i] <- "TSS"
+ } else if(nrow(overlap.tes.pos.strand) > 0)
+ {
+  target.genes[i] <- paste(unlist(overlap.tes.pos.strand$gene_id),collapse = ",")
+  peak.annotation[i] <- "TES"
+ } else if(nrow(overlap.tes.neg.strand) > 0)
+ {
+  target.genes[i] <- paste(unlist(overlap.tes.neg.strand$gene_id),collapse = ",")
+  peak.annotation[i] <- "TES"
+ } else if(nrow(inside.gene.body) > 0)
+ {
+  target.genes[i] <- paste(unlist(inside.gene.body$gene_id),collapse = ",")
+  peak.annotation[i] <- "internal.gene.body"
+ } else
+ {
+  peak.annotation[i] <- "intergenic"
+ }
+}
+
+freq.peak.annotation <- table(peak.annotation)
+jpeg(filename = "images/h3k4me3_pie_chart_ll_20.jpg",res = 300,width = 900,height = 900)
+par(mar=c(0,0,0,0))
+pie(freq.peak.annotation[c("gene.body",
+                           "internal.gene.body",
+                           "TSS", 
+                           "TES",
+                           "intergenic")],
+    labels = c("Full Gene Body", 
+               "Gene Body", 
+               "TSS", 
+               "TES", 
+               "Intergenic"),
+    clockwise = T,border = "black",col=c("blue","cyan","green","red","grey"))
+dev.off()
+
+percentage.freq.peak.annotation <- 100*freq.peak.annotation/sum(freq.peak.annotation)
+
+
+percentage.freq.peak.annotation["gene.body"] +
+ percentage.freq.peak.annotation["internal.gene.body"]
+
+percentage.freq.peak.annotation
+
+k4.ll.20.peak.annotation <- cbind(k4.ll.20[,1:3],data.frame(peak.annotation,target.genes))
+
+head(k4.ll.20.peak.annotation)
+
+write.table(x = k4.ll.20.peak.annotation,file = "tables/H3K4me3_LL_20C_peak_annotation.tsv",quote = F,sep = "\t",row.names = F)
+
+all.k4.genes <- (unlist(sapply(X =k4.ll.20.peak.annotation$target.genes,
+                                FUN = function(x) {strsplit(x,",")[[1]]})))
+names(all.k4.genes) <- NULL
+length(all.k4.genes)
+length(all.k4.genes)/7668
+
+k4.k27.genes <- intersect(all.k4.genes, all.k27.genes)
+
+length(k4.k27.genes)/length(all.k4.genes)
+length(k4.k27.genes)/length(all.k27.genes)
+
+
+
+
+
+
+## Genes with their entire gene body marked
+k4.gene.body <- (unlist(sapply(X = subset(k4.ll.20.peak.annotation, 
+                                          peak.annotation == "gene.body")[["target.genes"]],
+                                FUN = function(x) {strsplit(x,",")[[1]]})))
+names(k4.gene.body) <- NULL
+length(k4.gene.body)
+
+## Genes with H3K27 inside their gene body with no overlap
+## in the TSS or TES.
+k4.internal.gene.body <- (unlist(sapply(X = subset(k4.ll.20.peak.annotation, 
+                                                   peak.annotation == "internal.gene.body")[["target.genes"]],
+                                         FUN = function(x) {strsplit(x,",")[[1]]})))
+names(k4.internal.gene.body) <- NULL
+length(k4.internal.gene.body)
+
+## Genes with H3K27me3 overlapping their TSS
+k4.tss <- (unlist(sapply(X = subset(k4.ll.20.peak.annotation, 
+                                    peak.annotation == "TSS")[["target.genes"]],
+                          FUN = function(x) {strsplit(x,",")[[1]]})))
+names(k4.tss) <- NULL
+length(k4.tss)
+
+## Genes with H3K27me3 overlapping their TES
+k4.tes <- (unlist(sapply(X = subset(k4.ll.20.peak.annotation, 
+                                    peak.annotation == "TES")[["target.genes"]],
+                          FUN = function(x) {strsplit(x,",")[[1]]})))
+names(k4.tes) <- NULL
+length(k4.tes)
+
+metageneplot.data.k4.gene.body.1 <- 
+ metageneplot(gene.names = k4.gene.body,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k4me3/temp20/h3k4me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k4.gene.body.1 <- 
+ apply(X = metageneplot.data.k4.gene.body.1,
+       MARGIN = 2,
+       FUN = median,na.rm = T)
+
+metageneplot.data.k4.gene.body.2 <- 
+ metageneplot(gene.names = k4.gene.body,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k4me3/temp20/h3k4me3_20_chip_2.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k4.gene.body.2 <- 
+ apply(X = metageneplot.data.k4.gene.body.2,
+       MARGIN = 2,
+       FUN = median,na.rm = T)
+
+metageneplot.data.k4.gene.body.3 <- 
+ metageneplot(gene.names = k4.gene.body,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k4me3/temp20/h3k4me3_20_chip_3.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k4.gene.body.3 <- 
+ apply(X = metageneplot.data.k4.gene.body.3,
+       MARGIN = 2,
+       FUN = median,na.rm = T)
+
+median.metageneplot.data.k4.gene.body <- (median.metageneplot.data.k4.gene.body.1 + 
+                                           median.metageneplot.data.k4.gene.body.2 + 
+                                           median.metageneplot.data.k4.gene.body.3)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k4.gene.body,spar = 0.5),
+     type="l",col="blue",lwd=3,ylim=c(0,70),axes=F,xlab="",ylab="")
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+
+
+metageneplot.data.k4.internal.gene.body.1 <- 
+ metageneplot(gene.names = k4.internal.gene.body,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k4me3/temp20/h3k4me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k4.internal.gene.body.1 <- 
+ apply(X = metageneplot.data.k4.internal.gene.body.1,
+       MARGIN = 2,
+       FUN = median,na.rm = T)
+
+
+metageneplot.data.k4.internal.gene.body.2 <- 
+ metageneplot(gene.names = k4.internal.gene.body,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k4me3/temp20/h3k4me3_20_chip_2.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k4.internal.gene.body.2 <- 
+ apply(X = metageneplot.data.k4.internal.gene.body.2,
+       MARGIN = 2,
+       FUN = median,na.rm = T)
+
+
+metageneplot.data.k4.internal.gene.body.3 <- 
+ metageneplot(gene.names = k4.internal.gene.body,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k4me3/temp20/h3k4me3_20_chip_3.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k4.internal.gene.body.3 <- 
+ apply(X = metageneplot.data.k4.internal.gene.body.3,
+       MARGIN = 2,
+       FUN = median,na.rm = T)
+
+median.metageneplot.data.k4.internal.gene.body <- (median.metageneplot.data.k4.internal.gene.body.1 +
+                                                    median.metageneplot.data.k4.internal.gene.body.2 +
+                                                    median.metageneplot.data.k4.internal.gene.body.3)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k4.internal.gene.body,spar = 0.5),
+     type="l",col="cyan",lwd=3,ylim=c(0,10),axes=F,xlab="",ylab="")
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+
+
+
+
+metageneplot.data.k4.tss.1 <- 
+ metageneplot(gene.names = k4.tss,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k4me3/temp20/h3k4me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k4.tss.1 <- 
+ apply(X = metageneplot.data.k4.tss.1,
+       MARGIN = 2,
+       FUN = median,na.rm = T)
+
+metageneplot.data.k4.tss.2 <- 
+ metageneplot(gene.names = k4.tss,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k4me3/temp20/h3k4me3_20_chip_2.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k4.tss.2 <- 
+ apply(X = metageneplot.data.k4.tss.2,
+       MARGIN = 2,
+       FUN = median,na.rm = T)
+
+
+
+metageneplot.data.k4.tss.3 <- 
+ metageneplot(gene.names = k4.tss,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k4me3/temp20/h3k4me3_20_chip_3.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k4.tss.3 <- 
+ apply(X = metageneplot.data.k4.tss.3,
+       MARGIN = 2,
+       FUN = median,na.rm = T)
+
+median.metageneplot.data.k4.tss <- 
+ (median.metageneplot.data.k4.tss.1 + 
+   median.metageneplot.data.k4.tss.2 +
+   median.metageneplot.data.k4.tss.3)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k4.tss,spar = 0.5),
+     type="l",col="green",lwd=3,ylim=c(0,70),axes=F,xlab="",ylab="")
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+
+
+
+
+
+
+metageneplot.data.k4.tes.1 <- 
+ metageneplot(gene.names = k4.tes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k4me3/temp20/h3k4me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k4.tes.1 <- 
+ apply(X = metageneplot.data.k4.tes.1,
+       MARGIN = 2,
+       FUN = median,na.rm = T)
+
+
+
+metageneplot.data.k4.tes.2 <- 
+ metageneplot(gene.names = k4.tes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k4me3/temp20/h3k4me3_20_chip_2.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k4.tes.2 <- 
+ apply(X = metageneplot.data.k4.tes.2,
+       MARGIN = 2,
+       FUN = median,na.rm = T)
+
+
+metageneplot.data.k4.tes.3 <- 
+ metageneplot(gene.names = k4.tes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k4me3/temp20/h3k4me3_20_chip_3.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k4.tes.3 <- 
+ apply(X = metageneplot.data.k4.tes.3,
+       MARGIN = 2,
+       FUN = median,na.rm = T)
+
+
+median.metageneplot.data.k4.tes <- 
+ (median.metageneplot.data.k4.tes.1 + 
+   median.metageneplot.data.k4.tes.2 +
+   median.metageneplot.data.k4.tes.3)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k4.tes,spar = 0.5),
+     type="l",col="red",lwd=3,ylim=c(0,20),axes=F,xlab="",ylab="")
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+
+
+jpeg(filename = "images/h3k4me3_metageneplots.jpg",res = 250,width = 900,height = 900)
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k4.gene.body,spar = 0.5),
+     type="l",col="blue",lwd=3,ylim=c(0,80),axes=F,xlab="",ylab="")
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k4.internal.gene.body,spar = 0.5),
+      type="l",col="cyan",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k4.tss,spar = 0.5),
+      type="l",col="green",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k4.tes,spar = 0.5),
+      type="l",col="red",lwd=3)
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+dev.off()
+
+
+jpeg(filename = "images/h3k24me3_expression_barplot_different_genes.jpg",res = 250,width = 600,height = 1000)
+boxplot(gene.expression.20[k4.gene.body],
+        gene.expression.20[k4.tss],
+        gene.expression.20[k4.internal.gene.body],
+        gene.expression.20[k4.tes],
+        gene.expression.20[non.k4.genes],
+        col=c("blue","green","cyan","red","grey"),
+        outline=F)
+dev.off()
+
+
+
+
+library(clusterProfiler)
+library(enrichplot)
+library(org.Otauriv5.eg.db)
+enrichment <- enrichGO(gene = all.k4.genes, pvalueCutoff = 0.05,qvalueCutoff = 0.05,
+                       OrgDb = org.Otauriv5.eg.db,
+                       ont = "BP", 
+                       keyType = "GID")
+enrichment.df <- as.data.frame(enrichment)
+
+write.table(x = enrichment.df, file = "go_enrichment_k4.tsv",quote = F,sep = "\t",row.names = F)
+
+enrichment.df[which.max(enrichment.df$Count),]
+
+sort(enrichment.df$Count,decreasing = T)[10:20]
+
+enrichment.df[enrichment.df$Count == 26,]
+enrichment.df[enrichment.df$Count == 24,]
+enrichment.df[enrichment.df$Count == 22,]
+enrichment.df[enrichment.df$Count == 21,]
+enrichment.df[enrichment.df$Count == 20,]
+enrichment.df[enrichment.df$Count == 18,]
+
+enrichment.df[enrichment.df$Description == "positive regulation of biological process",]
+enrichment.df[enrichment.df$Description == "locomotion",]
+
+
+enrichment.df[enrichment.df$Description == "regulation of gene expression",]
+
+
+barplot(c(gene.expression.20["ostta14g00070"],gene.expression.10["ostta14g00070"]))
+barplot(c(gene.expression.20["ostta06g04460"],gene.expression.10["ostta06g04460"]))
+
+gene.id <- "ostta11g02490"
+barplot(c(gene.expression.20[gene.id],gene.expression.10[gene.id]))
+
+jpeg(filename = "images/h3k27me3_treeplot.jpg",res = 250,width = 3600,height = 2000)
+treeplot(x = pairwise_termsim(enrichment))
+dev.off()
+
+
+jpeg(filename = "images/h3k27me3_emapplot.jpg",res = 250,width = 2000,height = 2000)
+emapplot(pairwise_termsim(enrichment))
+dev.off()
+
+
+cnetplot(pairwise_termsim(enrichment))
+
+barplot(enrichment)
+
+
+library(treemap) 								# treemap package by Martijn Tennekes
+
+# Set the working directory if necessary
+# setwd("C:/Users/username/workingdir");
+
+# --------------------------------------------------------------------------
+# Here is your data from Revigo. Scroll down for plot configuration options.
+
+revigo.names <- c("term_ID","description","frequency","value","uniqueness","dispensability","representative");
+revigo.data <- rbind(c("GO:0006412","translation",4.38869169324396,41.635159951405136,0.6875841543305287,0,"translation"),
+                     c("GO:0002181","cytoplasmic translation",0.3974763229665376,8.595948611417302,0.755633504893879,0.6792736,"translation"),
+                     c("GO:0009059","macromolecule biosynthetic process",16.15219652221219,32.13388504723149,0.8406622568296607,0.37915401,"translation"),
+                     c("GO:0043603","amide metabolic process",6.707376287050344,36.45011550587449,0.9109747285969385,0.18706276,"translation"),
+                     c("GO:0009765","photosynthesis, light harvesting",0.02241434707504848,4.839062538560749,0.952328578586525,0.07239153,"photosynthesis, light harvesting"),
+                     c("GO:0015979","photosynthesis",0.228607115192195,7.075542911759376,0.941812778414762,0.0906509,"photosynthesis"),
+                     c("GO:0048518","positive regulation of biological process",4.759580864033397,2.926034087880324,0.8707557167557012,-0,"positive regulation of biological process"),
+                     c("GO:0010557","positive regulation of macromolecule biosynthetic process",2.093180586483937,2.989915809683905,0.7484373322239899,0.27791144,"positive regulation of biological process"),
+                     c("GO:0031323","regulation of cellular metabolic process",14.819661863282441,3.0711442275048717,0.7768013068864807,0.54794604,"positive regulation of biological process"),
+                     c("GO:0140694","non-membrane-bounded organelle assembly",0.7232459602662196,6.425049931933804,0.6134007334542475,0.01308302,"ribosome biogenesis"),
+                     c("GO:0000027","ribosomal large subunit assembly",0.012821578346646382,3.275341540820152,0.6307593041874131,0.61078702,"ribosome biogenesis"),
+                     c("GO:0022613","ribonucleoprotein complex biogenesis",2.5375929564430133,4.856610166214762,0.6332784349267674,0.65931649,"ribosome biogenesis"),
+                     c("GO:0042254","ribosome biogenesis",2.136224808753416,5.364416283328431,0.566141578351784,0.5650077,"ribosome biogenesis"),
+                     c("GO:0070925","organelle assembly",1.3561320812847646,3.9914667506842227,0.6213427911227302,0.65542123,"ribosome biogenesis"),
+                     c("GO:0071826","protein-RNA complex organization",0.6518695497816881,3.3975782710402287,0.7204190675227414,0.36838395,"ribosome biogenesis"));
+
+stuff <- data.frame(revigo.data);
+names(stuff) <- revigo.names;
+
+stuff$value <- as.numeric( as.character(stuff$value) );
+stuff$frequency <- as.numeric( as.character(stuff$frequency) );
+stuff$uniqueness <- as.numeric( as.character(stuff$uniqueness) );
+stuff$dispensability <- as.numeric( as.character(stuff$dispensability) );
+
+# by default, outputs to a PDF file
+jpeg(filename = "images/h3k4me3_revigo_treemap.jpg",res = 300,width = 1400,height = 900)
+
+# check the tmPlot command documentation for all possible parameters - there are a lot more
+treemap(
+ stuff,
+ index = c("representative","description"),
+ vSize = "value",
+ type = "categorical",
+ vColor = "representative",
+ title = "",
+ inflate.labels = TRUE,      # set this to TRUE for space-filling group labels - good for posters
+ lowerbound.cex.labels = 0,   # try to draw as many labels as possible (still, some small squares may not get a label)
+ #bg.labels = "#CCCCCCAA",   # define background color of group labels
+ # "#CCCCCC00" is fully transparent, "#CCCCCCAA" is semi-transparent grey, NA is opaque
+ position.legend = "none"
+)
+
+dev.off()
+
+
+overlap.k4.k27 <- read.table(file="chipseq_data/bed_data/h3k27me3_h3k4me3_ll_20.bed",header=F,sep = "\t",as.is = T)
+
+max(overlap.k4.k27$V3 - overlap.k4.k27$V2)
+summary(overlap.k4.k27$V3 - overlap.k4.k27$V2)
+nrow(overlap.k4.k27)
+
+
+k4.k27.genes <- intersect(all.k27.genes, all.k4.genes)
+summary(gene.expression.20[k4.k27.genes])
+summary(gene.expression.20[all.k4.genes])
+summary(gene.expression.20[all.k27.genes])
+
+
+jpeg(filename = "images/bivalent_expression_barplot.jpg",res = 250,width = 600,height = 1000)
+boxplot(gene.expression.20[all.k27.genes],
+        gene.expression.20[non.k4.k27.genes],
+        gene.expression.20[k4.k27.genes],
+        gene.expression.20[all.k4.genes],
+        col=c("blue","grey",colorRampPalette(c('blue','darkorange'))(3)[2],"darkorange"),outline=F)
+dev.off()
+wilcox.test(x = gene.expression.20[k4.k27.genes], y = gene.expression.20[non.k4.k27.genes])
+
+non.k4.k27.genes <- intersect(non.k27.genes,non.k4.genes)
+
+
+
+sum(gene.expression.20[k4.k27.genes] > 1)/length(k4.k27.genes)
+sum(gene.expression.20[k4.k27.genes] > 10)/length(k4.k27.genes)
+
+sum(gene.expression.20[k4.k27.genes] < 10)/length(k4.k27.genes)
+sum(gene.expression.20[k4.k27.genes] >= 10)/length(k4.k27.genes)
+
+sum(gene.expression.20[all.k27.genes] > 10)/length(all.k27.genes)
+
+
+library(VennDiagram)
+
+jpeg(filename = "images/h3k27me3_h3k4me3_venndiagram.jpg",res = 250,width = 1500,height = 1500)
+grid.newpage()
+draw.pairwise.venn(area1 = length(all.k27.genes),cat.pos = c(180,180),cat.dist = 0.05,
+                   area2 = length(all.k4.genes),
+                   cross.area = length(intersect(all.k27.genes,all.k4.genes)),
+                   lwd = 3,category = c("H3K27me3","H3K4me3"),euler.d = T,
+                   col = c("blue","darkorange"),
+                   fill = c(" blue","darkorange"),alpha = 0.5,
+                   cex = 2,
+                   cat.cex = 2)
+dev.off()
+
+
+head(ll.20.peak.annotation)
+
+table(subset(ll.20.peak.annotation, target.genes %in% k4.k27.genes)[["peak.annotation"]])
+
+k4.k27.gene.annotation <- subset(ll.20.peak.annotation, target.genes %in% k4.k27.genes)
+100*table(k4.k27.gene.annotation[!duplicated(k4.k27.gene.annotation$target.genes),][["peak.annotation"]])/nrow(k4.k27.gene.annotation)
+
+enrichment <- enrichGO(gene = k4.k27.genes, pvalueCutoff = 1,qvalueCutoff = 1,
+                       OrgDb = org.Otauriv5.eg.db,
+                       ont = "BP", 
+                       keyType = "GID")
+enrichment.df <- as.data.frame(enrichment)
+
+max(enrichment.df$Count)
+sort(enrichment.df$Count)
+
+which.max(enrichment.df$Count)
+enrichment.df[3,]
+enrichment.df[enrichment.df$Count == 3,]
+
+
+
+
+gene.expression.20 <- 
+ (temp.gene.expression$T20_1 + 
+   temp.gene.expression$T20_2 + 
+   temp.gene.expression$T20_3)/3
+
+
+genes.1 <- c("ostta09g03765","ostta02g05090","ostta04g03540","ostta12g02370")
+genes.2 <- c("ostta05g01050","ostta16g01360")
+
+genes.k27.k4.expression.1 <- temp.gene.expression[genes.1,c("T20_1","T20_2","T20_3")]
+genes.k27.k4.expression.2 <- temp.gene.expression[genes.2,c("T20_1","T20_2","T20_3")]
+
+
+genes.mean.1 <- apply(X = genes.k27.k4.expression.1,MARGIN = 1,FUN = mean)
+genes.sd.1 <- apply(X = genes.k27.k4.expression.1,MARGIN = 1,FUN = sd)
+
+genes.mean.2 <- apply(X = genes.k27.k4.expression.2,MARGIN = 1,FUN = mean)
+genes.sd.2 <- apply(X = genes.k27.k4.expression.2,MARGIN = 1,FUN = sd)
+
+jpeg(filename = "images/bivalent_example_repressed.jpg",res = 250,width = 1500,height = 1500)
+par(mar=c(8,5,2,2),lwd=1.5)
+xpos <- barplot(genes.mean.1,col=colorRampPalette(c('blue','darkorange'))(3)[2],ylim=c(0,12),las=2)
+arrows(x0 = xpos,y0 = genes.mean.1+genes.sd.1,x1 = xpos, y1 = genes.mean.1-genes.sd.1,code=3,angle=90,length=0.05)
+dev.off()
+
+jpeg(filename = "images/bivalent_example_activated.jpg",res = 250,width = 750,height = 1500)
+par(mar=c(8,5,2,2),lwd=1.5)
+barplot(genes.mean.2,col=colorRampPalette(c('blue','darkorange'))(3)[2],las=2,ylim=c(0,600))
+arrows(x0 = xpos,y0 = genes.mean.2+genes.sd.2,x1 = xpos, y1 = genes.mean.2-genes.sd.2,code=3,angle=90,length=0.05)
+dev.off()
+
+
+library(rtracklayer)
+file.1 <- "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw"
+file.2 <- "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw"
+file.3 <- "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw"
+
+file.1 <- "chipseq_data/bw_data/h3k27me3/ld_20_zt8/h3k27me3_20_zt8_1.bw"
+file.2 <- "chipseq_data/bw_data/h3k27me3/ld_20_zt8/h3k27me3_20_zt8_2.bw"
+file.3 <- "chipseq_data/bw_data/h3k27me3/ld_20_zt8/h3k27me3_20_zt8_1.bw"
+
+
+bw.file.1 <- import.bw(con = file.1)
+bw.data.1 <- as.data.frame(bw.file.1)
+
+bw.file.2 <- import.bw(con = file.2)
+bw.data.2 <- as.data.frame(bw.file.2)
+
+bw.file.3 <- import.bw(con = file.3)
+bw.data.3 <- as.data.frame(bw.file.3)
+
+bw.data.1.1 <- subset(bw.data.1, seqnames==16)
+bw.data.1.2 <- subset(bw.data.2, seqnames==16)
+bw.data.1.3 <- subset(bw.data.3, seqnames==16)
+signal <- vector(mode = "numeric", length = floor(chr.lens[16]/200))
+
+ini <- 1
+stop <- ini + 200
+j <- 1
+while(stop < chr.lens[16])
+{
+ print(j)
+ signal[j] <- (mean(subset(x = bw.data.1.1, 
+                                 start >= ini & 
+                                  end < stop)$score) +
+                       mean(subset(x = bw.data.1.2, 
+                                   start >= ini & 
+                                    end < stop)$score) +
+                       mean(subset(x = bw.data.1.3, 
+                                   start >= ini & 
+                                    end < stop)$score))/3
+ j <- j + 1
+ ini <- stop
+ stop <- ini + 200
+}
+
+
+plot(signal,type="l")
+
+signal.20 <- signal
+signal.zt8 <- signal
+
+plot(signal.20,type="l")
+lines(signal.zt8,type="l",col="lightgrey")
+
+
+cca1.zt0.bw <- as.data.frame(import.bw(con = "/home/fran/Nextcloud2/Microalgas/electra/ostreococcus/chip_rnaseq_cca1_sd_20/CCA1/SD_20oC_ZT0_1_IP.bw"))
+cca1.zt4.bw <- as.data.frame(import.bw(con = "/home/fran/Nextcloud2/Microalgas/electra/ostreococcus/chip_rnaseq_cca1_sd_20/CCA1/SD_20oC_ZT4_1_IP.bw"))
+cca1.zt8.bw <- as.data.frame(import.bw(con = "/home/fran/Nextcloud2/Microalgas/electra/ostreococcus/chip_rnaseq_cca1_sd_20/CCA1/SD_20oC_ZT8_1_IP.bw"))
+cca1.zt12.bw <- as.data.frame(import.bw(con = "/home/fran/Nextcloud2/Microalgas/electra/ostreococcus/chip_rnaseq_cca1_sd_20/CCA1/SD_20oC_ZT12_1_IP.bw"))
+cca1.zt16.bw <- as.data.frame(import.bw(con = "/home/fran/Nextcloud2/Microalgas/electra/ostreococcus/chip_rnaseq_cca1_sd_20/CCA1/SD_20oC_ZT16_1_IP.bw"))
+cca1.zt20.bw <- as.data.frame(import.bw(con = "/home/fran/Nextcloud2/Microalgas/electra/ostreococcus/chip_rnaseq_cca1_sd_20/CCA1/SD_20oC_ZT20_1_IP.bw"))
+
+chr <- 6
+ini <- 198264
+stop <- 199112
+
+current.peak.zt0 <- max(subset(cca1.zt0.bw, seqnames == chr & start >= ini & end <= stop)$score)
+current.peak.zt4 <- max(subset(cca1.zt4.bw, seqnames == chr & start >= ini & end <= stop)$score)
+current.peak.zt8 <- max(subset(cca1.zt8.bw, seqnames == chr & start >= ini & end <= stop)$score)
+current.peak.zt12 <- max(subset(cca1.zt12.bw, seqnames == chr & start >= ini & end <= stop)$score)
+current.peak.zt16 <- max(subset(cca1.zt16.bw, seqnames == chr & start >= ini & end <= stop)$score)
+current.peak.zt20 <- max(subset(cca1.zt20.bw, seqnames == chr & start >= ini & end <= stop)$score)
+
+barplot(height = c(current.peak.zt0,current.peak.zt4,current.peak.zt8,current.peak.zt12, current.peak.zt16, current.peak.zt20))
+
+sd.20.gene.expression <- read.table(file="/home/fran/Nextcloud2/Microalgas/electra/ostreococcus/chip_rnaseq_cca1_sd_20/CCA1/sd_20_gene_expression.txt",header=T,as.is=T)
+head(sd.20.gene.expression)
+current.gene <- "ostta06g02940"
+current.gene <- "ostta07g03440"
+current.gene < "ostta18g01570"
+current.gene <- "ostta13g01820"
+current.gene <- "ostta06g01220"
+
+current.gene.expression <- (unlist(sd.20.gene.expression[current.gene,])[1:6] +
+unlist(sd.20.gene.expression[current.gene,])[7:12] +
+unlist(sd.20.gene.expression[current.gene,])[13:18])/3
+
+plot(current.gene.expression,type="l")
+lines(current.gene.expression,type="l")
+
+
+
+
+
+
+# Entering data 
+zt <- c(0, 4, 8, 12, 16, 20) 
+cca1.binding <- c(current.peak.zt0,current.peak.zt4,current.peak.zt8,current.peak.zt12, current.peak.zt16, current.peak.zt20) 
+current.gene.expression#c(0.3, 0.25, 0.3, 0.5, 0.4, 0.2, 0.6) 
+
+# Creating Data Frame 
+perf <- data.frame(zt, cca1.binding, current.gene.expression) 
+
+# Plotting Charts and adding a secondary axis 
+library(ggplot2) 
+ggp <- ggplot(perf)  +  
+ geom_bar(aes(x=zt, y=cca1.binding),stat="identity", fill="cyan",colour="#006000")+ 
+ geom_line(aes(x=zt, y=3*current.gene.expression),stat="identity",color="red",size=2)+ 
+ labs(title= "CCA1 binding vs Gene Expression", 
+      x="Time (ZT)",y="CCA1 Binding Signal (CPM)")+ 
+ scale_y_continuous(sec.axis=sec_axis(~./3,name="Gene Expression (FPKM)")) 
+ggp 
+
+
+
+mapped.reads.k27.20c.1 <- 3146662/1E6 
+mapped.reads.k27.20c.2 <- 5697849/1E6
+mapped.reads.k27.20c.3 <- 5157582/1E6
+mapped.reads.k27.20c.zt8.1 <- 2254676/1E6 
+mapped.reads.k27.20c.zt8.2 <- 2639017/1E6
+mapped.reads.k27.20c.zt16.1 <- 3605883/1E6
+mapped.reads.k27.20c.zt16.2 <- 3405826/1E6
+
+
+read.counts.k27.temp20c.1 <- read.table(file ="chipseq_data/consensus_counts/h3k27me3_ll_ld_consensus_ll1_counts.bed", header = F, sep = "\t" )
+head(read.counts.k27.temp20c.1)
+nrow(read.counts.k27.temp20c.1)
+cpm.k27.20.1 <- read.counts.k27.temp20c.1$V10 / mapped.reads.k27.20c.1
+
+read.counts.k27.temp20c.2 <- read.table(file = "chipseq_data/consensus_counts/h3k27me3_ll_ld_consensus_ll2_counts.bed", header = F, sep = "\t" )
+head(read.counts.k27.temp20c.2)
+nrow(read.counts.k27.temp20c.2)
+cpm.k27.20.2 <- read.counts.k27.temp20c.2$V10 / mapped.reads.k27.20c.2
+
+read.counts.k27.temp20c.3 <- read.table(file = "chipseq_data/consensus_counts/h3k27me3_ll_ld_consensus_ll3_counts.bed", header = F, sep = "\t" )
+head(read.counts.k27.temp20c.3)
+nrow(read.counts.k27.temp20c.3)
+cpm.k27.20.3 <- read.counts.k27.temp20c.3$V10 / mapped.reads.k27.20c.3
+
+read.counts.k27.20c.zt8.1 <- read.table(file = "chipseq_data/consensus_counts/h3k27me3_ll_ld_consensus_zt8_1_counts.bed", header = F, sep = "\t" )
+head(read.counts.k27.20c.zt8.1)
+nrow(read.counts.k27.20c.zt8.1)
+cpm.k27.zt8.1 <- read.counts.k27.20c.zt8.1$V10 / mapped.reads.k27.20c.zt8.1
+
+read.counts.k27.20c.zt8.2 <- read.table(file = "chipseq_data/consensus_counts/h3k27me3_ll_ld_consensus_zt8_2_counts.bed", header = F, sep = "\t" )
+head(read.counts.k27.20c.zt8.2)
+nrow(read.counts.k27.20c.zt8.2)
+cpm.k27.zt8.2 <- read.counts.k27.20c.zt8.2$V10 / mapped.reads.k27.20c.zt8.2
+
+read.counts.k27.20c.zt16.1 <- read.table(file = "chipseq_data/consensus_counts/h3k27me3_ll_ld_consensus_zt16_1_counts.bed", header = F, sep = "\t" )
+head(read.counts.k27.20c.zt16.1)
+nrow(read.counts.k27.20c.zt16.1)
+cpm.k27.zt16.1 <- read.counts.k27.20c.zt16.1$V10 / mapped.reads.k27.20c.zt16.1
+
+read.counts.k27.20c.zt16.2 <- read.table(file = "chipseq_data/consensus_counts/h3k27me3_ll_ld_consensus_zt16_2_counts.bed", header = F, sep = "\t" )
+head(read.counts.k27.20c.zt16.2)
+nrow(read.counts.k27.20c.zt16.2)
+cpm.k27.zt16.2 <- read.counts.k27.20c.zt16.2$V10 / mapped.reads.k27.20c.zt16.2
+
+head(read.counts.k27.20c.zt16.1[,1:3])
+peak.names <- apply(X = read.counts.k27.20c.zt16.1[,1:3],MARGIN = 1,FUN = paste,collapse="_")
+
+cpm.data.ll.zt8.zt16 <- matrix(data = c(cpm.k27.20.1,cpm.k27.20.2,cpm.k27.20.3,cpm.k27.zt8.1,cpm.k27.zt8.2,cpm.k27.zt16.1,cpm.k27.zt16.2),ncol=7)
+rownames(cpm.data.ll.zt8.zt16) <- peak.names
+colnames(cpm.data.ll.zt8.zt16) <- c("LL20_1","LL20_2","LL20_3","LDZT8_1","LDZT8_2","LDZT16_1","LDZT16_2")
+boxplot(cpm.data.ll.zt8.zt16,outline=F,las=2,
+        col=c(rep("blue",3),rep("yellow",2),rep("grey",2)))
+
+write.table(x = cpm.data.ll.zt8.zt16, file = "cpm_data_ll_zt8_zt16.tsv", 
+            sep = "\t", quote = F,row.names = F)
+
+library(NormalyzerDE)
+
+design <- data.frame(sample=colnames(cpm.data.ll.zt8.zt16),
+                     group=c(rep("LL20",3),rep("LDZT8",2),rep("LDZT16",2)))
+
+write.table(x = design,file = "normalyzer_design_ll20_ldzt8_ldzt16.tsv",quote = F,row.names = F,
+            sep = "\t")
+
+normalyzer(jobName = "ll20_ldzt8_ldzt16",designPath = "normalyzer_design_ll20_ldzt8_ldzt16.tsv",
+           dataPath = "cpm_data_ll_zt8_zt16.tsv",outputDir = ".")
+
+
+normalized.log2.cpm <- read.table(file="ll20_ldzt8_ldzt16/Quantile-normalized.txt", header=T)
+rownames(normalized.log2.cpm) <- peak.names
+head(normalized.log2.cpm)
+
+boxplot(normalized.log2.cpm,outline=F,las=2,
+        col=c(rep("blue",3),rep("yellow",2),rep("grey",2)))
+
+
+plot(x = normalized.log2.cpm[,1],normalized.log2.cpm[,2])
+plot(x = normalized.log2.cpm[,1],normalized.log2.cpm[,3])
+plot(x = normalized.log2.cpm[,2],normalized.log2.cpm[,3])
+
+plot(x = normalized.log2.cpm[,4],normalized.log2.cpm[,5])
+
+plot(x = normalized.log2.cpm[,6],normalized.log2.cpm[,7])
+
+ll.20 <- rowMeans(normalized.log2.cpm[,1:3])
+zt8 <- rowMeans(normalized.log2.cpm[,4:5])
+zt16 <- rowMeans(normalized.log2.cpm[,6:7])
+
+plot(ll.20,zt8,pch=19)
+lines(x=c(0,20),y=c(0,20),col="red",lwd=2)
+
+plot(ll.20,zt16,pch=19)
+lines(x=c(0,20),y=c(0,20),col="red",lwd=2)
+
+plot(zt8,zt16,pch=19)
+lines(x=c(0,20),y=c(0,20),col="red",lwd=2)
+
+which((ll.20 - zt8) > 1)
+which((ll.20 - zt8) < -1)
+
+which((ll.20 - zt16) > 1)
+which((ll.20 - zt16) < -1)
+
+length(which((ll.20 - zt8) > 1))
+length(which((ll.20 - zt16) > 1))
+length(intersect(which((ll.20 - zt8) > 1),which((ll.20 - zt16) > 1)))
+
+library(limma)
+limma.experimental.design <- model.matrix(~ -1+factor(c(1,1,1,2,2,3,3)))
+colnames(limma.experimental.design) <- c("LL20", "LDZT8", "LDZT16")
+
+linear.fit <- lmFit(normalized.log2.cpm, limma.experimental.design)
+
+contrast.matrix <- makeContrasts(LL20-LDZT8, LL20-LDZT16, LDZT16-LDZT8, levels = c("LL20", "LDZT8", "LDZT16"))
+
+contrast.linear.fit <- contrasts.fit(linear.fit, contrast.matrix)
+contrast.results <- eBayes(contrast.linear.fit)                               
+
+ll20.zt8 <- topTable(contrast.results, 
+                     number=nrow(normalized.log2.cpm), 
+                     coef = 1, sort.by = "logFC", )
+head(ll20.zt8)
+
+ll20.zt8.logfc <- ll20.zt8$logFC
+ll20.zt8.q.val <- ll20.zt8$adj.P.Val
+
+activated.ll20.zt8 <- rownames(ll20.zt8)[ll20.zt8.logfc > 1 & ll20.zt8.q.val < 0.05]
+length(activated.ll20.zt8)
+
+repressed.ll20.zt8 <- rownames(ll20.zt8)[ll20.zt8.logfc < -1 & ll20.zt8.q.val < 0.05]
+length(repressed.ll20.zt8)
+
+
+ll20.zt16 <- topTable(contrast.results, 
+                      number=nrow(normalized.log2.cpm), 
+                      coef = 2, sort.by = "logFC", )
+head(ll20.zt16)
+
+ll20.zt16.logfc <- ll20.zt16$logFC
+ll20.zt16.q.val <- ll20.zt16$adj.P.Val
+
+activated.ll20.zt16 <- rownames(ll20.zt16)[ll20.zt16.logfc > 1 & ll20.zt16.q.val < 0.05]
+length(activated.ll20.zt16)
+
+repressed.ll20.zt16 <- rownames(ll20.zt16)[ll20.zt16.logfc < -1 & ll20.zt16.q.val < 0.05]
+length(repressed.ll20.zt16)
+
+length(intersect(activated.ll20.zt8,activated.ll20.zt16))
+2_161795_165554
+ostta10g00130
+length(intersect(repressed.ll20.zt8,repressed.ll20.zt16))
+
+temp.cols <- c("#00FFFF","#6699FF","#CC33FF","#FF0000")
+names(temp.cols) <- c("10C","14C","20C","26C")
+#col=c("#00FFFF","#6699FF","#CC33FF","#FF0000")
+#"10ºC","14ºC","20ºC","26ºC"
+#11_333391_333724 ostta11g01770
+#This family of proteins includes secreted effectors with a role in host-pathogen interactions. One member is known to contain an RxLR-dEER motif, which is involved in the translocation of the effector into the host cell by binding to specific phospholipids on the cell surface. The same member is also implicated in the suppression of host cell death triggered by other proteins, indicating a possible function in manipulating host cell pathways to benefit the pathogen. Other members are annotated as putative ankyrin repeat proteins, suggesting a potential role in protein-protein interactions, although their specific functions remain uncharacterized.
+
+
+mapped.reads.k4.20c.1 <- 6832850/1E6 
+mapped.reads.k4.20c.2 <- 5993486/1E6
+mapped.reads.k4.20c.3 <- 6701422/1E6
+mapped.reads.k4.20c.zt8.1 <- 2191204/1E6 
+mapped.reads.k4.20c.zt8.2 <- 3898985/1E6
+mapped.reads.k4.20c.zt16.1 <- 4894407/1E6
+mapped.reads.k4.20c.zt16.2 <- 3797062/1E6
+
+read.counts.k4.temp20c.1 <- read.table(file ="chipseq_data/consensus_counts/h3k4me3_ll_ld_consensus_ll1_counts.bed", header = F, sep = "\t" )
+head(read.counts.k4.temp20c.1)
+nrow(read.counts.k4.temp20c.1)
+cpm.k4.20.1 <- read.counts.k4.temp20c.1$V11 / mapped.reads.k4.20c.1
+
+read.counts.k4.temp20c.2 <- read.table(file ="chipseq_data/consensus_counts/h3k4me3_ll_ld_consensus_ll2_counts.bed", header = F, sep = "\t" )
+head(read.counts.k4.temp20c.2)
+nrow(read.counts.k4.temp20c.2)
+cpm.k4.20.2 <- read.counts.k4.temp20c.2$V11 / mapped.reads.k4.20c.2
+
+read.counts.k4.temp20c.3 <- read.table(file ="chipseq_data/consensus_counts/h3k4me3_ll_ld_consensus_ll3_counts.bed", header = F, sep = "\t" )
+head(read.counts.k4.temp20c.3)
+nrow(read.counts.k4.temp20c.3)
+cpm.k4.20.3 <- read.counts.k4.temp20c.3$V11 / mapped.reads.k4.20c.3
+
+read.counts.k4.20c.zt8.1 <- read.table(file = "chipseq_data/consensus_counts/h3k4me3_ll_ld_consensus_zt8_1_counts.bed", header = F, sep = "\t" )
+head(read.counts.k4.20c.zt8.1)
+nrow(read.counts.k4.20c.zt8.1)
+cpm.k4.zt8.1 <- read.counts.k4.20c.zt8.1$V11 / mapped.reads.k4.20c.zt8.1
+
+read.counts.k4.20c.zt8.2 <- read.table(file = "chipseq_data/consensus_counts/h3k4me3_ll_ld_consensus_zt8_2_counts.bed", header = F, sep = "\t" )
+head(read.counts.k4.20c.zt8.2)
+nrow(read.counts.k4.20c.zt8.2)
+cpm.k4.zt8.2 <- read.counts.k4.20c.zt8.2$V11 / mapped.reads.k4.20c.zt8.2
+
+read.counts.k4.20c.zt16.1 <- read.table(file = "chipseq_data/consensus_counts/h3k4me3_ll_ld_consensus_zt16_1_counts.bed", header = F, sep = "\t" )
+head(read.counts.k4.20c.zt16.1)
+nrow(read.counts.k4.20c.zt16.1)
+cpm.k4.zt16.1 <- read.counts.k4.20c.zt16.1$V11 / mapped.reads.k4.20c.zt16.1
+
+read.counts.k4.20c.zt16.2 <- read.table(file = "chipseq_data/consensus_counts/h3k4me3_ll_ld_consensus_zt16_2_counts.bed", header = F, sep = "\t" )
+head(read.counts.k4.20c.zt16.2)
+nrow(read.counts.k4.20c.zt16.2)
+cpm.k4.zt16.2 <- read.counts.k4.20c.zt16.2$V11 / mapped.reads.k4.20c.zt16.2
+
+k4.peak.names <- apply(X = read.counts.k4.20c.zt16.1[,1:3],MARGIN = 1,FUN = paste,collapse="_")
+
+k4.cpm.data.ll.zt8.zt16 <- matrix(data = c(cpm.k4.20.1,
+                                           cpm.k4.20.2,
+                                           cpm.k4.20.3,
+                                           cpm.k4.zt8.1,
+                                           cpm.k4.zt8.2,
+                                           cpm.k4.zt16.1,
+                                           cpm.k4.zt16.2),ncol=7)
+rownames(k4.cpm.data.ll.zt8.zt16) <- k4.peak.names
+colnames(k4.cpm.data.ll.zt8.zt16) <- c("LL20_1","LL20_2","LL20_3","LDZT8_1","LDZT8_2","LDZT16_1","LDZT16_2")
+boxplot(k4.cpm.data.ll.zt8.zt16,outline=F,las=2,
+        col=c(rep(temp.cols["20C"],3),rep("yellow",2),rep("grey",2)))
+
+write.table(x = k4.cpm.data.ll.zt8.zt16, file = "k4_cpm_data_ll_zt8_zt16.tsv", 
+            sep = "\t", quote = F,row.names = F)
+
+library(NormalyzerDE)
+
+design <- data.frame(sample=colnames(k4.cpm.data.ll.zt8.zt16),
+                     group=c(rep("LL20",3),rep("LDZT8",2),rep("LDZT16",2)))
+
+write.table(x = design,file = "normalyzer_design_k4_ll20_ldzt8_ldzt16.tsv",quote = F,row.names = F,
+            sep = "\t")
+
+normalyzer(jobName = "k4_ll20_ldzt8_ldzt16",designPath = "normalyzer_design_k4_ll20_ldzt8_ldzt16.tsv",
+           dataPath = "k4_cpm_data_ll_zt8_zt16.tsv",outputDir = ".")
+
+
+k4.normalized.log2.cpm <- read.table(file="k4_ll20_ldzt8_ldzt16/Quantile-normalized.txt", header=T)
+rownames(k4.normalized.log2.cpm) <- k4.peak.names
+head(k4.normalized.log2.cpm)
+
+boxplot(k4.normalized.log2.cpm,outline=F,las=2,
+        col=c(rep(temp.cols["20C"],3),rep("yellow",2),rep("grey",2)))
+
+
+plot(x = k4.normalized.log2.cpm[,1],k4.normalized.log2.cpm[,2])
+plot(x = k4.normalized.log2.cpm[,1],k4.normalized.log2.cpm[,3])
+plot(x = k4.normalized.log2.cpm[,2],k4.normalized.log2.cpm[,3])
+
+plot(x = k4.normalized.log2.cpm[,4],k4.normalized.log2.cpm[,5])
+
+plot(x = k4.normalized.log2.cpm[,6],k4.normalized.log2.cpm[,7])
+
+plot(x = k4.normalized.log2.cpm[,4],k4.normalized.log2.cpm[,6])
+
+k4.ll.20 <- rowMeans(k4.normalized.log2.cpm[,1:3])
+k4.zt8 <- rowMeans(k4.normalized.log2.cpm[,4:5])
+k4.zt16 <- rowMeans(k4.normalized.log2.cpm[,6:7])
+
+plot(k4.ll.20,k4.zt8,pch=19)
+lines(x=c(0,20),y=c(0,20),col="red",lwd=2)
+
+plot(k4.ll.20,k4.zt16,pch=19)
+lines(x=c(0,20),y=c(0,20),col="red",lwd=2)
+
+plot(k4.zt8,k4.zt16,pch=19)
+lines(x=c(0,20),y=c(0,20),col="red",lwd=2)
+
+which((k4.ll.20 - k4.zt8) > 1)
+which((k4.ll.20 - k4.zt8) < -1)
+
+which((k4.ll.20 - k4.zt16) > 1)
+which((ll.20 - zt16) < -1)
+
+length(which((ll.20 - zt8) > 1))
+length(which((ll.20 - zt16) > 1))
+length(intersect(which((ll.20 - zt8) > 1),which((ll.20 - zt16) > 1)))
+
+library(limma)
+k4.limma.experimental.design <- model.matrix(~ -1+factor(c(1,1,1,2,2,3,3)))
+colnames(k4.limma.experimental.design) <- c("LL20", "LDZT8", "LDZT16")
+
+k4.linear.fit <- lmFit(k4.normalized.log2.cpm, k4.limma.experimental.design)
+
+k4.contrast.matrix <- makeContrasts(LL20-LDZT8, LL20-LDZT16, LDZT16-LDZT8, levels = c("LL20", "LDZT8", "LDZT16"))
+
+k4.contrast.linear.fit <- contrasts.fit(k4.linear.fit, k4.contrast.matrix)
+k4.contrast.results <- eBayes(k4.contrast.linear.fit)                               
+
+k4.ll20.zt8 <- topTable(k4.contrast.results, 
+                     number=nrow(k4.normalized.log2.cpm), 
+                     coef = 1, sort.by = "logFC", )
+head(k4.ll20.zt8)
+
+k4.ll20.zt8.logfc <- k4.ll20.zt8$logFC
+k4.ll20.zt8.q.val <- k4.ll20.zt8$adj.P.Val
+
+k4.activated.ll20.zt8 <- rownames(k4.ll20.zt8)[k4.ll20.zt8.logfc > 1 & k4.ll20.zt8.q.val < 0.05]
+length(k4.activated.ll20.zt8)
+
+k4.repressed.ll20.zt8 <- rownames(k4.ll20.zt8)[k4.ll20.zt8.logfc < -1 & k4.ll20.zt8.q.val < 0.05]
+length(k4.repressed.ll20.zt8)
+
+
+k4.ll20.zt16 <- topTable(k4.contrast.results, 
+                      number=nrow(k4.normalized.log2.cpm), 
+                      coef = 2, sort.by = "logFC", )
+head(k4.ll20.zt16)
+
+k4.ll20.zt16.logfc <- k4.ll20.zt16$logFC
+k4.ll20.zt16.q.val <- k4.ll20.zt16$adj.P.Val
+
+k4.activated.ll20.zt16 <- rownames(k4.ll20.zt16)[k4.ll20.zt16.logfc > 1 & k4.ll20.zt16.q.val < 0.05]
+length(k4.activated.ll20.zt16)
+
+k4.repressed.ll20.zt16 <- rownames(k4.ll20.zt16)[k4.ll20.zt16.logfc < -1 & k4.ll20.zt16.q.val < 0.05]
+length(k4.repressed.ll20.zt16)
+
+length(intersect(k4.activated.ll20.zt8,k4.activated.ll20.zt16))
+2_161795_165554
+ostta10g00130
+length(intersect(k4.repressed.ll20.zt8,k4.repressed.ll20.zt16))
+
+
+library(rtracklayer)
+file.1 <- "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw"
+file.2 <- "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw"
+file.3 <- "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw"
+
+file.1 <- "chipseq_data/bw_data/h3k27me3/ld_20_zt8/h3k27me3_20_zt8_1.bw"
+file.2 <- "chipseq_data/bw_data/h3k27me3/ld_20_zt8/h3k27me3_20_zt8_2.bw"
+file.3 <- "chipseq_data/bw_data/h3k27me3/ld_20_zt8/h3k27me3_20_zt8_1.bw"
+
+
+signal.chr <- function(file.1,file.2,file.3,chr.lens,chr,interval)
+{
+ bw.file.1 <- import.bw(con = file.1)
+ bw.data.1 <- as.data.frame(bw.file.1)
+ 
+ bw.file.2 <- import.bw(con = file.2)
+ bw.data.2 <- as.data.frame(bw.file.2)
+ 
+ bw.file.3 <- import.bw(con = file.3)
+ bw.data.3 <- as.data.frame(bw.file.3)
+ 
+ bw.data.1.1 <- subset(bw.data.1, seqnames==16)
+ bw.data.1.2 <- subset(bw.data.2, seqnames==16)
+ bw.data.1.3 <- subset(bw.data.3, seqnames==16)
+ signal <- vector(mode = "numeric", length = floor(chr.lens[chr]/interval))
+ 
+ ini <- 1
+ stop <- ini + interval
+ j <- 1
+ while(stop < chr.lens[chr])
+ {
+  print(j)
+  signal[j] <- (mean(subset(x = bw.data.1.1, 
+                            start >= ini & 
+                             end < stop)$score) +
+                 mean(subset(x = bw.data.1.2, 
+                             start >= ini & 
+                              end < stop)$score) +
+                 mean(subset(x = bw.data.1.3, 
+                             start >= ini & 
+                              end < stop)$score))/3
+  j <- j + 1
+  ini <- stop
+  stop <- ini + interval
+ }
+ 
+ return(signal)
+}
+
+
+file.1 = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+file.2 = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+file.3 = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw"
+
+
+signal.k27.20 <- signal.chr(file.1 = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+           file.2 = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+           file.3 = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+           chr.lens = chr.lens,chr = 10,interval = 200)
+
+signal.k27.zt8 <- signal.chr(file.1 = "chipseq_data/bw_data/h3k27me3/ld_20_zt8/h3k27me3_20_zt8_1.bw",
+                             file.2 = "chipseq_data/bw_data/h3k27me3/ld_20_zt8/h3k27me3_20_zt8_1.bw",
+                             file.3 = "chipseq_data/bw_data/h3k27me3/ld_20_zt8/h3k27me3_20_zt8_1.bw",
+                             chr.lens = chr.lens,chr = 10,interval = 200)
+
+signal.k27.zt16 <- signal.chr(file.1 = "chipseq_data/bw_data/h3k27me3/ld_20_zt16/h3k27me3_20_zt16_1.bw",
+                             file.2 = "chipseq_data/bw_data/h3k27me3/ld_20_zt16/h3k27me3_20_zt16_1.bw",
+                             file.3 = "chipseq_data/bw_data/h3k27me3/ld_20_zt16/h3k27me3_20_zt16_1.bw",
+                             chr.lens = chr.lens,chr = 10,interval = 200)
+
+bw.file.1 <- import.bw(con = file.1)
+bw.data.1 <- as.data.frame(bw.file.1)
+
+bw.file.2 <- import.bw(con = file.2)
+bw.data.2 <- as.data.frame(bw.file.2)
+
+bw.file.3 <- import.bw(con = file.3)
+bw.data.3 <- as.data.frame(bw.file.3)
+
+bw.data.1.1 <- subset(bw.data.1, seqnames==16)
+bw.data.1.2 <- subset(bw.data.2, seqnames==16)
+bw.data.1.3 <- subset(bw.data.3, seqnames==16)
+signal <- vector(mode = "numeric", length = floor(chr.lens[16]/200))
+
+ini <- 1
+stop <- ini + 200
+j <- 1
+while(stop < chr.lens[16])
+{
+ print(j)
+ signal[j] <- (mean(subset(x = bw.data.1.1, 
+                           start >= ini & 
+                            end < stop)$score) +
+                mean(subset(x = bw.data.1.2, 
+                            start >= ini & 
+                             end < stop)$score) +
+                mean(subset(x = bw.data.1.3, 
+                            start >= ini & 
+                             end < stop)$score))/3
+ j <- j + 1
+ ini <- stop
+ stop <- ini + 200
+}
+
+
+plot(signal,type="l")
+
+signal.20 <- signal
+signal.zt8 <- signal
+
+plot(signal.k27.20,type="l",col=temp.cols["20C"])
+lines(signal.k27.zt8,type="l",col="yellow")
+lines(signal.k27.zt8,type="l",col="grey")
