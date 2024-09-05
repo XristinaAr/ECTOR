@@ -20,6 +20,11 @@ mapped.reads.k4.20c.1 <- 6832850/1E6
 mapped.reads.k4.20c.2 <- 5993486/1E6
 mapped.reads.k4.20c.3 <- 6701422/1E6
 
+mapped.reads.k4.20c.zt8.1 <- 2191204/1E6 
+mapped.reads.k4.20c.zt8.2 <- 3898985/1E6
+mapped.reads.k4.20c.zt16.1 <- 4894407/1E6
+mapped.reads.k4.20c.zt16.2 <- 3797062/1E6
+
 mapped.reads.k4.24c.1 <- 8444712/1E6 
 mapped.reads.k4.24c.2 <- 7768105/1E6
 mapped.reads.k4.24c.3 <- 1734986/1E6
@@ -28,6 +33,7 @@ mapped.reads.k4.26c.1 <- 6059862/1E6
 mapped.reads.k4.26c.2 <- 5263311/1E6
 mapped.reads.k4.26c.3 <- 4251439/1E6
 
+<<<<<<< HEAD
 mapped.reads.k4.20c.zt8.1 <- 2191204/1E6 
 mapped.reads.k4.20c.zt8.2 <- 3898985/1E6
 mapped.reads.k4.20c.zt16.1 <- 4894407/1E6
@@ -50,28 +56,40 @@ read.counts.k4.temp10c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/tem
 read.counts.k4.temp10c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp10c/h3k4me3_10_chip_2_counts.bed", header = F, sep = "\t" )
 read.counts.k4.temp10c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp10c/h3k4me3_10_chip_3_counts.bed", header = F, sep = "\t" )
 
-read.counts.k4.temp14c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp14c/h3k4me3_14_chip_1_count_con24cons.bed", header = F, sep = "\t" )
-read.counts.k4.temp14c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp14c/h3k4me3_14_chip_2_count_con24cons.bed", header = F, sep = "\t" )
-read.counts.k4.temp14c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp14c/h3k4me3_14_chip_3_count_con24cons.bed", header = F, sep = "\t" )
+# This was marked as a conflict during merging. it needs to be checked (start)
+read.counts.k4.temp10c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp10c/h3k4me3_10_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp10c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp10c/h3k4me3_10_chip_2_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp10c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp10c/h3k4me3_10_chip_3_counts.bed", header = F, sep = "\t" )
 
-read.counts.k4.temp20c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp20c/h3k4me3_20_chip_1_count_con24cons.bed", header = F, sep = "\t" )
-read.counts.k4.temp20c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp20c/h3k4me3_20_chip_2_count_con24cons.bed", header = F, sep = "\t" )
-read.counts.k4.temp20c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp20c/h3k4me3_20_chip_3_count_con24cons.bed", header = F, sep = "\t" )
+read.counts.k4.temp14c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp14c/h3k4me3_14_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp14c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp14c/h3k4me3_14_chip_2_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp14c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp14c/h3k4me3_14_chip_3_counts.bed", header = F, sep = "\t" )
+# This was marked as a conflict during merging. it needs to be checked (end)
+
+read.counts.k4.temp20c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp20c/h3k4me3_20_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp20c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp20c/h3k4me3_20_chip_2_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp20c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp20c/h3k4me3_20_chip_3_counts.bed", header = F, sep = "\t" )
+
+
+read.counts.k4.20c.zt8.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/ld_20_zt8/h3k4me3_ld_20_zt8_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.k4.20c.zt8.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/ld_20_zt8/h3k4me3_ld_20_zt8_chip_2_counts.bed", header = F, sep = "\t" )
+read.counts.k4.20c.zt16.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/ld_20_Zt16/h3k4me3_ld_20_zt16_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.k4.20c.zt16.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/ld_20_Zt16/h3k4me3_ld_20_zt16_chip_2_counts.bed", header = F, sep = "\t" )
 
 read.counts.k4.temp24c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp24c/h3k4me3_24_chip_1n_counts.bed", header = F, sep = "\t" )
 read.counts.k4.temp24c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp24c/h3k4me3_24_chip_2n_counts.bed", header = F, sep = "\t" )
-read.counts.k4.temp24c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp24c/h3k4me3_24_chip_3_count.bed", header = F, sep = "\t" )
+read.counts.k4.temp24c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp24c/h3k4me3_24_chip_3_counts.bed", header = F, sep = "\t" )
 
-read.counts.k4.temp26c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp26c/h3k4me3_26_chip_1_count_con24cons.bed", header = F, sep = "\t" )
-read.counts.k4.temp26c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp26c/h3k4me3_26_chip_2_count_con24cons.bed", header = F, sep = "\t" )
-read.counts.k4.temp26c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp26c/h3k4me3_26_chip_3_count_con24cons.bed", header = F, sep = "\t" )
+read.counts.k4.temp26c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp26c/h3k4me3_26_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp26c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp26c/h3k4me3_26_chip_2_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp26c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp26c/h3k4me3_26_chip_3_counts.bed", header = F, sep = "\t" )
 
 ```
 
 
 ```{r}
-peak.cpm <- matrix(data = NA, nrow = nrow(read.counts.k4.temp10c.1), ncol = 18 )
-colnames(peak.cpm) <-c("chr","start","end","k4_temp10_1","k4_temp10_2","k4_temp10_3", "k4_temp14_1","k4_temp14_2","k4_temp14_3","k4_temp20_1","k4_temp20_2","k4_temp20_3","k4_temp24_1","k4_temp24_2","k4_temp24_3","k4_temp26_1","k4_temp26_2","k4_temp26_3")
+peak.cpm <- matrix(data = NA, nrow = nrow(read.counts.k4.temp10c.1), ncol = 22 )
+colnames(peak.cpm) <-c("chr","start","end","k4_temp10_1","k4_temp10_2","k4_temp10_3", "k4_temp14_1","k4_temp14_2","k4_temp14_3","k4_temp20_1","k4_temp20_2","k4_temp20_3","k4_temp20_zt8_1","k4_temp20_zt8_2","k4_temp20_zt16_1","k4_temp20_zt16_2","k4_temp24_1","k4_temp24_2","k4_temp24_3","k4_temp26_1","k4_temp26_2","k4_temp26_3")
 
 peak.cpm[,1]<- read.counts.k4.temp10c.1[,1]
 peak.cpm[,2]<- read.counts.k4.temp10c.1[,2]
@@ -88,6 +106,11 @@ peak.cpm[,9]<- read.counts.k4.temp14c.3[,4]/mapped.reads.k4.14c.3
 peak.cpm[,10]<- read.counts.k4.temp20c.1[,4]/mapped.reads.k4.20c.1
 peak.cpm[,11]<- read.counts.k4.temp20c.2[,4]/mapped.reads.k4.20c.2
 peak.cpm[,12]<- read.counts.k4.temp20c.3[,4]/mapped.reads.k4.20c.3
+
+peak.cpm[,13]<- read.counts.k4.20c.zt8.1[,4]/mapped.reads.k4.20c.zt8.1
+peak.cpm[,14]<- read.counts.k4.20c.zt8.2[,4]/mapped.reads.k4.20c.zt8.2
+peak.cpm[,15]<- read.counts.k4.20c.zt16.1[,4]/mapped.reads.k4.20c.zt16.1
+peak.cpm[,16]<- read.counts.k4.20c.zt16.2[,4]/mapped.reads.k4.20c.zt16.2
 
 peak.cpm[,13]<- read.counts.k4.temp24c.1[,4]/mapped.reads.k4.24c.1
 peak.cpm[,14]<- read.counts.k4.temp24c.2[,4]/mapped.reads.k4.24c.2
@@ -222,6 +245,29 @@ lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
 boxplot(log2((peak.cpm$k4_temp10_1 + peak.cpm$k4_temp10_2 +peak.cpm$k4_temp10_3)/3),
        log2((peak.cpm$k4_temp26_1 + peak.cpm$k4_temp26_2 + peak.cpm$k4_temp26_3)/3))
 ```
+
+
+```{r temp20c LD replicates scatterplots}
+plot(x = log2(peak.cpm$k4_temp20_zt8_1), y= log2(peak.cpm$k4_temp20_zt8_2), pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+plot(x = log2(peak.cpm$k4_temp20_zt16_1), y= log2(peak.cpm$k4_temp20_zt16_2), pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+plot(x = log2((peak.cpm$k4_temp20_zt8_1 + peak.cpm$k4_temp20_zt8_2)/2), 
+     y= log2((peak.cpm$k4_temp20_zt16_1 + peak.cpm$k4_temp20_zt16_2)/2), pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+
+plot(log2((read.counts.k4.20c.zt8.1[,4]/mapped.reads.k4.20c.zt8.1 +
+read.counts.k4.20c.zt8.2[,4]/mapped.reads.k4.20c.zt8.2)/2),
+log2((read.counts.k4.20c.zt16.1[,4]/mapped.reads.k4.20c.zt16.1 +
+read.counts.k4.20c.zt16.2[,4]/mapped.reads.k4.20c.zt16.2)/2),pch = 20, xlab = "LD 20ºC zt8 (CPM)", ylab = "LD 20ºC zt16 (CPM)")
+
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+```
+
+
 
 ```{r boxplot global cpm}
 boxplot((peak.cpm$k4_temp10_1 + peak.cpm$k4_temp10_2 +peak.cpm$k4_temp10_3)/3,
@@ -588,13 +634,46 @@ ostta.limma.26.10.genes <-  read.table(file = "chipseq_results/h3k4me3/limma.k4.
 
 
 #ostta2atha.limma.26.10.genes <- ostta2atha$V2[ostta.limma.26.10.genes$V1 == ostta2atha$V1]
-ostta2atha.limma.26.10.genes <- ostta2atha[ostta2atha$V1 %in% ostta.limma.26.10.genes$V1, ]
-ostta2atha.limma.26.10.genes <- ostta2atha.limma.26.10.genes[,1:2]
-length(ostta2atha.limma.26.10.genes)
-rownames(ostta2atha.limma.26.10.genes) <- NULL
-head(ostta2atha.limma.26.10.genes)
-dim(ostta2atha.limma.26.10.genes)
-write.table(x = ostta2atha.limma.26.10.genes, file = "chipseq_results/h3k4me3/ostta2atha.limma.26.10.genes.txt", sep = "\t")
+dim(ostta.limma.26.10.genes)
+
+ostta2atha.limma.k4.26.10.genes <- merge(ostta.limma.26.10.genes,ostta2atha, by = "V1" )
+dim(ostta2atha.limma.k4.26.10.genes)
+unique_ostta2atha.limma.k4.26.10.genes <- unique(ostta2atha.limma.k4.26.10.genes[, "V2", drop = FALSE])
+dim(unique_ostta2atha.limma.k4.26.10.genes)
+
+#ostta2atha.limma.k4.26.10.genes <- ostta2atha[ostta.limma.26.10.genes$V1 %in% ostta2atha$V1, ]
+#ostta2atha.limma.k4.26.10.genes <- ostta2atha.limma.26.10.genes[,1:2]
+#rownames(ostta2atha.limma.k4.26.10.genes) <- NULL
+#head(ostta2atha.limma.k4.26.10.genes)
+#dim(ostta2atha.limma.26.10.genes)
+#write.table(x = ostta2atha.limma.k4.26.10.genes, file = "chipseq_results/h3k4me3/ostta2atha.limma.k4.26.10.genes.txt", sep = "\t")
+
+target.genes.ostta2atha <- unique_ostta2atha.limma.k4.26.10.genes$V2
+
+strsplit(x = target.genes.ostta2atha, split = "\\.")
+
+target.genes.ostta2atha <- sapply(strsplit(target.genes.ostta2atha, "\\."), "[", 1)
+
+
+library(clusterProfiler)
+library(org.At.tair.db)
+
+κ4.enrich.go <- enrichGO(gene = target.genes.ostta2atha,
+                           OrgDb         = org.At.tair.db,
+                           ont           = "BP",
+                           pAdjustMethod = "BH",
+                           pvalueCutoff  = 0.05,
+                           readable      = FALSE,
+                           keyType = "TAIR")
+
+barplot(κ4.enrich.go,showCategory = 20)
+dotplot(κ4.enrich.go,showCategory = 20)
+
+library(enrichplot)
+emapplot(pairwise_termsim(κ4.enrich.go),showCategory = 20)
+cnetplot(κ4.enrich.go,showCategory = 6, max.overlaps = 20)
+cnetplot(κ4.enrich.go,showCategory = 6, cex_label_category = 1,
+         cex_label_gene = 0.5, max.overlaps = Inf )
 
 
 ```

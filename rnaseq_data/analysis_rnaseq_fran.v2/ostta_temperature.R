@@ -165,8 +165,8 @@ for(i in 1:length(target.genes))
 
 
 
-gene.expression.barplot(gene="ostta02g01020",expression.matrix)
-gene.expression.barplot(gene="ostta02g00380",expression.matrix)
+gene.expression.barplot(gene="ostta08g03190",expression.matrix)
+gene.expression.barplot(gene="ostta10g01280",expression.matrix)
 
 gene.expression.barplot(gene="ostta10g00010", gene.name="ostta10g00010",expression.matrix)
 
@@ -185,47 +185,157 @@ gene.expression.barplot(gene="ostta08g00390", gene.name="?",expression.matrix,co
 library(limma)
 
 ## Limma needs again a different way of specifying the experimental design
-limma.experimental.design <- model.matrix(~ -1+factor(c(1,2,3,4,5,6,7,8,9,10,11,12,
-                                                        1,2,3,4,5,6,7,8,9,10,11,12,
-                                                        1,2,3,4,5,6,7,8,9,10,11,12)))
-colnames(limma.experimental.design) <- experimental.design$treatment[1:12]
+limma.experimental.design <- model.matrix(~ -1+factor(c(1,1,1,2,2,2,3,3,3,4,4,4,
+                                                        5,5,5)))
+#colnames(limma.experimental.design) <- experimental.design$treatment[1:4]
 
 ##Linear model fit (compute average gene expression among replicates)
 linear.fit <- lmFit(normalized.gene.expression, limma.experimental.design)
 
 ## Contrasts Specification experimental_condition-control_condition
-contrast.matrix <- makeContrasts(S14_A-A24_A,
-                                 S14_B-A24_B,
-                                 S14_C-A24_C,
-                                 levels = apply(X = experimental.design[,2:3],
-                                                MARGIN = 1,
-                                                FUN = function(x)
-                                                 {return(paste(x,collapse="_"))})[1:12])
+#contrast.matrix <- makeContrasts(S14_A-A24_A,
+#                                 S14_B-A24_B,
+#                                 S14_C-A24_C,
+#                                 levels = apply(X = experimental.design[,2:3],
+#                                                MARGIN = 1,
+#                                                FUN = function(x)
+#                                                 {return(paste(x,collapse="_"))})[1:12])
+
+contrast.matrix <- makeContrasts(T10-T14,
+                                 T10-T20,
+                                 T10-T26,
+                                 T10-T24,
+                                 levels=c("T10","T14","T20","T26","T24"))
 
 ## Fold change and q-value computation
 contrast.linear.fit <- contrasts.fit(linear.fit, contrast.matrix)
 contrast.results <- eBayes(contrast.linear.fit)
 
-## DEGs for chilling 30min.
-chilling.30min <- topTable(contrast.results, 
+#DEGs for 14oC
+temp14vs10 <- topTable(contrast.results, 
                            number=nrow(normalized.gene.expression),
                            coef=1,sort.by="logFC")
-head(chilling.30min)
+head(temp14vs10)
 
-log.fold.change.chilling.30min <- chilling.30min$logFC
-q.value.chilling.30min <- chilling.30min$adj.P.Val
-genes.ids.chilling.30min <- rownames(chilling.30min)
-names(log.fold.change.chilling.30min) <- genes.ids.chilling.30min
-names(q.value.chilling.30min) <- genes.ids.chilling.30min
+log.fold.change.temp14vs10 <- temp14vs10$logFC
+q.value.temp14vs10 <- temp14vs10$adj.P.Val
+genes.ids.temp14vs10 <- rownames(temp14vs10)
+names(log.fold.change.temp14vs10) <- genes.ids.temp14vs10
+names(q.value.temp14vs10) <- genes.ids.temp14vs10
 
-activated.genes.chilling.30min <- genes.ids.chilling.30min[log.fold.change.chilling.30min > 1 & q.value.chilling.30min < 0.05]
-repressed.genes.chilling.30min <- genes.ids.chilling.30min[log.fold.change.chilling.30min < - 1 & q.value.chilling.30min < 0.05]
+activated.genes.temp14vs10 <- genes.ids.temp14vs10[log.fold.change.temp14vs10 > 1 & q.value.temp14vs10 < 0.05]
+repressed.genes.temp14vs10 <- genes.ids.temp14vs10[log.fold.change.temp14vs10 < - 1 & q.value.temp14vs10 < 0.05]
 
-length(activated.genes.chilling.30min)
-length(repressed.genes.chilling.30min)
+length(activated.genes.temp14vs10)
+length(repressed.genes.temp14vs10)
 
-write(x = activated.genes.chilling.30min,file = "activated_S14_vs_A24_30min.txt")
-write(x = repressed.genes.chilling.30min,file = "repressed_S14_vs_A24_30min.txt")
+write(x = activated.genes.temp14vs10,file = "activated_genes_temp14vs10.txt")
+write(x = repressed.genes.temp14vs10,file = "repressed.genes.temp14vs10.txt")
+
+#DEGs for 20oC
+temp20vs10 <- topTable(contrast.results, 
+                       number=nrow(normalized.gene.expression),
+                       coef=2,sort.by="logFC")
+head(temp20vs10)
+
+log.fold.change.temp20vs10 <- temp20vs10$logFC
+q.value.temp20vs10 <- temp20vs10$adj.P.Val
+genes.ids.temp20vs10 <- rownames(temp20vs10)
+names(log.fold.change.temp20vs10) <- genes.ids.temp20vs10
+names(q.value.temp20vs10) <- genes.ids.temp20vs10
+
+activated.genes.temp20vs10 <- genes.ids.temp20vs10[log.fold.change.temp20vs10 > 1 & q.value.temp20vs10 < 0.05]
+repressed.genes.temp20vs10 <- genes.ids.temp20vs10[log.fold.change.temp20vs10 < - 1 & q.value.temp20vs10 < 0.05]
+
+length(activated.genes.temp20vs10)
+length(repressed.genes.temp20vs10)
+
+write(x = activated.genes.temp20vs10,file = "activated.genes.temp20vs10.txt")
+write(x = repressed.genes.temp20vs10,file = "repressed.genes.temp20vs10.txt")
+
+#DEGs for 26oC
+temp26vs10 <- topTable(contrast.results, 
+                       number=nrow(normalized.gene.expression),
+                       coef=3,sort.by="logFC")
+head(temp26vs10)
+
+log.fold.change.temp26vs10 <- temp26vs10$logFC
+q.value.temp26vs10 <- temp26vs10$adj.P.Val
+genes.ids.temp26vs10 <- rownames(temp26vs10)
+names(log.fold.change.temp26vs10) <- genes.ids.temp26vs10
+names(q.value.temp26vs10) <- genes.ids.temp26vs10
+
+activated.genes.temp26vs10 <- genes.ids.temp26vs10[log.fold.change.temp26vs10 > 1 & q.value.temp26vs10 < 0.05]
+repressed.genes.temp26vs10 <- genes.ids.temp26vs10[log.fold.change.temp26vs10 < - 1 & q.value.temp26vs10 < 0.05]
+
+length(activated.genes.temp26vs10)
+length(repressed.genes.temp26vs10)
+
+write(x = activated.genes.temp26vs10,file = "activated.genes.temp26vs10.txt")
+write(x = repressed.genes.temp26vs10,file = "repressed.genes.temp26vs10.txt")
+
+activated.genes.temp26vs10 <- genes.ids.temp26vs10[log.fold.change.temp26vs10 > 1 & q.value.temp26vs10 < 0.05]
+repressed.genes.temp26vs10 <- genes.ids.temp26vs10[log.fold.change.temp26vs10 < - 1 & q.value.temp26vs10 < 0.05]
+
+length(activated.genes.temp26vs10)
+length(repressed.genes.temp26vs10)
+
+
+log.q.value.temp26vs10 <- -log10(q.value.temp26vs10) 
+
+plot(log.fold.change.temp26vs10,log.q.value.temp26vs10,pch=19,col="grey",cex=0.8,
+     xlim=c(-6,6),ylim = c(0,4), 
+     xlab="log2(Fold-change)",ylab="-log10(q-value)",cex.lab=1.5)
+
+points(x = log.fold.change.temp26vs10[activated.genes.temp26vs10],
+       y = log.q.value.temp26vs10[activated.genes.temp26vs10],col="red",cex=0.8,pch=19)
+points(x = log.fold.change.temp26vs10[repressed.genes.temp26vs10],
+       y = log.q.value.temp26vs10[repressed.genes.temp26vs10],col="blue",cex=0.8,pch=19)
+
+
+
+#DEGs for 24oC
+temp24vs10 <- topTable(contrast.results, 
+                       number=nrow(normalized.gene.expression),
+                       coef=4,sort.by="logFC")
+head(temp24vs10)
+
+log.fold.change.temp24vs10 <- temp24vs10$logFC
+q.value.temp24vs10 <- temp24vs10$adj.P.Val
+genes.ids.temp24vs10 <- rownames(temp24vs10)
+names(log.fold.change.temp24vs10) <- genes.ids.temp24vs10
+names(q.value.temp24vs10) <- genes.ids.temp24vs10
+
+activated.genes.temp24vs10 <- genes.ids.temp24vs10[log.fold.change.temp24vs10 > 1 & q.value.temp24vs10 < 0.05]
+repressed.genes.temp24vs10 <- genes.ids.temp24vs10[log.fold.change.temp24vs10 < - 1 & q.value.temp24vs10 < 0.05]
+
+length(activated.genes.temp24vs10)
+length(repressed.genes.temp24vs10)
+
+write(x = activated.genes.temp24vs10,file = "activated.genes.temp24vs10.txt")
+write(x = repressed.genes.temp24vs10,file = "repressed.genes.temp24vs10.txt")
+
+
+## DEGs for chilling 30min.
+#chilling.30min <- topTable(contrast.results, 
+#                           number=nrow(normalized.gene.expression),
+#                           coef=1,sort.by="logFC")
+#head(chilling.30min)
+
+#log.fold.change.chilling.30min <- chilling.30min$logFC
+#q.value.chilling.30min <- chilling.30min$adj.P.Val
+#genes.ids.chilling.30min <- rownames(chilling.30min)
+#names(log.fold.change.chilling.30min) <- genes.ids.chilling.30min
+#names(q.value.chilling.30min) <- genes.ids.chilling.30min
+
+#activated.genes.chilling.30min <- genes.ids.chilling.30min[log.fold.change.chilling.30min > 1 & q.value.chilling.30min < 0.05]
+#repressed.genes.chilling.30min <- genes.ids.chilling.30min[log.fold.change.chilling.30min < - 1 & q.value.chilling.30min < 0.05]
+
+#length(activated.genes.chilling.30min)
+#length(repressed.genes.chilling.30min)
+
+#write(x = activated.genes.chilling.30min,file = "activated_S14_vs_A24_30min.txt")
+#write(x = repressed.genes.chilling.30min,file = "repressed_S14_vs_A24_30min.txt")
 
 
 ## Volcano plot
