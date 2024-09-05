@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## H3K27 genome wide distribution analysis
 
-We load the genome of Ostreococcus tauri and compute the length of its chromosomes. We determine the length of the largest chromosome and for technical reasons we reverse the verctor of lenghts. This will be used to represent graphically the genome wide distribution of H3K27me3. 
+We load the genome of Ostreococcus tauri and compute the length of its chromosomes. We determine the length of the largest chromosome and for technical reasons we reverse the vector of lengths. This will be used to represent graphically the genome wide distribution of H3K27me3. 
 
 ```{r load_genome}
 library(seqinr)
