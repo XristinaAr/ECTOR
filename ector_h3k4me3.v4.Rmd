@@ -33,6 +33,30 @@ mapped.reads.k4.26c.1 <- 6059862/1E6
 mapped.reads.k4.26c.2 <- 5263311/1E6
 mapped.reads.k4.26c.3 <- 4251439/1E6
 
+<<<<<<< HEAD
+mapped.reads.k4.20c.zt8.1 <- 2191204/1E6 
+mapped.reads.k4.20c.zt8.2 <- 3898985/1E6
+mapped.reads.k4.20c.zt16.1 <- 4894407/1E6
+mapped.reads.k4.20c.zt16.2 <- 3797062/1E6
+
+plot(log2((read.counts.k4.20c.zt8.1[,4]/mapped.reads.k4.20c.zt8.1 + read.counts.k4.20c.zt8.2[,4]/mapped.reads.k4.20c.zt8.2)/2), log2((read.counts.k4.20c.zt16.1[,4]/mapped.reads.k4.20c.zt16.1 + read.counts.k4.20c.zt16.2[,4]/mapped.reads.k4.20c.zt16.2)/2))
+
+
+read.counts.k4.20c.zt8.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/ld_20_zt8/h3k4me3_ld_20_zt8_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.k4.20c.zt8.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/ld_20_zt8/h3k4me3_ld_20_zt8_chip_2_counts.bed", header = F, sep = "\t" )
+read.counts.k4.20c.zt16.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/ld_20_Zt16/h3k4me3_ld_20_zt16_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.k4.20c.zt16.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/ld_20_Zt16/h3k4me3_ld_20_zt16_chip_2_counts.bed", header = F, sep = "\t" )
+
+
+(read.counts.k4.20c.zt16.1 + read.counts.k4.20c.zt16.2)/2
+plot((read.counts.k4.20c.zt8.1[,4] + read.counts.k4.20c.zt8.2[,4])/2, (read.counts.k4.20c.zt16.1[,4] + read.counts.k4.20c.zt16.2[,4])/2)
+
+
+read.counts.k4.temp10c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp10c/h3k4me3_10_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp10c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp10c/h3k4me3_10_chip_2_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp10c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp10c/h3k4me3_10_chip_3_counts.bed", header = F, sep = "\t" )
+
+# This was marked as a conflict during merging. it needs to be checked (start)
 read.counts.k4.temp10c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp10c/h3k4me3_10_chip_1_counts.bed", header = F, sep = "\t" )
 read.counts.k4.temp10c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp10c/h3k4me3_10_chip_2_counts.bed", header = F, sep = "\t" )
 read.counts.k4.temp10c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp10c/h3k4me3_10_chip_3_counts.bed", header = F, sep = "\t" )
@@ -40,6 +64,7 @@ read.counts.k4.temp10c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/tem
 read.counts.k4.temp14c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp14c/h3k4me3_14_chip_1_counts.bed", header = F, sep = "\t" )
 read.counts.k4.temp14c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp14c/h3k4me3_14_chip_2_counts.bed", header = F, sep = "\t" )
 read.counts.k4.temp14c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp14c/h3k4me3_14_chip_3_counts.bed", header = F, sep = "\t" )
+# This was marked as a conflict during merging. it needs to be checked (end)
 
 read.counts.k4.temp20c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp20c/h3k4me3_20_chip_1_counts.bed", header = F, sep = "\t" )
 read.counts.k4.temp20c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp20c/h3k4me3_20_chip_2_counts.bed", header = F, sep = "\t" )
