@@ -28,25 +28,25 @@ mapped.reads.k4.26c.1 <- 6059862/1E6
 mapped.reads.k4.26c.2 <- 5263311/1E6
 mapped.reads.k4.26c.3 <- 4251439/1E6
 
-read.counts.k4.temp10c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp10c/h3k4me3_10_chip_1_count_con24cons.bed", header = F, sep = "\t" )
-read.counts.k4.temp10c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp10c/h3k4me3_10_chip_2_count_con24cons.bed", header = F, sep = "\t" )
-read.counts.k4.temp10c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp10c/h3k4me3_10_chip_3_count_con24cons.bed", header = F, sep = "\t" )
+read.counts.k4.temp10c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp10c/h3k4me3_10_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp10c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp10c/h3k4me3_10_chip_2_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp10c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp10c/h3k4me3_10_chip_3_counts.bed", header = F, sep = "\t" )
 
-read.counts.k4.temp14c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp14c/h3k4me3_14_chip_1_count_con24cons.bed", header = F, sep = "\t" )
-read.counts.k4.temp14c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp14c/h3k4me3_14_chip_2_count_con24cons.bed", header = F, sep = "\t" )
-read.counts.k4.temp14c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp14c/h3k4me3_14_chip_3_count_con24cons.bed", header = F, sep = "\t" )
+read.counts.k4.temp14c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp14c/h3k4me3_14_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp14c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp14c/h3k4me3_14_chip_2_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp14c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp14c/h3k4me3_14_chip_3_counts.bed", header = F, sep = "\t" )
 
-read.counts.k4.temp20c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp20c/h3k4me3_20_chip_1_count_con24cons.bed", header = F, sep = "\t" )
-read.counts.k4.temp20c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp20c/h3k4me3_20_chip_2_count_con24cons.bed", header = F, sep = "\t" )
-read.counts.k4.temp20c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp20c/h3k4me3_20_chip_3_count_con24cons.bed", header = F, sep = "\t" )
+read.counts.k4.temp20c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp20c/h3k4me3_20_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp20c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp20c/h3k4me3_20_chip_2_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp20c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp20c/h3k4me3_20_chip_3_counts.bed", header = F, sep = "\t" )
 
 read.counts.k4.temp24c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp24c/h3k4me3_24_chip_1n_counts.bed", header = F, sep = "\t" )
 read.counts.k4.temp24c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp24c/h3k4me3_24_chip_2n_counts.bed", header = F, sep = "\t" )
-read.counts.k4.temp24c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp24c/h3k4me3_24_chip_3_count.bed", header = F, sep = "\t" )
+read.counts.k4.temp24c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp24c/h3k4me3_24_chip_3_counts.bed", header = F, sep = "\t" )
 
-read.counts.k4.temp26c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp26c/h3k4me3_26_chip_1_count_con24cons.bed", header = F, sep = "\t" )
-read.counts.k4.temp26c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp26c/h3k4me3_26_chip_2_count_con24cons.bed", header = F, sep = "\t" )
-read.counts.k4.temp26c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp26c/h3k4me3_26_chip_3_count_con24cons.bed", header = F, sep = "\t" )
+read.counts.k4.temp26c.1 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp26c/h3k4me3_26_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp26c.2 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp26c/h3k4me3_26_chip_2_counts.bed", header = F, sep = "\t" )
+read.counts.k4.temp26c.3 <- read.table(file = "chipseq_data/bed_data/h3k4me3/temp26c/h3k4me3_26_chip_3_counts.bed", header = F, sep = "\t" )
 
 ```
 
