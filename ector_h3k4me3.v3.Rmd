@@ -358,7 +358,9 @@ boxplot(normalized.peak.cpm.temp26, outline=F,col=rainbow(4),
 
 ```{r}
 
-normalized.peak.cpm <- cbind(normalized.peak.cpm.temp10,normalized.peak.cpm.temp14,normalized.peak.cpm.temp20,normalized.peak.cpm.temp24,normalized.peak.cpm.temp26)
+normalized.peak.cpm <- cbind(normalized.peak.cpm.temp10,normalized.peak.cpm.temp14,normalized.peak.cpm.temp20,normalized.peak.cpm.temp24,normalized.peak.cpm.temp26)´
+
+
 head(normalized.peak.cpm)
 
 peak.cpm[,1]<- read.counts.k4.temp10c.1[,1]
