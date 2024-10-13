@@ -105,6 +105,7 @@ H3K27me3 is mostly uniformly distributed over the different chromosome although 
 We determine the gene features occupied by each H3K27me3 mark and the H3K27me3 marked genes. 
 
 ```{r k27_peaks_annotation}
+
 library(TxDb.Otauri.JGI)
 txdb <- TxDb.Otauri.JGI
 
