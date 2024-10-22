@@ -1784,7 +1784,9 @@ points(3,1290,pch=8,cex=0.7)
 points(3.9,1980,pch=8,cex=0.7)
 points(4,1980,pch=8,cex=0.7)
 points(4.1,1980,pch=8,cex=0.7)
+
 ```
+
 ```{r}
 peak.names <- paste(paste(peak.cpm$chr, peak.cpm$start, sep = "_"), peak.cpm$end, sep = "_")
 log2.peak.cpm <- matrix(data = NA, nrow = nrow(read.counts.k27.temp10c.1), ncol = 12)
@@ -2421,6 +2423,7 @@ activated.peaks.temp20c.vs.temp10c <- peak.ids.20c.10c[fold.change.20c.10c > 1 &
 repressed.peaks.temp20c.vs.temp10c <- peak.ids.20c.10c[fold.change.20c.10c < - 1 & q.value.20c.10c < 0.05]
 
 length(activated.peaks.temp20c.vs.temp10c)
+length(activated.peaks.temp20c.vs.temp10c)/length(peak.names)
 length(repressed.peaks.temp20c.vs.temp10c)
 
 
@@ -2438,7 +2441,8 @@ q.value.26c.10c <- temp26c.vs.temp10c$adj.P.Val
 activated.peaks.temp26c.vs.temp10c <- peak.ids.26c.10c[fold.change.26c.10c > 1 & q.value.26c.10c < 0.05]
 repressed.peaks.temp26c.vs.temp10c <- peak.ids.26c.10c[fold.change.26c.10c < - 1 & q.value.26c.10c < 0.05]
 
-length(activated.peaks.temp26c.vs.temp10c)
+length(activated.peaks.temp26c.vs.temp10c
+length(activated.peaks.temp26c.vs.temp10c)/length(peak.names)
 length(repressed.peaks.temp26c.vs.temp10c)
 ```
 
