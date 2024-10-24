@@ -1753,37 +1753,36 @@ peak.cpm <- as.data.frame(peak.cpm)
 #Scatterplots representing changes observed between temperature conditions
 
 ```{r}
-plot(x = log2((peak.cpm$k27_temp10_1 + peak.cpm$k27_temp10_2 +peak.cpm$k27_temp10_3)/3), y= log2((peak.cpm$k27_temp14_1 + peak.cpm$k27_temp14_2 + peak.cpm$k27_temp14_3)/3), pch = 20,xlab="H3K27me3 10ºC (CPM)",ylab="H3K27me3 14ºC (CPM)",main="14ºC vs 10ºC")
+plot(x = log2((peak.cpm$k27_temp10_1 + peak.cpm$k27_temp10_2 +peak.cpm$k27_temp10_3)/3), y= log2((peak.cpm$k27_temp20_1 + peak.cpm$k27_temp20_2 + peak.cpm$k27_temp20_3)/3), pch = 20,xlab="H3K27me3 10ºC (CPM)",ylab="H3K27me3 20ºC (CPM)",main="10ºC vs 20ºC")
+lines(x = c(0,20), y = c(0,20), type = "l", col="red")
 
-plot(x = log2((peak.cpm$k27_temp10_1 + peak.cpm$k27_temp10_2 +peak.cpm$k27_temp10_3)/3), y= log2((peak.cpm$k27_temp20_1 + peak.cpm$k27_temp20_2 + peak.cpm$k27_temp20_3)/3), pch = 20,xlab="H3K27me3 10ºC (CPM)",ylab="H3K27me3 20ºC (CPM)",main="20ºC vs 10ºC")
-lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+plot(x = log2((peak.cpm$k27_temp14_1 + peak.cpm$k27_temp14_2 +peak.cpm$k27_temp14_3)/3), y= log2((peak.cpm$k27_temp20_1 + peak.cpm$k27_temp20_2 + peak.cpm$k27_temp20_3)/3), pch = 20,xlab="H3K27me3 14ºC (CPM)",ylab="H3K27me3 20ºC (CPM)",main="14ºC vs 20ºC")
+lines(x = c(0,20), y = c(0,20), type = "l", col="red")
 
-plot(x = log2((peak.cpm$k27_temp10_1 + peak.cpm$k27_temp10_2 +peak.cpm$k27_temp10_3)/3), y= log2((peak.cpm$k27_temp26_1 + peak.cpm$k27_temp26_2 + peak.cpm$k27_temp26_3)/3), pch = 20,xlab="H3K27me3 10ºC (CPM)",ylab="H3K27me3 26ºC (CPM)",main="26ºC vs 10ºC")
-lines(x = c(0,20), y = c(0,20), type = "l", col="dodgerblue2"
+plot(x = log2((peak.cpm$k27_temp26_1 + peak.cpm$k27_temp26_2 +peak.cpm$k27_temp26_3)/3), y= log2((peak.cpm$k27_temp20_1 + peak.cpm$k27_temp20_2 + peak.cpm$k27_temp20_3)/3), pch = 20,xlab="H3K27me3 26ºC (CPM)",ylab="H3K27me3 20ºC (CPM)",main="26ºC vs 20ºC")
+lines(x = c(0,20), y = c(0,20), type = "l", col="red")
       
 ```
 
 ```{r}
 
-wilcox.test(x = (peak.cpm$k27_temp10_1 + peak.cpm$k27_temp10_2 +peak.cpm$k27_temp10_3)/3, y = (peak.cpm$k27_temp14_1 + peak.cpm$k27_temp14_2 +peak.cpm$k27_temp14_3)/3,alternative = "less")
-
 wilcox.test(x = (peak.cpm$k27_temp10_1 + peak.cpm$k27_temp10_2 +peak.cpm$k27_temp10_3)/3, y = (peak.cpm$k27_temp20_1 + peak.cpm$k27_temp20_2 +peak.cpm$k27_temp20_3)/3,alternative = "less")
-
-wilcox.test(x = (peak.cpm$k27_temp10_1 + peak.cpm$k27_temp10_2 +peak.cpm$k27_temp10_3)/3, y = (peak.cpm$k27_temp26_1 + peak.cpm$k27_temp26_2 +peak.cpm$k27_temp26_3)/3,alternative = "less")
 
 wilcox.test(x = (peak.cpm$k27_temp14_1 + peak.cpm$k27_temp14_2 +peak.cpm$k27_temp14_3)/3, y = (peak.cpm$k27_temp20_1 + peak.cpm$k27_temp20_2 +peak.cpm$k27_temp20_3)/3,alternative = "less")
 
-wilcox.test(x = (peak.cpm$k27_temp20_1 + peak.cpm$k27_temp20_2 +peak.cpm$k27_temp20_3)/3, y = (peak.cpm$k27_temp26_1 + peak.cpm$k27_temp26_2 +peak.cpm$k27_temp26_3)/3,alternative = "less")
+wilcox.test(x = (peak.cpm$k27_temp26_1 + peak.cpm$k27_temp26_2 +peak.cpm$k27_temp26_3)/3, y = (peak.cpm$k27_temp20_1 + peak.cpm$k27_temp20_2 +peak.cpm$k27_temp20_3)/3,alternative = "greater")
+
+wilcox.test(x = (peak.cpm$k27_temp10_1 + peak.cpm$k27_temp10_2 +peak.cpm$k27_temp10_3)/3, y = (peak.cpm$k27_temp14_1 + peak.cpm$k27_temp14_2 +peak.cpm$k27_temp14_3)/3,alternative = "less")
 
 boxplot((peak.cpm$k27_temp10_1 + peak.cpm$k27_temp10_2 +peak.cpm$k27_temp10_3)/3,
         (peak.cpm$k27_temp14_1 + peak.cpm$k27_temp14_2 +peak.cpm$k27_temp14_3)/3,
         (peak.cpm$k27_temp20_1 + peak.cpm$k27_temp20_2 +peak.cpm$k27_temp20_3)/3,
         (peak.cpm$k27_temp26_1 + peak.cpm$k27_temp26_2 + peak.cpm$k27_temp26_3)/3, y= c(0,5000),  outline=F,col=c("#00FFFF","#6699FF", "#CC33FF","#FF0000", "grey"),ylab="CPM",names=c("10ºC","14ºC","20ºC","26ºC"),las=2,cex.lab=1, cex.axis= 0.8)
 
-points(3,1290,pch=8,cex=0.7)
-points(3.9,1980,pch=8,cex=0.7)
-points(4,1980,pch=8,cex=0.7)
-points(4.1,1980,pch=8,cex=0.7)
+#points(3,1290,pch=8,cex=0.7)
+#points(3.9,1980,pch=8,cex=0.7)
+#points(4,1980,pch=8,cex=0.7)
+#points(4.1,1980,pch=8,cex=0.7)
 
 ```
 
@@ -1831,9 +1830,9 @@ linear.fit <- lmFit(log2.peak.cpm, experimental.design)
 
 head(log2.peak.cpm)
 
-contrast.matrix <- makeContrasts(k27_temp14-k27_temp10,
-                                 k27_temp20-k27_temp10,
-                                 k27_temp26-k27_temp10,
+contrast.matrix <- makeContrasts(k27_temp10-k27_temp20,
+                                 k27_temp14-k27_temp20,
+                                 k27_temp26-k27_temp20,
                                  levels=c("k27_temp10",
                                           "k27_temp14",
                                           "k27_temp20",
@@ -1844,72 +1843,72 @@ contrast.results <- eBayes(contrast.linear.fit)
 ```
 
 
-```{r temp14c-temp10c contrast}
-temp14c.vs.temp10c <- topTable(contrast.results, number=nrow(log2.peak.cpm),coef=1)#,sort.by="logFC")
-head(temp14c.vs.temp10c)
-peak.ids.14c.10c <- rownames(temp14c.vs.temp10c) 
-fold.change.14c.10c <- temp14c.vs.temp10c$logFC
-q.value.14c.10c <- temp14c.vs.temp10c$adj.P.Val
+```{r temp10c-temp20c contrast}
+temp10c.vs.temp20c <- topTable(contrast.results, number=nrow(log2.peak.cpm),coef=1)#,sort.by="logFC")
+head(temp10c.vs.temp20c)
+peak.ids.10c.20c <- rownames(temp10c.vs.temp20c) 
+fold.change.10c.20c <- temp10c.vs.temp20c$logFC
+q.value.10c.20c <- temp10c.vs.temp20c$adj.P.Val
 
-activated.peaks.temp14c.vs.temp10c <- peak.ids.14c.10c[fold.change.14c.10c > 1 & q.value.14c.10c < 0.05]
-repressed.peaks.temp14c.vs.temp10c <- peak.ids.14c.10c[fold.change.14c.10c < - 1 & q.value.14c.10c < 0.05]
+activated.peaks.temp10c.vs.temp20c <- peak.ids.10c.20c[fold.change.10c.20c > log2(1.5) & q.value.10c.20c < 0.05]
+repressed.peaks.temp10c.vs.temp20c <- peak.ids.10c.20c[fold.change.10c.20c < - log2(1.5) & q.value.10c.20c < 0.05]
 
-length(activated.peaks.temp14c.vs.temp10c)
-length(repressed.peaks.temp14c.vs.temp10c)
+length(activated.peaks.temp10c.vs.temp20c)
+length(repressed.peaks.temp10c.vs.temp20c)
 
-length(activated.peaks.temp14c.vs.temp10c)/length(peak.names)
+length(repressed.peaks.temp10c.vs.temp20c)/length(peak.names)
 
 ```
 
-```{r temp20c-temp10c contrast}
-temp20c.vs.temp10c <- topTable(contrast.results, number=nrow(log2.peak.cpm),coef=2,sort.by="logFC")
-head(temp20c.vs.temp10c)
-peak.ids.20c.10c <- rownames(temp20c.vs.temp10c)
-fold.change.20c.10c <- temp20c.vs.temp10c$logFC
-q.value.20c.10c <- temp20c.vs.temp10c$adj.P.Val
+```{r temp14c-temp20c contrast}
+temp14c.vs.temp20c <- topTable(contrast.results, number=nrow(log2.peak.cpm),coef=2,sort.by="logFC")
+head(temp14c.vs.temp20c)
+peak.ids.14c.20c <- rownames(temp14c.vs.temp20c)
+fold.change.14c.20c <- temp14c.vs.temp20c$logFC
+q.value.14c.20c <- temp14c.vs.temp20c$adj.P.Val
 
-activated.peaks.temp20c.vs.temp10c <- peak.ids.20c.10c[fold.change.20c.10c > 1 & q.value.20c.10c < 0.05]
-repressed.peaks.temp20c.vs.temp10c <- peak.ids.20c.10c[fold.change.20c.10c < - 1 & q.value.20c.10c < 0.05]
+activated.peaks.temp14c.vs.temp20c <- peak.ids.14c.20c[fold.change.14c.20c > log2(1.5) & q.value.14c.20c < 0.05]
+repressed.peaks.temp14c.vs.temp20c <- peak.ids.14c.20c[fold.change.14c.20c < - log2(1.5) & q.value.14c.20c < 0.05]
 
-length(activated.peaks.temp20c.vs.temp10c)
-length(repressed.peaks.temp20c.vs.temp10c)
+length(activated.peaks.temp14c.vs.temp20c)
+length(repressed.peaks.temp14c.vs.temp20c)
 
-length(activated.peaks.temp20c.vs.temp10c)/length(peak.names)
+length(repressed.peaks.temp14c.vs.temp20c)/length(peak.names)
 ```
 
 
-```{r temp26c-temp10c contrast}
-temp26c.vs.temp10c <- topTable(contrast.results, number=nrow(log2.peak.cpm),coef=3,sort.by="logFC")
-head(temp26c.vs.temp10c)
-peak.ids.26c.10c <- rownames(temp26c.vs.temp10c) 
-fold.change.26c.10c <- temp26c.vs.temp10c$logFC
-q.value.26c.10c <- temp26c.vs.temp10c$adj.P.Val
+```{r temp26c-temp20c contrast}
+temp26c.vs.temp20c <- topTable(contrast.results, number=nrow(log2.peak.cpm),coef=3,sort.by="logFC")
+head(temp26c.vs.temp20c)
+peak.ids.26c.20c <- rownames(temp26c.vs.temp20c) 
+fold.change.26c.20c <- temp26c.vs.temp20c$logFC
+q.value.26c.20c <- temp26c.vs.temp20c$adj.P.Val
 
-activated.peaks.temp26c.vs.temp10c <- peak.ids.26c.10c[fold.change.26c.10c > 1 & q.value.26c.10c < 0.05]
-repressed.peaks.temp26c.vs.temp10c <- peak.ids.26c.10c[fold.change.26c.10c < - 1 & q.value.26c.10c < 0.05]
+activated.peaks.temp26c.vs.temp20c <- peak.ids.26c.20c[fold.change.26c.20c > log2(1.5) & q.value.26c.20c < 0.05]
+repressed.peaks.temp26c.vs.temp20c <- peak.ids.26c.20c[fold.change.26c.20c < - log2(1.5) & q.value.26c.20c < 0.05]
 
-length(activated.peaks.temp26c.vs.temp10c)
-length(repressed.peaks.temp26c.vs.temp10c)
+length(activated.peaks.temp26c.vs.temp20c)
+length(repressed.peaks.temp26c.vs.temp20c)
 
-length(activated.peaks.temp26c.vs.temp10c)/length(peak.names)
+length(activated.peaks.temp26c.vs.temp20c)/length(peak.names)
 
 ```
 
 
 
 ```{r}
-wilcox.test(x = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp10",1:3,sep="_")]), y = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp14",1:3,sep="_")]),alternative = "less")
+wilcox.test(x = rowMeans(2^log2.peak.cpm[activated.peaks.temp10c.vs.temp20c,paste("k27_temp10",1:3,sep="_")]), y = rowMeans(2^log2.peak.cpm[activated.peaks.temp10c.vs.temp20c,paste("k27_temp20",1:3,sep="_")]),alternative = "less")
 
-wilcox.test(x = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp10",1:3,sep="_")]), y = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp20",1:3,sep="_")]),alternative = "less")
+wilcox.test(x = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp20c,paste("k27_temp14",1:3,sep="_")]), y = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp20c,paste("k27_temp20",1:3,sep="_")]),alternative = "less")
 
-wilcox.test(x = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp10",1:3,sep="_")]), y = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp26",1:3,sep="_")]),alternative = "less")
+wilcox.test(x = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp20c,paste("k27_temp26",1:3,sep="_")]), y = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp20c,paste("k27_temp26",1:3,sep="_")]),alternative = "less")
 
-wilcox.test(x = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp14",1:3,sep="_")]), y = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp20",1:3,sep="_")]),alternative = "less")
+wilcox.test(x = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp14",1:3,sep="_")]), y = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp20",1:3,sep="_")]),alternative = "greater")
 
 wilcox.test(x = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp20",1:3,sep="_")]), y = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp26",1:3,sep="_")]),alternative = "less")
 
 #jpeg(filename = "images/k27_dif_occupation_barplot.jpg",res = 250,width = 600,height = 1000)
-boxplot(rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp10",1:3,sep="_")]),
+boxplot(rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp20c,paste("k27_temp10",1:3,sep="_")]),
 rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp14",1:3,sep="_")]),
 rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp20",1:3,sep="_")]),
 rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp26",1:3,sep="_")]),outline=F,col=c("#00FFFF","#6699FF", "#CC33FF", "#FF0000"),ylab="CPM",names=c("10ºC","14ºC","20ºC","26ºC"),las=2,cex.lab=1.3)
@@ -2182,13 +2181,14 @@ peak.cpm.k4 <- as.data.frame(peak.cpm.k4)
 #Scatterplots representing changes observed between temperature conditions
 
 ```{r}
-plot(x = log2((peak.cpm.k4$k4_temp10_1 + peak.cpm.k4$k4_temp10_2 +peak.cpm.k4$k4_temp10_3)/3), y= log2((peak.cpm.k4$k4_temp14_1 + peak.cpm.k4$k4_temp14_2 + peak.cpm.k4$k4_temp14_3)/3), pch = 20,xlab="H3K4me3 10ºC (CPM)",ylab="H3K4me3 14ºC (CPM)",main="14ºC vs 10ºC")
-
-plot(x = log2((peak.cpm.k4$k4_temp10_1 + peak.cpm.k4$k4_temp10_1 +peak.cpm.k4$k4_temp10_1)/3), y= log2((peak.cpm.k4$k4_temp20_1 + peak.cpm.k4$k4_temp20_2 + peak.cpm.k4$k4_temp20_3)/3), pch = 20,xlab="H3K4me3 10ºC (CPM)",ylab="H3K4me3 20ºC (CPM)",main="20ºC vs 10ºC")
+plot(x = log2((peak.cpm.k4$k4_temp10_1 + peak.cpm.k4$k4_temp10_2 +peak.cpm.k4$k4_temp10_3)/3), y= log2((peak.cpm.k4$k4_temp20_1 + peak.cpm.k4$k4_temp20_2 + peak.cpm.k4$k4_temp20_3)/3), pch = 20,xlab="H3K4me3 10ºC (CPM)",ylab="H3K4me3 20ºC (CPM)",main="10ºC vs 20ºC")
 lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
 
-plot(x = log2((peak.cpm.k4$k4_temp10_1 + peak.cpm.k4$k4_temp10_1 +peak.cpm.k4$k4_temp10_1)/3), y= log2((peak.cpm.k4$k4_temp26_1 + peak.cpm.k4$k4_temp26_2 + peak.cpm.k4$k4_temp26_3)/3), pch = 20,xlab="H3K4me3 10ºC (CPM)",ylab="H3K4me3 26ºC (CPM)",main="26ºC vs 10ºC")
-lines(x = c(0,20), y = c(0,20), type = "l", col="dodgerblue2"
+plot(x = log2((peak.cpm.k4$k4_temp14_1 + peak.cpm.k4$k4_temp14_1 +peak.cpm.k4$k4_temp14_1)/3), y= log2((peak.cpm.k4$k4_temp20_1 + peak.cpm.k4$k4_temp20_2 + peak.cpm.k4$k4_temp20_3)/3), pch = 20,xlab="H3K4me3 14ºC (CPM)",ylab="H3K4me3 20ºC (CPM)",main="14ºC vs 20ºC")
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+plot(x = log2((peak.cpm.k4$k4_temp26_1 + peak.cpm.k4$k4_temp26_1 +peak.cpm.k4$k4_temp26_1)/3), y= log2((peak.cpm.k4$k4_temp20_1 + peak.cpm.k4$k4_temp20_2 + peak.cpm.k4$k4_temp20_3)/3), pch = 20,xlab="H3K4me3 26ºC (CPM)",ylab="H3K4me3 20ºC (CPM)",main="26ºC vs 20ºC")
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
       
 ```
 
@@ -2201,15 +2201,15 @@ boxplot((peak.cpm.k4$k4_temp10_1 + peak.cpm.k4$k4_temp10_2 +peak.cpm.k4$k4_temp1
         (peak.cpm.k4$k4_temp26_1 + peak.cpm.k4$k4_temp26_2+peak.cpm.k4$k4_temp26_3)/3,
         outline=F,col=c("#00FFFF","#6699FF","#CC33FF","#FF0000"),ylab="CPM",names=c("10ºC","14ºC","20ºC","26ºC"),las=2,cex.lab=1)
 
-wilcox.test(x = (peak.cpm.k4$k4_temp10_1 + peak.cpm.k4$k4_temp10_2 + peak.cpm.k4$k4_temp10_3)/3, y = (peak.cpm.k4$k4_temp14_1 + peak.cpm.k4$k4_temp14_2 +peak.cpm.k4$k4_temp14_3)/3,alternative = "less")
-
-wilcox.test(x = (peak.cpm.k4$k4_temp10_1 + peak.cpm.k4$k4_temp10_2 +peak.cpm.k4$k4_temp10_3)/3, y = (peak.cpm.k4$k4_temp20_1 + peak.cpm.k4$k4_temp20_2 +peak.cpm.k4$k4_temp20_3)/3,alternative = "less")
-
-wilcox.test(x = (peak.cpm.k4$k4_temp10_1 + peak.cpm.k4$k4_temp10_2 +peak.cpm.k4$k4_temp10_3)/3, y = (peak.cpm.k4$k4_temp26_1 + peak.cpm.k4$k4_temp26_2 +peak.cpm.k4$k4_temp26_3)/3,alternative = "less")
+wilcox.test(x = (peak.cpm.k4$k4_temp10_1 + peak.cpm.k4$k4_temp10_2 + peak.cpm.k4$k4_temp10_3)/3, y = (peak.cpm.k4$k4_temp20_1 + peak.cpm.k4$k4_temp20_2 +peak.cpm.k4$k4_temp20_3)/3,alternative = "less")
 
 wilcox.test(x = (peak.cpm.k4$k4_temp14_1 + peak.cpm.k4$k4_temp14_2 +peak.cpm.k4$k4_temp14_3)/3, y = (peak.cpm.k4$k4_temp20_1 + peak.cpm.k4$k4_temp20_2 +peak.cpm.k4$k4_temp20_3)/3,alternative = "less")
 
-wilcox.test(x = (peak.cpm.k4$k4_temp20_1 + peak.cpm.k4$k4_temp20_2 +peak.cpm.k4$k4_temp20_3)/3, y = (peak.cpm.k4$k4_temp26_1 + peak.cpm.k4$k4_temp26_2 +peak.cpm.k4$k4_temp26_3)/3,alternative = "less")
+wilcox.test(x = (peak.cpm.k4$k4_temp10_1 + peak.cpm.k4$k4_temp10_2 +peak.cpm.k4$k4_temp10_3)/3, y = (peak.cpm.k4$k4_temp26_1 + peak.cpm.k4$k4_temp26_2 +peak.cpm.k4$k4_temp26_3)/3,alternative = "less")
+
+wilcox.test(x = (peak.cpm.k4$k4_temp26_1 + peak.cpm.k4$k4_temp26_2 +peak.cpm.k4$k4_temp26_3)/3, y = (peak.cpm.k4$k4_temp20_1 + peak.cpm.k4$k4_temp20_2 +peak.cpm.k4$k4_temp20_3)/3,alternative = "greater")
+
+
 
 
 
@@ -2388,7 +2388,7 @@ experimental.design
 
 linear.fit <- lmFit(mat.normalized.peak.cpm, experimental.design)
 
-contrast.matrix <- makeContrasts(k4_temp14-k4_temp10,k4_temp20-k4_temp10,k4_temp26-k4_temp10,levels=c("k4_temp10","k4_temp14","k4_temp20","k4_temp26"))
+contrast.matrix <- makeContrasts(k4_temp10-k4_temp20,k4_temp14-k4_temp20,k4_temp26-k4_temp20,levels=c("k4_temp10","k4_temp14","k4_temp20","k4_temp26"))
 
 contrast.linear.fit <- contrasts.fit(linear.fit, contrast.matrix)
 contrast.results <- eBayes(contrast.linear.fit)
@@ -2396,54 +2396,55 @@ contrast.results <- eBayes(contrast.linear.fit)
 ```
 
 
-```{r temp14c-temp10c contrast}
-temp14c.vs.temp10c <- topTable(contrast.results, number=nrow(mat.normalized.peak.cpm),coef=1,sort.by="logFC")
-head(temp14c.vs.temp10c)
-peak.ids.14c.10c <- rownames(temp14c.vs.temp10c) 
-fold.change.14c.10c <- temp14c.vs.temp10c$logFC
-q.value.14c.10c <- temp14c.vs.temp10c$adj.P.Val
-
-activated.peaks.temp14c.vs.temp10c <- peak.ids.14c.10c[fold.change.14c.10c > 1 & q.value.14c.10c < 0.05]
-repressed.peaks.temp14c.vs.temp10c <- peak.ids.14c.10c[fold.change.14c.10c < - 1 & q.value.14c.10c < 0.05]
-
-length(activated.peaks.temp14c.vs.temp10c)
-length(repressed.peaks.temp14c.vs.temp10c)
-
-```
+```{r temp10c-temp20c contrast}
+temp10c.vs.temp20c <- topTable(contrast.results, number=nrow(mat.normalized.peak.cpm),coef=1,sort.by="logFC")
+head(temp10c.vs.temp20c)
+peak.ids.10c.20c <- rownames(temp10c.vs.temp20c) 
+fold.change.10c.20c <- temp10c.vs.temp20c$logFC
+q.value.10c.20c <- temp10c.vs.temp20c$adj.P.Val
 
 
-```{r temp20c-temp10c contrast}
-temp20c.vs.temp10c <- topTable(contrast.results, number=nrow(mat.normalized.peak.cpm),coef=2,sort.by="logFC")
-head(temp20c.vs.temp10c)
-peak.ids.20c.10c <- rownames(temp20c.vs.temp10c) 
-fold.change.20c.10c <- temp20c.vs.temp10c$logFC
-q.value.20c.10c <- temp20c.vs.temp10c$adj.P.Val
+activated.peaks.temp10c.vs.temp20c <- peak.ids.10c.20c[fold.change.10c.20c > log2(1.5) & q.value.10c.20c < 0.05]
+repressed.peaks.temp10c.vs.temp20c <- peak.ids.10c.20c[fold.change.10c.20c < - log2(1.5) & q.value.10c.20c < 0.05]
 
-activated.peaks.temp20c.vs.temp10c <- peak.ids.20c.10c[fold.change.20c.10c > 1 & q.value.20c.10c < 0.05]
-repressed.peaks.temp20c.vs.temp10c <- peak.ids.20c.10c[fold.change.20c.10c < - 1 & q.value.20c.10c < 0.05]
-
-length(activated.peaks.temp20c.vs.temp10c)
-length(activated.peaks.temp20c.vs.temp10c)/length(peak.names)
-length(repressed.peaks.temp20c.vs.temp10c)
-
+length(activated.peaks.temp10c.vs.temp20c)
+length(repressed.peaks.temp10c.vs.temp20c)
 
 ```
 
 
-```{r temp26c-temp10c contrast}
-temp26c.vs.temp10c <- topTable(contrast.results, number=nrow(mat.normalized.peak.cpm),coef=3,sort.by="logFC")
-head(temp26c.vs.temp10c)
-peak.ids.26c.10c <- rownames(temp26c.vs.temp10c) 
-fold.change.26c.10c <- temp26c.vs.temp10c$logFC
-q.value.26c.10c <- temp26c.vs.temp10c$adj.P.Val
+```{r temp14c-temp20c contrast}
+temp14c.vs.temp20c <- topTable(contrast.results, number=nrow(mat.normalized.peak.cpm),coef=2,sort.by="logFC")
+head(temp14c.vs.temp20c)
+peak.ids.14c.20c <- rownames(temp14c.vs.temp20c) 
+fold.change.14c.20c <- temp14c.vs.temp20c$logFC
+q.value.14c.20c <- temp14c.vs.temp20c$adj.P.Val
+
+activated.peaks.temp14c.vs.temp20c <- peak.ids.14c.20c[fold.change.14c.20c > log2(1.5) & q.value.14c.20c < 0.05]
+repressed.peaks.temp14c.vs.temp20c <- peak.ids.14c.20c[fold.change.14c.20c < - log2(1.5) & q.value.14c.20c < 0.05]
+
+length(activated.peaks.temp14c.vs.temp20c)
+length(repressed.peaks.temp14c.vs.temp20c)/length(peak.names)
+length(repressed.peaks.temp14c.vs.temp20c)
 
 
-activated.peaks.temp26c.vs.temp10c <- peak.ids.26c.10c[fold.change.26c.10c > 1 & q.value.26c.10c < 0.05]
-repressed.peaks.temp26c.vs.temp10c <- peak.ids.26c.10c[fold.change.26c.10c < - 1 & q.value.26c.10c < 0.05]
+```
 
-length(activated.peaks.temp26c.vs.temp10c
-length(activated.peaks.temp26c.vs.temp10c)/length(peak.names)
-length(repressed.peaks.temp26c.vs.temp10c)
+
+```{r temp26c-temp20c contrast}
+temp26c.vs.temp20c <- topTable(contrast.results, number=nrow(mat.normalized.peak.cpm),coef=3,sort.by="logFC")
+head(temp26c.vs.temp20c)
+peak.ids.26c.20c <- rownames(temp26c.vs.temp20c) 
+fold.change.26c.20c <- temp26c.vs.temp20c$logFC
+q.value.26c.20c <- temp26c.vs.temp20c$adj.P.Val
+
+
+activated.peaks.temp26c.vs.temp20c <- peak.ids.26c.20c[fold.change.26c.20c > log2(1.5) & q.value.26c.20c < 0.05]
+repressed.peaks.temp26c.vs.temp20c <- peak.ids.26c.20c[fold.change.26c.20c < - log2(1.5) & q.value.26c.20c < 0.05]
+
+length(activated.peaks.temp26c.vs.temp20c)
+length(activated.peaks.temp26c.vs.temp20c)/length(peak.names)
+length(repressed.peaks.temp26c.vs.temp20c)
 ```
 
 ```{r}
