@@ -3027,6 +3027,211 @@ rowMeans(2^mat.normalized.peak.cpm[activated.peaks.temp26c.vs.temp20c.k4,paste("
 
 
 ```
+```{r gene_annotation_k4_activated_10vs20}
+
+library(TxDb.Otauri.JGI)
+txdb <- TxDb.Otauri.JGI
+ostta.genes <- as.data.frame(genes(txdb))
+head(ostta.genes)
+
+
+matrix.activated.peaks.temp10c.vs.temp20c.k4 <- as.matrix(t(as.data.frame(strsplit(x = activated.peaks.temp10c.vs.temp20c.k4, split = "_"))))
+rownames(matrix.activated.peaks.temp10c.vs.temp20c.k4) <- NULL
+head(matrix.activated.peaks.temp10c.vs.temp20c.k4)
+write.table(matrix.activated.peaks.temp10c.vs.temp20c.k4, file = "chipseq_results/h3k4me3/limma.k4.activated.peaks.temp10.vs.temp20.bed", sep = "\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
+
+activated.peaks.10vs20.k4 <- read.table(file = "chipseq_results/h3k4me3/limma.k4.activated.peaks.temp10.vs.temp20.bed", sep = "\t")
+colnames(activated.peaks.10vs20.k4) <- c("chr", "start", "end")
+
+activated.genes.10.20.k4 <- vector(mode = "character",length = nrow(activated.peaks.10vs20.k4))
+peak.annotation.10.20.k4 <- vector(mode = "character",length = nrow(activated.peaks.10vs20.k4))
+
+for(i in 1:nrow(activated.peaks.10vs20.k4))
+{
+ current.chr <- activated.peaks.10vs20.k4[i,1]
+ current.start <- activated.peaks.10vs20.k4[i,2]
+ current.end <- activated.peaks.10vs20.k4[i,3]
+
+ complete.gene.body <- subset(ostta.genes, 
+                              seqnames == current.chr & 
+                               start >= current.start & 
+                               end <= current.end)
+ 
+ overlap.tss.pos.strand <- subset(ostta.genes, 
+                              seqnames == current.chr & 
+                              start >= current.start & start <= current.end & 
+                              strand == "+")
+ 
+ overlap.tss.neg.strand <- subset(ostta.genes, 
+                              seqnames == current.chr & 
+                              end >= current.start & end <= current.end & 
+                              strand == "-")
+ 
+ overlap.tes.pos.strand <- subset(ostta.genes, 
+                              seqnames == current.chr & 
+                              end >= current.start & end <= current.end & 
+                              strand == "+")
+ 
+ overlap.tes.neg.strand <- subset(ostta.genes, 
+                              seqnames == current.chr & 
+                              start >= current.start & start <= current.end & 
+                              strand == "-")
+
+ inside.gene.body <- subset(ostta.genes, seqnames == current.chr & 
+                             start <= current.start & end >= current.end)
+ 
+ 
+ if(nrow(complete.gene.body) > 0)
+ {
+  activated.genes.10.20.k4[i] <- paste(unlist(complete.gene.body$gene_id),collapse = ",")
+  peak.annotation.10.20.k4[i] <- "gene.body"
+ } else if(nrow(overlap.tss.pos.strand) > 0)
+ {
+  activated.genes.10.20.k4[i] <- paste(unlist(overlap.tss.pos.strand$gene_id),collapse = ",")
+  peak.annotation.10.20.k4[i] <- "TSS"
+ } else if(nrow(overlap.tss.neg.strand) > 0)
+ {
+  activated.genes.10.20.k4[i] <- paste(unlist(overlap.tss.neg.strand$gene_id),collapse = ",")
+  peak.annotation.10.20.k4[i] <- "TSS"
+ } else if(nrow(overlap.tes.pos.strand) > 0)
+ {
+  activated.genes.10.20.k4[i] <- paste(unlist(overlap.tes.pos.strand$gene_id),collapse = ",")
+  peak.annotation.10.20.k4[i] <- "TES"
+ } else if(nrow(overlap.tes.neg.strand) > 0)
+ {
+  activated.genes.10.20.k4[i] <- paste(unlist(overlap.tes.neg.strand$gene_id),collapse = ",")
+  peak.annotation.10.20.k4[i] <- "TES"
+ } else if(nrow(inside.gene.body) > 0)
+ {
+  activated.genes.10.20.k4[i] <- paste(unlist(inside.gene.body$gene_id),collapse = ",")
+  peak.annotation.10.20.k4[i] <- "internal.gene.body"
+ } else
+ {
+  peak.annotation.10.20.k4[i] <- "intergenic"
+ }
+}
+
+
+temp10vs20.peak.annotation.activated.k4 <- cbind(activated.peaks.10vs20.k4,data.frame(peak.annotation.10.20.k4,activated.genes.10.20.k4))
+head(temp10vs20.peak.annotation.activated.k4)
+
+
+write.table(x = temp10vs20.peak.annotation.activated.k4,file = "tables/H3K4me3_activated_10vs20_peak_annotation.tsv",quote = F,sep = "\t",row.names = F) 
+all.k4.activated.10vs20.genes <- (unlist(sapply(X =temp10vs20.peak.annotation.activated.k4$activated.genes.10.20.k4,
+FUN = function(x) {strsplit(x,",")[[1]]})))
+names(all.k4.activated.10vs20.genes) <- NULL
+
+write.table(x = all.k4.activated.10vs20.genes,file = "tables/H3K4me3_activated_10vs20_genes.tsv",quote = F,sep = "\t",row.names = F) 
+
+length(all.k4.activated.10vs20.genes)
+length(all.k4.activated.10vs20.genes)/7668
+
+
+```
+
+
+```{r gene_annotation_k4_activated_26vs20}
+
+library(TxDb.Otauri.JGI)
+txdb <- TxDb.Otauri.JGI
+ostta.genes <- as.data.frame(genes(txdb))
+head(ostta.genes)
+
+
+matrix.activated.peaks.temp26c.vs.temp20c.k4 <- as.matrix(t(as.data.frame(strsplit(x = activated.peaks.temp26c.vs.temp20c.k4, split = "_"))))
+rownames(matrix.activated.peaks.temp26c.vs.temp20c.k4) <- NULL
+head(matrix.activated.peaks.temp26c.vs.temp20c.k4)
+write.table(matrix.activated.peaks.temp26c.vs.temp20c.k4, file = "chipseq_results/h3k4me3/limma.k4.activated.peaks.temp26.vs.temp20.bed", sep = "\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
+
+activated.peaks.26vs20.k4 <- read.table(file = "chipseq_results/h3k4me3/limma.k4.activated.peaks.temp26.vs.temp20.bed", sep = "\t")
+colnames(activated.peaks.26vs20.k4) <- c("chr", "start", "end")
+
+activated.genes.26.20.k4 <- vector(mode = "character",length = nrow(activated.peaks.26vs20.k4))
+peak.annotation.26.20.k4 <- vector(mode = "character",length = nrow(activated.peaks.26vs20.k4))
+
+for(i in 1:nrow(activated.peaks.26vs20.k4))
+{
+ current.chr <- activated.peaks.26vs20.k4[i,1]
+ current.start <- activated.peaks.26vs20.k4[i,2]
+ current.end <- activated.peaks.26vs20.k4[i,3]
+
+ complete.gene.body <- subset(ostta.genes, 
+                              seqnames == current.chr & 
+                               start >= current.start & 
+                               end <= current.end)
+ 
+ overlap.tss.pos.strand <- subset(ostta.genes, 
+                              seqnames == current.chr & 
+                              start >= current.start & start <= current.end & 
+                              strand == "+")
+ 
+ overlap.tss.neg.strand <- subset(ostta.genes, 
+                              seqnames == current.chr & 
+                              end >= current.start & end <= current.end & 
+                              strand == "-")
+ 
+ overlap.tes.pos.strand <- subset(ostta.genes, 
+                              seqnames == current.chr & 
+                              end >= current.start & end <= current.end & 
+                              strand == "+")
+ 
+ overlap.tes.neg.strand <- subset(ostta.genes, 
+                              seqnames == current.chr & 
+                              start >= current.start & start <= current.end & 
+                              strand == "-")
+
+ inside.gene.body <- subset(ostta.genes, seqnames == current.chr & 
+                             start <= current.start & end >= current.end)
+ 
+ 
+ if(nrow(complete.gene.body) > 0)
+ {
+  activated.genes.26.20.k4[i] <- paste(unlist(complete.gene.body$gene_id),collapse = ",")
+  peak.annotation.26.20.k4[i] <- "gene.body"
+ } else if(nrow(overlap.tss.pos.strand) > 0)
+ {
+  activated.genes.26.20.k4[i] <- paste(unlist(overlap.tss.pos.strand$gene_id),collapse = ",")
+  peak.annotation.26.20.k4[i] <- "TSS"
+ } else if(nrow(overlap.tss.neg.strand) > 0)
+ {
+  activated.genes.26.20.k4[i] <- paste(unlist(overlap.tss.neg.strand$gene_id),collapse = ",")
+  peak.annotation.26.20.k4[i] <- "TSS"
+ } else if(nrow(overlap.tes.pos.strand) > 0)
+ {
+  activated.genes.26.20.k4[i] <- paste(unlist(overlap.tes.pos.strand$gene_id),collapse = ",")
+  peak.annotation.26.20.k4[i] <- "TES"
+ } else if(nrow(overlap.tes.neg.strand) > 0)
+ {
+  activated.genes.26.20.k4[i] <- paste(unlist(overlap.tes.neg.strand$gene_id),collapse = ",")
+  peak.annotation.26.20.k4[i] <- "TES"
+ } else if(nrow(inside.gene.body) > 0)
+ {
+  activated.genes.26.20.k4[i] <- paste(unlist(inside.gene.body$gene_id),collapse = ",")
+  peak.annotation.26.20.k4[i] <- "internal.gene.body"
+ } else
+ {
+  peak.annotation.26.20.k4[i] <- "intergenic"
+ }
+}
+
+
+temp26vs20.peak.annotation.activated.k4 <- cbind(activated.peaks.26vs20.k4,data.frame(peak.annotation.26.20.k4,activated.genes.26.20.k4))
+head(temp26vs20.peak.annotation.activated.k4)
+
+
+write.table(x = temp26vs20.peak.annotation.activated.k4,file = "tables/H3K4me3_activated_26vs20_peak_annotation.tsv",quote = F,sep = "\t",row.names = F) 
+all.k4.activated.26vs20.genes <- (unlist(sapply(X =temp26vs20.peak.annotation.activated.k4$activated.genes.26.20.k4,
+FUN = function(x) {strsplit(x,",")[[1]]})))
+names(all.k4.activated.26vs20.genes) <- NULL
+
+write.table(x = all.k4.activated.26vs20.genes,file = "tables/H3K4me3_activated_26vs20_genes.tsv",quote = F,sep = "\t",row.names = F) 
+
+length(all.k4.activated.26vs20.genes)
+length(all.k4.activated.26vs20.genes)/7668
+
+
+```
+
 
 ```{r k4_peaks_annotation}
 library(TxDb.Otauri.JGI)
