@@ -2154,20 +2154,84 @@ library(clusterProfiler)
 library(enrichplot)
 library(org.Otauriv5.eg.db)
 
-k27.10vs20.enrichment <- enrichGO(gene = all.k27.10vs20.genes, pvalueCutoff = 0.05,qvalueCutoff = 0.05,
+k27.10vs20.activated.enrichment <- enrichGO(gene = all.k27.activated.10vs20.genes, pvalueCutoff = 0.05,qvalueCutoff = 0.05,
                        OrgDb = org.Otauriv5.eg.db,
                        ont = "BP", 
                        keyType = "GID")
-k27.10vs20.enrichment.df <- as.data.frame(k27.10vs20.enrichment)
+k27.10vs20.activated.enrichment.df <- as.data.frame(k27.10vs20.activated.enrichment)
 
-k27.10vs20.go.terms <- enrichGO(gene = all.k27.10vs20.genes, pvalueCutoff = 1,qvalueCutoff = 1,
+
+write.table(x = k27.10vs20.activated.enrichment.df, file = "go_enrichment_k27.activated.10vs20.tsv",quote = F,sep = "\t",row.names = F)
+
+
+k27.10vs20.repressed.enrichment <- enrichGO(gene = all.k27.repressed.10vs20.genes, pvalueCutoff = 0.05,qvalueCutoff = 0.05,
                        OrgDb = org.Otauriv5.eg.db,
                        ont = "BP", 
                        keyType = "GID")
-k27.10vs20.go.terms.df <- as.data.frame(k27.10vs20.go.terms)
+k27.10vs20.repressed.enrichment.df <- as.data.frame(k27.10vs20.repressed.enrichment)
+
+k27.10vs20.repressed.enrichment <- enrichGO(gene = all.k27.repressed.10vs20.genes, pvalueCutoff = 1,qvalueCutoff = 1,
+                       OrgDb = org.Otauriv5.eg.db,
+                       ont = "BP", 
+                       keyType = "GID")
+k27.10vs20.repressed.enrichment.df <- as.data.frame(k27.10vs20.repressed.enrichment)
 
 
-write.table(x = k27.10vs20.go.terms.df, file = "go_enrichment_k27.activated.10vs20.tsv",quote = F,sep = "\t",row.names = F)
+write.table(x = k27.10vs20.repressed.enrichment.df, file = "go_enrichment_k27.activated.10vs20.tsv",quote = F,sep = "\t",row.names = F)
+
+
+
+
+#treeplot(x = pairwise_termsim(k27.10vs20.repressed.enrichment.df))
+
+#jpeg(filename = "images/h3k27me3_revigo_treemap.jpg",res = 300,width = 1400,height = 900)
+
+library(treemap)
+
+revigo.names <- c("term_ID","description","frequency","value","uniqueness","dispensability","representative");
+revigo.data <- rbind(c("GO:0000003","reproduction",1.1154428097959028,0.35455656429893245,1,-0,"reproduction"),
+                     c("GO:0001887","selenium compound metabolic process",0.0031524026730797234,0.33700103077893184,0.9533150770650385,0.05458229,"selenium compound metabolic process"),
+                     c("GO:0002376","immune system process",0.9427113541805001,0.3647586988245658,1,-0,"immune system process"),
+                     c("GO:0006099","tricarboxylic acid cycle",0.5040640114710979,0.40392617241762396,0.926776665398285,0.08410724,"tricarboxylic acid cycle"),
+                     c("GO:0006103","2-oxoglutarate metabolic process",0.017201421622692253,1.0244715302516616,0.900036020673125,0.06139517,"2-oxoglutarate metabolic process"),
+                     c("GO:0006525","arginine metabolic process",0.425056765430777,0.6822743332528265,0.8414193966872098,0.31651609,"2-oxoglutarate metabolic process"),
+                     c("GO:0006526","arginine biosynthetic process",0.2840884163423315,0.6822743332528265,0.8197776139390401,0.55006631,"2-oxoglutarate metabolic process"),
+                     c("GO:0006631","fatty acid metabolic process",1.936945636803579,0.661709121736741,0.8363267566648038,0.47549756,"2-oxoglutarate metabolic process"),
+                     c("GO:0019344","cysteine biosynthetic process",0.13937119746048948,0.3647586988245658,0.8182547791420745,0.64560862,"2-oxoglutarate metabolic process"),
+                     c("GO:0019541","propionate metabolic process",0.06516280052453614,0.3121779710446768,0.8755895054022355,0.56447247,"2-oxoglutarate metabolic process"),
+                     c("GO:0030258","lipid modification",0.7621839254181456,0.3121779710446768,0.9072895155224819,0.63919224,"2-oxoglutarate metabolic process"),
+                     c("GO:0042128","nitrate assimilation",0.06915814433459262,0.39602842215015766,0.872968299057155,0.3471953,"2-oxoglutarate metabolic process"),
+                     c("GO:0043648","dicarboxylic acid metabolic process",1.2968131796952338,0.34085777107681914,0.8591201035057788,0.53948233,"2-oxoglutarate metabolic process"),
+                     c("GO:0046487","glyoxylate metabolic process",0.1082932886998466,0.42431833266535085,0.8788025002701066,0.59108986,"2-oxoglutarate metabolic process"),
+                     c("GO:0007017","microtubule-based process",1.4522840599239462,2.9055417594493695,0.9846414615040694,0.01131391,"microtubule-based process"),
+                    );
+
+stuff <- data.frame(revigo.data);
+names(stuff) <- revigo.names;
+
+stuff$value <- as.numeric( as.character(stuff$value) );
+stuff$frequency <- as.numeric( as.character(stuff$frequency) );
+stuff$uniqueness <- as.numeric( as.character(stuff$uniqueness) );
+stuff$dispensability <- as.numeric( as.character(stuff$dispensability) );
+
+
+treemap(
+ stuff,
+ index = c("representative","description"),
+ vSize = "value",
+ type = "categorical",
+ vColor = "representative",
+ title = "",
+ inflate.labels = TRUE,
+ lowerbound.cex.labels = 0,
+ position.legend = "none"
+)
+
+#dev.off()
+
+
+
+
 
 ```
 
@@ -2273,6 +2337,7 @@ length(all.k27.activated.14vs20.genes)/7668
 
 ```
 
+
 ```{r gene_annotation_k27_repressed_14vs20}
 
 library(TxDb.Otauri.JGI)
@@ -2372,6 +2437,29 @@ write.table(x = all.k27.repressed.14vs20.genes,file = "tables/H3K27me3_repressed
 length(all.k27.repressed.14vs20.genes)
 length(all.k27.repressed.14vs20.genes)/7668
 
+
+```
+
+```{r k27_temp14vs20_go_terms}
+
+k27.14vs20.activated.enrichment <- enrichGO(gene = all.k27.activated.14vs20.genes, pvalueCutoff = 1 ,qvalueCutoff = 1,
+                       OrgDb = org.Otauriv5.eg.db,
+                       ont = "BP", 
+                       keyType = "GID")
+k27.14vs20.activated.enrichment.df <- as.data.frame(k27.14vs20.activated.enrichment)
+
+
+write.table(x = k27.14vs20.activated.enrichment.df, file = "go_enrichment_k27.activated.14vs20.tsv",quote = F,sep = "\t",row.names = F)
+
+
+k27.14vs20.repressed.enrichment <- enrichGO(gene = all.k27.repressed.14vs20.genes, pvalueCutoff = 1 ,qvalueCutoff = 1,
+                       OrgDb = org.Otauriv5.eg.db,
+                       ont = "BP", 
+                       keyType = "GID")
+k27.14vs20.repressed.enrichment.df <- as.data.frame(k27.14vs20.repressed.enrichment)
+
+
+write.table(x = k27.14vs20.repressed.enrichment.df, file = "go_enrichment_k27.repressed.14vs20.tsv",quote = F,sep = "\t",row.names = F)
 
 ```
 
@@ -2478,27 +2566,10 @@ length(all.k27.activated.26vs20.genes)/7668
 
 
 ```
-```{r k27_temp26vs20_go_terms}
-library(clusterProfiler)
-library(enrichplot)
-library(org.Otauriv5.eg.db)
-
-k27.26vs20.enrichment <- enrichGO(gene = all.k27.26vs20.genes, pvalueCutoff = 0.05,qvalueCutoff = 0.05,
-                       OrgDb = org.Otauriv5.eg.db,
-                       ont = "BP", 
-                       keyType = "GID")
-k27.26vs20.enrichment.df <- as.data.frame(k27.26vs20.enrichment)
-
-k27.26vs20.go.terms <- enrichGO(gene = all.k27.26vs20.genes, pvalueCutoff = 1,qvalueCutoff = 1,
-                       OrgDb = org.Otauriv5.eg.db,
-                       ont = "BP", 
-                       keyType = "GID")
-k27.26vs20.go.terms.df <- as.data.frame(k27.26vs20.go.terms)
 
 
-write.table(x = k27.26vs20.go.terms.df, file = "go_enrichment_k27.26vs20.tsv",quote = F,sep = "\t",row.names = F)
 
-```
+
 ```{r gene_annotation_k27_repressed_26vs20}
 
 library(TxDb.Otauri.JGI)
@@ -2601,6 +2672,33 @@ length(all.k27.repressed.26vs20.genes)/7668
 
 ```
 
+
+```{r k27_temp26vs20_go_terms}
+library(clusterProfiler)
+library(enrichplot)
+library(org.Otauriv5.eg.db)
+
+k27.26vs20.activated.enrichment <- enrichGO(gene = all.k27.activated.26vs20.genes, pvalueCutoff = 0.05,qvalueCutoff = 0.05,
+                       OrgDb = org.Otauriv5.eg.db,
+                       ont = "BP", 
+                       keyType = "GID")
+k27.26vs20.activated.enrichment.df <- as.data.frame(k27.26vs20.activated.enrichment)
+
+k27.26vs20.activated.enrichment <- enrichGO(gene = all.k27.activated.26vs20.genes, pvalueCutoff = 1,qvalueCutoff = 1,
+                       OrgDb = org.Otauriv5.eg.db,
+                       ont = "BP", 
+                       keyType = "GID")
+k27.26vs20.activated.enrichment.df <- as.data.frame(k27.26vs20.activated.enrichment)
+
+
+write.table(x = k27.26vs20.go.terms.df, file = "go_enrichment_k27.26vs20.tsv",quote = F,sep = "\t",row.names = F)
+
+```
+
+
+
+
+##Gene expression analysis
 
 ```{r}
 temp.gene.expression <- read.table(file="rnaseq_data/ostta_temperature_gene_expression.tsv",header = T,sep = "\t")
