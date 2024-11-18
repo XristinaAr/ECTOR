@@ -2161,7 +2161,7 @@ k27.10vs20.activated.enrichment <- enrichGO(gene = all.k27.activated.10vs20.gene
 k27.10vs20.activated.enrichment.df <- as.data.frame(k27.10vs20.activated.enrichment)
 
 
-write.table(x = k27.10vs20.activated.enrichment.df, file = "go_enrichment_k27.activated.10vs20.tsv",quote = F,sep = "\t",row.names = F)
+write.table(x = k27.10vs20.activated.enrichment.df, file = "go_enrichment/go_enrichment_k27.activated.10vs20.005.tsv",quote = F,sep = "\t",row.names = F)
 
 
 k27.10vs20.repressed.enrichment <- enrichGO(gene = all.k27.repressed.10vs20.genes, pvalueCutoff = 0.05,qvalueCutoff = 0.05,
@@ -2177,7 +2177,7 @@ k27.10vs20.repressed.enrichment <- enrichGO(gene = all.k27.repressed.10vs20.gene
 k27.10vs20.repressed.enrichment.df <- as.data.frame(k27.10vs20.repressed.enrichment)
 
 
-write.table(x = k27.10vs20.repressed.enrichment.df, file = "go_enrichment_k27.activated.10vs20.tsv",quote = F,sep = "\t",row.names = F)
+write.table(x = k27.10vs20.repressed.enrichment.df, file = "go_enrichment/go_enrichment_k27.repressed.10vs20.1.tsv",quote = F,sep = "\t",row.names = F)
 
 
 
@@ -2449,7 +2449,7 @@ k27.14vs20.activated.enrichment <- enrichGO(gene = all.k27.activated.14vs20.gene
 k27.14vs20.activated.enrichment.df <- as.data.frame(k27.14vs20.activated.enrichment)
 
 
-write.table(x = k27.14vs20.activated.enrichment.df, file = "go_enrichment_k27.activated.14vs20.tsv",quote = F,sep = "\t",row.names = F)
+write.table(x = k27.14vs20.activated.enrichment.df, file = "go_enrichment/go_enrichment_k27.activated.14vs20.1.tsv",quote = F,sep = "\t",row.names = F)
 
 
 k27.14vs20.repressed.enrichment <- enrichGO(gene = all.k27.repressed.14vs20.genes, pvalueCutoff = 1 ,qvalueCutoff = 1,
@@ -2459,7 +2459,7 @@ k27.14vs20.repressed.enrichment <- enrichGO(gene = all.k27.repressed.14vs20.gene
 k27.14vs20.repressed.enrichment.df <- as.data.frame(k27.14vs20.repressed.enrichment)
 
 
-write.table(x = k27.14vs20.repressed.enrichment.df, file = "go_enrichment_k27.repressed.14vs20.tsv",quote = F,sep = "\t",row.names = F)
+write.table(x = k27.14vs20.repressed.enrichment.df, file = "go_enrichment_k27.repressed.14vs20.1.tsv",quote = F,sep = "\t",row.names = F)
 
 ```
 
@@ -2551,7 +2551,7 @@ for(i in 1:nrow(activated.peaks.26vs20.k27))
 
 
 temp26vs20.peak.annotation.activated.k27 <- cbind(activated.peaks.26vs20.k27,data.frame(peak.annotation.26.20.k27,activated.genes.26.20.k27))
-head(temp26vs20.peak.annotation.k27)
+head(temp26vs20.peak.annotation.activated.k27)
 
 
 write.table(x = temp26vs20.peak.annotation.activated.k27,file = "tables/H3K27me3_activated_26vs20_peak_annotation.tsv",quote = F,sep = "\t",row.names = F) 
@@ -2656,7 +2656,7 @@ for(i in 1:nrow(repressed.peaks.26vs20.k27))
 
 
 temp26vs20.peak.annotation.repressed.k27 <- cbind(repressed.peaks.26vs20.k27,data.frame(peak.annotation.26.20.k27,repressed.genes.26.20.k27))
-head(temp26vs20.peak.annotation.k27)
+head(temp26vs20.peak.annotation.repressed.k27)
 
 
 write.table(x = temp26vs20.peak.annotation.repressed.k27,file = "tables/H3K27me3_repressed_26vs20_peak_annotation.tsv",quote = F,sep = "\t",row.names = F) 
@@ -2691,7 +2691,7 @@ k27.26vs20.activated.enrichment <- enrichGO(gene = all.k27.activated.26vs20.gene
 k27.26vs20.activated.enrichment.df <- as.data.frame(k27.26vs20.activated.enrichment)
 
 
-write.table(x = k27.26vs20.go.terms.df, file = "go_enrichment_k27.26vs20.tsv",quote = F,sep = "\t",row.names = F)
+write.table(x = k27.26vs20.activated.enrichment.df, file = "go_enrichment/go_enrichment_k27.activated.26vs20.1.tsv",quote = F,sep = "\t",row.names = F)
 
 ```
 
@@ -2891,7 +2891,7 @@ library(NormalyzerDE)
 
 #temp10
 
-write.table(x = peak.cpm[,4:6],file = "peak_cpm_temp10.tsv" ,
+write.table(x = peak.cpm.k4[,4:6],file = "peak_cpm_temp10.k4.tsv" ,
             quote = F,row.names = F,
             sep = "\t")
 
@@ -2902,7 +2902,7 @@ write.table(x = design.10,file = "normalyzer_design_k4_temp10.tsv",quote = F,row
             sep = "\t")
 
 normalyzer(jobName = "temp10_k4_normalization",designPath = "normalyzer_design_k4_temp10.tsv",
-           dataPath = "peak_cpm_temp10.tsv",outputDir = ".", requireReplicates = FALSE)
+           dataPath = "peak_cpm_temp10.k4.tsv",outputDir = ".", requireReplicates = FALSE)
 
 
 normalized.peak.cpm.temp10 <- read.table(file="temp10_k4_normalization/Quantile-normalized.txt", header=T)
@@ -2914,7 +2914,7 @@ boxplot(normalized.peak.cpm.temp10, outline=F,col=rainbow(3),
 
 #temp14
 
-write.table(x = peak.cpm[,7:9],file = "peak_cpm_temp14.tsv" ,
+write.table(x = peak.cpm.k4[,7:9],file = "peak_cpm_temp14.k4.tsv" ,
             quote = F,row.names = F,
             sep = "\t")
 
@@ -2925,7 +2925,7 @@ write.table(x = design.14,file = "normalyzer_design_k4_temp14.tsv",quote = F,row
             sep = "\t")
 
 normalyzer(jobName = "temp14_k4_normalization",designPath = "normalyzer_design_k4_temp14.tsv",
-           dataPath = "peak_cpm_temp14.tsv",outputDir = ".", requireReplicates = FALSE)
+           dataPath = "peak_cpm_temp14.k4.tsv",outputDir = ".", requireReplicates = FALSE)
 
 
 normalized.peak.cpm.temp14 <- read.table(file="temp14_k4_normalization/Quantile-normalized.txt", header=T)
@@ -2937,7 +2937,7 @@ boxplot(normalized.peak.cpm.temp14, outline=F,col=rainbow(3),
 
 #temp20
 
-write.table(x = peak.cpm[,10:12],file = "peak_cpm_temp20.tsv" ,
+write.table(x = peak.cpm.k4[,10:12],file = "peak_cpm_temp20.k4.tsv" ,
             quote = F,row.names = F,
             sep = "\t")
 
@@ -2948,7 +2948,7 @@ write.table(x = design.20,file = "normalyzer_design_k4_temp20.tsv",quote = F,row
             sep = "\t")
 
 normalyzer(jobName = "temp20_k4_normalization",designPath = "normalyzer_design_k4_temp20.tsv",
-           dataPath = "peak_cpm_temp20.tsv",outputDir = ".", requireReplicates = FALSE)
+           dataPath = "peak_cpm_temp20.k4.tsv",outputDir = ".", requireReplicates = FALSE)
 
 
 normalized.peak.cpm.temp20 <- read.table(file="temp20_k4_normalization/Quantile-normalized.txt", header=T)
@@ -2962,7 +2962,7 @@ boxplot(normalized.peak.cpm.temp20, outline=F,col=rainbow(3),
 
 #temp26
 
-write.table(x = peak.cpm[,16:18],file = "peak_cpm_temp26.tsv" ,
+write.table(x = peak.cpm.k4[,13:15],file = "peak_cpm_temp26.k4.tsv" ,
             quote = F,row.names = F,
             sep = "\t")
 
@@ -2974,7 +2974,7 @@ write.table(x = design.26,file = "normalyzer_design_k4_temp26.tsv",quote = F,row
             sep = "\t")
 
 normalyzer(jobName = "temp26_k4_normalization",designPath = "normalyzer_design_k4_temp26.tsv",
-           dataPath = "peak_cpm_temp26.tsv",outputDir = ".", requireReplicates = FALSE)
+           dataPath = "peak_cpm_temp26.k4.tsv",outputDir = ".", requireReplicates = FALSE)
 
 
 normalized.peak.cpm.temp26 <- read.table(file="temp26_k4_normalization/Quantile-normalized.txt", header=T)
@@ -3042,7 +3042,8 @@ contrast.results.k4 <- eBayes(contrast.linear.fit.k4)
 
 ```{r temp10c-temp20c contrast}
 temp10c.vs.temp20c.k4 <- topTable(contrast.results.k4, number=nrow(mat.normalized.peak.cpm),coef=1,sort.by="logFC")
-head(.k4 <- rownames(temp10c.vs.temp20c.k4) 
+head(temp10c.vs.temp20c.k4)
+peak.ids.10c.20c.k4 <- rownames(temp10c.vs.temp20c.k4) 
 fold.change.10c.20c.k4 <- temp10c.vs.temp20c.k4$logFC
 q.value.10c.20c.k4 <- temp10c.vs.temp20c.k4$adj.P.Val
 
