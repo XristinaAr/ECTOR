@@ -3,7 +3,783 @@ title: "Untitled"
 output: html_document
 date: "2024-12-05"
 ---
+```{r gene_expression_data}
 
+temp.gene.expression <- read.table(file="rnaseq_data/ostta_temperature_gene_expression.tsv",header = T,sep = "\t")
+
+gene.expression.20 <- 
+  (temp.gene.expression$T20_1 + 
+     temp.gene.expression$T20_2 + 
+     temp.gene.expression$T20_3)/3
+
+names(gene.expression.20) <- rownames(temp.gene.expression)
+gene.expression.20
+
+
+gene.expression.10 <- 
+  (temp.gene.expression$T10_1 + 
+     temp.gene.expression$T10_2 + 
+     temp.gene.expression$T10_3)/3
+
+names(gene.expression.10) <- rownames(temp.gene.expression)
+gene.expression.10
+
+
+gene.expression.26 <- 
+  (temp.gene.expression$T26_1 + 
+     temp.gene.expression$T26_2 + 
+     temp.gene.expression$T26_3)/3
+
+names(gene.expression.26) <- rownames(temp.gene.expression)
+gene.expression.26
+
+
+
+
+```
+
+
+```{r}
+
+
+k27.temp20.gene.expr <- gene.expression.20[all.k27.genes]
+
+
+
+
+
+
+```
+
+
+
+```{r gene expression levels of differentially marked genes at 10ºC}
+
+length(all.k27.repressed.10vs20.genes)
+length(all.k27.activated.26vs20.genes)
+common.10.rep.26.act.genes <- intersect(all.k27.repressed.10vs20.genes, all.k27.activated.26vs20.genes)
+length(common.10.rep.26.act.genes)
+length(all.k27.activated.10vs20.genes)
+common.act.10.act.26.act.genes <- intersect(all.k27.activated.10vs20.genes, all.k27.activated.26vs20.genes)
+
+
+all.k27.repressed.10vs20.genes
+
+dif.k27.genes.10vs20.expression.temp10 <- gene.expression.10[all.k27.repressed.10vs20.genes]
+
+
+n.temp10 <- length(dif.k27.genes.10vs20.expression.temp10)
+n.1.temp10 <- length(dif.k27.genes.10vs20.expression.temp10[dif.k27.genes.10vs20.expression.temp10 < 1]) 
+n.1.5.temp10 <- length(dif.k27.genes.10vs20.expression.temp10[dif.k27.genes.10vs20.expression.temp10 >1 & dif.k27.genes.10vs20.expression.temp10 <5])
+n.5.10.temp10 <- length(dif.k27.genes.10vs20.expression.temp10[dif.k27.genes.10vs20.expression.temp10 >5 & dif.k27.genes.10vs20.expression.temp10 <10])
+n.10.50.temp10 <- length(dif.k27.genes.10vs20.expression.temp10[dif.k27.genes.10vs20.expression.temp10 >10 & dif.k27.genes.10vs20.expression.temp10 <50])
+n.50.temp10 <- length(dif.k27.genes.10vs20.expression.temp10[dif.k27.genes.10vs20.expression.temp10 >50])
+
+
+dif.k27.genes.10vs20.expression.temp20 <- gene.expression.20[all.k27.repressed.10vs20.genes]
+n.temp20.diff.10 <- length(dif.k27.genes.10vs20.expression.temp20)
+n.1.temp20.diff.10 <- length(dif.k27.genes.10vs20.expression.temp20[dif.k27.genes.10vs20.expression.temp20 < 1]) 
+n.1.5.temp20.diff.10 <- length(dif.k27.genes.10vs20.expression.temp20[dif.k27.genes.10vs20.expression.temp20 >1 & dif.k27.genes.10vs20.expression.temp20 <5])
+n.5.10.temp20.diff.10 <- length(dif.k27.genes.10vs20.expression.temp20[dif.k27.genes.10vs20.expression.temp20 >5 & dif.k27.genes.10vs20.expression.temp20 <10])
+n.10.50.temp20.diff.10 <- length(dif.k27.genes.10vs20.expression.temp20[dif.k27.genes.10vs20.expression.temp20 >10 & dif.k27.genes.10vs20.expression.temp20 <50])
+n.50.temp20.diff.10 <- length(dif.k27.genes.10vs20.expression.temp20[dif.k27.genes.10vs20.expression.temp20 >50])
+
+n.temp20.diff.10 <- c(n.1.temp20.diff.10,n.1.5.temp20.diff.10,n.5.10.temp20.diff.10,
+                      n.10.50.temp20.diff.10,n.50.temp20.diff.10)
+
+
+n.temp10.diff.10 <- c(n.1.temp10,n.1.5.temp10,n.5.10.temp10,
+                      n.10.50.temp10,n.50.temp10)
+
+library(ggplot2)
+library(gridExtra)
+
+mark <- rep("h3k27me3" , 5)
+levels <- c("<1 FPKM" , "1-5 FPKM" , "5-10 FPKM", "10-50 FPKM", ">50 FPKM")
+#value <- (100*n)/n
+values.temp20 <- (n.temp20.diff.10/n.temp10)*100
+values.temp10 <-  (n.temp10.diff.10/n.temp10)*100
+data <- data.frame(mark,levels,values.temp20, values.temp10)
+ 
+# Ensure the stack order follows the order of 'condition'
+data$levels <- factor(data$levels, levels = c(">50 FPKM", "10-50 FPKM", "5-10 FPKM", "1-5 FPKM", "<1 FPKM"))
+
+custom_palette <- c(
+  "#08306B",  # Intense blue for >100 FPKM
+  "#2171b5",  # Medium blue
+  "#99CCFF",  # Light blue
+  "#DEEBF9",  # Very light blue
+  "#FFFFFF"   # White for <1 FPKM
+)
+
+# Create a stacked barplot
+plot1 <- ggplot(data, aes(fill = levels, y = values.temp20, x = mark)) + 
+  geom_bar(position = "fill", stat = "identity",color = "grey", size = 0.5) +
+  labs(title = "Gene expression levels",
+       x = "20ºC",
+       y = "% of genes") +  
+   scale_fill_manual(values = custom_palette) +
+  scale_fill_manual(values = custom_palette) + 
+  theme(
+    legend.background = element_rect(fill = "white", color = "black"),  # White background for legend
+    plot.background = element_rect(fill = "white", color = "white"),  # White background for plot
+    panel.background = element_rect(fill = "white", color = "white"),
+    panel.grid = element_blank()
+  )
+
+
+plot2 <- ggplot(data, aes(fill = levels, y = values.temp10, x = mark)) + 
+  geom_bar(position = "fill", stat = "identity", color = "grey", size = 0.5) +
+  labs(title = "",
+       x = "10ºC",
+       y = "") +
+  scale_fill_manual(values = custom_palette) + 
+  theme(
+    legend.background = element_rect(fill = "white", color = "black"),  # White background for legend
+    plot.background = element_rect(fill = "white", color = "white"),  # White background for plot
+    panel.background = element_rect(fill = "white", color = "white"),
+    panel.grid = element_blank()
+  )
+
+
+grid.arrange(plot1, plot2, ncol = 2)
+
+#library(gridExtra)
+#library(grid)
+
+# Convert plots to grobs
+#plot1_grob <- ggplotGrob(plot1)
+#plot2_grob <- ggplotGrob(plot2)
+
+# Match the widths of the plots
+#max_widths <- grid::unit.pmax(plot1_grob$widths, plot2_grob$widths)
+#plot1_grob$widths <- max_widths
+#plot2_grob$widths <- max_widths
+
+# Arrange the plots side by side
+#grid.arrange(plot1_grob, plot2_grob, ncol = 2, widths = c(0.48, 0.48))
+
+
+```
+
+```{r}
+
+
+temp10.1.genes <- names(dif.k27.genes.10vs20.expression.temp10[dif.k27.genes.10vs20.expression.temp10 < 1])
+temp10.1.5.genes <- names(dif.k27.genes.10vs20.expression.temp10[dif.k27.genes.10vs20.expression.temp10 >1 & dif.k27.genes.10vs20.expression.temp10 <5])
+temp10.5.10.genes <- names(dif.k27.genes.10vs20.expression.temp10[dif.k27.genes.10vs20.expression.temp10 >5 & dif.k27.genes.10vs20.expression.temp10 <10])
+temp10.10.50.genes <- names(dif.k27.genes.10vs20.expression.temp10[dif.k27.genes.10vs20.expression.temp10 >10 & dif.k27.genes.10vs20.expression.temp10 <50])
+temp10.50.genes <- names(dif.k27.genes.10vs20.expression.temp10[dif.k27.genes.10vs20.expression.temp10 >50])
+
+
+temp20.diff10.1.genes <-names(dif.k27.genes.10vs20.expression.temp20[dif.k27.genes.10vs20.expression.temp20 < 1]) 
+temp20.diff10.1.5.genes <- names(dif.k27.genes.10vs20.expression.temp20[dif.k27.genes.10vs20.expression.temp20 >1 & dif.k27.genes.10vs20.expression.temp20 <5])
+temp20.diff10.5.10.genes <- names(dif.k27.genes.10vs20.expression.temp20[dif.k27.genes.10vs20.expression.temp20 >5 & dif.k27.genes.10vs20.expression.temp20 <10])
+temp20.diff10.10.50.genes <- names(dif.k27.genes.10vs20.expression.temp20[dif.k27.genes.10vs20.expression.temp20 >10 & dif.k27.genes.10vs20.expression.temp20 <50])
+temp20.diff10.50.genes <- names(dif.k27.genes.10vs20.expression.temp20[dif.k27.genes.10vs20.expression.temp20 >50])
+
+
+##20grados
+metageneplot.data.k27.temp20.diff10.1.rep1 <- 
+ metageneplot(gene.names = temp20.diff10.1.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp20.diff10.1.rep1 <- 
+ apply(X = metageneplot.data.k27.temp20.diff10.1.rep1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp20.diff10.1.rep2 <- 
+ metageneplot(gene.names = temp20.diff10.1.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp20.diff10.1.rep2 <- 
+ apply(X = metageneplot.data.k27.temp20.diff10.1.rep2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+
+metageneplot.data.k27.temp20.diff10.1.rep3 <- 
+ metageneplot(gene.names = temp20.diff10.1.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp20.diff10.1.rep3 <- 
+ apply(X = metageneplot.data.k27.temp20.diff10.1.rep3,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+median.metageneplot.data.k27.temp20.diff10.1 <- (median.metageneplot.data.k27.temp20.diff10.1.rep1 + median.metageneplot.data.k27.temp20.diff10.1.rep2 +                                            median.metageneplot.data.k27.temp20.diff10.1.rep3)/3
+
+
+
+metageneplot.data.k27.temp20.diff10.1.5.rep1 <- 
+ metageneplot(gene.names = temp20.diff10.1.5.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp20.diff10.1.5.rep1 <- 
+ apply(X = metageneplot.data.k27.temp20.diff10.1.5.rep1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp20.diff10.1.5.rep2 <- 
+ metageneplot(gene.names = temp20.diff10.1.5.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp20.diff10.1.5.rep2 <- 
+ apply(X = metageneplot.data.k27.temp20.diff10.1.5.rep2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+
+metageneplot.data.k27.temp20.diff10.1.5.rep3 <- 
+ metageneplot(gene.names = temp20.diff10.1.5.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp20.diff10.1.5.rep3 <- 
+ apply(X = metageneplot.data.k27.temp20.diff10.1.5.rep3,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+median.metageneplot.data.k27.temp20.diff10.1.5 <- (median.metageneplot.data.k27.temp20.diff10.1.5.rep1 + median.metageneplot.data.k27.temp20.diff10.1.5.rep2 +                                            median.metageneplot.data.k27.temp20.diff10.1.5.rep3)/3
+
+
+metageneplot.data.k27.temp20.diff10.5.10.rep1 <- 
+ metageneplot(gene.names = temp20.diff10.5.10.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp20.diff10.5.10.rep1 <- 
+ apply(X = metageneplot.data.k27.temp20.diff10.5.10.rep1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp20.diff10.5.10.rep2 <- 
+ metageneplot(gene.names = temp20.diff10.5.10.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp20.diff10.5.10.rep2 <- 
+ apply(X = metageneplot.data.k27.temp20.diff10.5.10.rep2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+
+metageneplot.data.k27.temp20.diff10.5.10.rep3 <- 
+ metageneplot(gene.names = temp20.diff10.5.10.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp20.diff10.5.10.rep3 <- 
+ apply(X = metageneplot.data.k27.temp20.diff10.5.10.rep3,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+median.metageneplot.data.k27.temp20.diff10.5.10 <- (median.metageneplot.data.k27.temp20.diff10.5.10.rep1 + median.metageneplot.data.k27.temp20.diff10.5.10.rep2 +                                            median.metageneplot.data.k27.temp20.diff10.5.10.rep3)/3
+
+
+metageneplot.data.k27.temp20.diff10.10.50.rep1 <- 
+ metageneplot(gene.names = temp20.diff10.10.50.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp20.diff10.10.50.rep1 <- 
+ apply(X = metageneplot.data.k27.temp20.diff10.10.50.rep1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp20.diff10.10.50.rep2 <- 
+ metageneplot(gene.names = temp20.diff10.10.50.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp20.diff10.10.50.rep2 <- 
+ apply(X = metageneplot.data.k27.temp20.diff10.10.50.rep2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+
+metageneplot.data.k27.temp20.diff10.10.50.rep3 <- 
+ metageneplot(gene.names = temp20.diff10.10.50.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp20.diff10.10.50.rep3 <- 
+ apply(X = metageneplot.data.k27.temp20.diff10.10.50.rep3,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+median.metageneplot.data.k27.temp20.diff10.10.50 <- (median.metageneplot.data.k27.temp20.diff10.10.50.rep1 + median.metageneplot.data.k27.temp20.diff10.10.50.rep2 +                                            median.metageneplot.data.k27.temp20.diff10.10.50.rep3)/3
+
+
+metageneplot.data.k27.temp20.diff10.50.rep1 <- 
+ metageneplot(gene.names = temp20.diff10.50.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp20.diff10.50.rep1 <- 
+ apply(X = metageneplot.data.k27.temp20.diff10.50.rep1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp20.diff10.50.rep2 <- 
+ metageneplot(gene.names = temp20.diff10.50.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp20.diff10.50.rep2 <- 
+ apply(X = metageneplot.data.k27.temp20.diff10.50.rep2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+
+metageneplot.data.k27.temp20.diff10.50.rep3 <- 
+ metageneplot(gene.names = temp20.diff10.50.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp20.diff10.50.rep3 <- 
+ apply(X = metageneplot.data.k27.temp20.diff10.50.rep3,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+median.metageneplot.data.k27.temp20.diff10.50 <- (median.metageneplot.data.k27.temp20.diff10.50.rep3 + median.metageneplot.data.k27.temp20.diff10.50.rep3 +                                            median.metageneplot.data.k27.temp20.diff10.50.rep3)/3
+
+
+
+##
+
+metageneplot.data.k27.temp10.1.rep1 <- 
+ metageneplot(gene.names = temp10.1.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp10/h3k27me3_10_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp10.1.rep1 <- 
+ apply(X = metageneplot.data.k27.temp10.1.rep1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp10.1.rep2 <- 
+ metageneplot(gene.names = temp10.1.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp10/h3k27me3_10_chip_2.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp10.1.rep2 <- 
+ apply(X = metageneplot.data.k27.temp10.1.rep2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp10.1.rep3 <- 
+ metageneplot(gene.names = temp10.1.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp10/h3k27me3_10_chip_3.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp10.1.rep3 <- 
+ apply(X = metageneplot.data.k27.temp10.1.rep3,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+median.metageneplot.data.k27.temp10.1 <- (median.metageneplot.data.k27.temp10.1.rep1 + median.metageneplot.data.k27.temp10.1.rep2 +                                            median.metageneplot.data.k27.temp10.1.rep3)/3
+
+
+metageneplot.data.k27.temp10.1.5.rep1 <- 
+ metageneplot(gene.names = temp10.1.5.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp10/h3k27me3_10_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp10.1.5.rep1 <- 
+ apply(X = metageneplot.data.k27.temp10.1.5.rep1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp10.1.5.rep2 <- 
+ metageneplot(gene.names = temp10.1.5.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp10/h3k27me3_10_chip_2.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp10.1.5.rep2 <- 
+ apply(X = metageneplot.data.k27.temp10.1.5.rep2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp10.1.5.rep3 <- 
+ metageneplot(gene.names = temp10.1.5.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp10/h3k27me3_10_chip_3.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp10.1.5.rep3 <- 
+ apply(X = metageneplot.data.k27.temp10.1.5.rep3,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+median.metageneplot.data.k27.temp10.1.5 <- (median.metageneplot.data.k27.temp10.1.5.rep1 + median.metageneplot.data.k27.temp10.1.5.rep2 +                                            median.metageneplot.data.k27.temp10.1.5.rep3)/3
+
+
+metageneplot.data.k27.temp10.5.10.rep1 <- 
+ metageneplot(gene.names = temp10.5.10.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp10/h3k27me3_10_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp10.5.10.rep1 <- 
+ apply(X = metageneplot.data.k27.temp10.5.10.rep1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp10.5.10.rep2 <- 
+ metageneplot(gene.names = temp10.5.10.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp10/h3k27me3_10_chip_2.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp10.5.10.rep2 <- 
+ apply(X = metageneplot.data.k27.temp10.5.10.rep2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp10.5.10.rep3 <- 
+ metageneplot(gene.names = temp10.5.10.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp10/h3k27me3_10_chip_3.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp10.5.10.rep3 <- 
+ apply(X = metageneplot.data.k27.temp10.5.10.rep3,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+median.metageneplot.data.k27.temp10.5.10 <- (median.metageneplot.data.k27.temp10.5.10.rep1 + median.metageneplot.data.k27.temp10.5.10.rep2 +                                            median.metageneplot.data.k27.temp10.5.10.rep3)/3
+
+
+
+metageneplot.data.k27.temp10.10.50.rep1 <- 
+ metageneplot(gene.names = temp10.10.50.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp10/h3k27me3_10_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp10.10.50.rep1 <- 
+ apply(X = metageneplot.data.k27.temp10.10.50.rep1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp10.10.50.rep2 <- 
+ metageneplot(gene.names = temp10.10.50.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp10/h3k27me3_10_chip_2.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp10.10.50.rep2 <- 
+ apply(X = metageneplot.data.k27.temp10.10.50.rep2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp10.10.50.rep3 <- 
+ metageneplot(gene.names = temp10.10.50.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp10/h3k27me3_10_chip_3.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp10.10.50.rep3 <- 
+ apply(X = metageneplot.data.k27.temp10.10.50.rep3,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+median.metageneplot.data.k27.temp10.10.50 <- (median.metageneplot.data.k27.temp10.10.50.rep1 + median.metageneplot.data.k27.temp10.10.50.rep2 +                                            median.metageneplot.data.k27.temp10.10.50.rep3)/3
+
+metageneplot.data.k27.temp10.50.rep1 <- 
+ metageneplot(gene.names = temp10.50.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp10/h3k27me3_10_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp10.50.rep1 <- 
+ apply(X = metageneplot.data.k27.temp10.50.rep1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp10.50.rep2 <- 
+ metageneplot(gene.names = temp10.50.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp10/h3k27me3_10_chip_2.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp10.50.rep2 <- 
+ apply(X = metageneplot.data.k27.temp10.50.rep2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp10.50.rep3 <- 
+ metageneplot(gene.names = temp10.50.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp10/h3k27me3_10_chip_3.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp10.50.rep3 <- 
+ apply(X = metageneplot.data.k27.temp10.50.rep3,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+median.metageneplot.data.k27.temp10.50 <- (median.metageneplot.data.k27.temp10.50.rep1 + median.metageneplot.data.k27.temp10.50.rep2 +                                            median.metageneplot.data.k27.temp10.50.rep3)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.temp10.1,spar = 0.5),
+     type="l",col="blue",lt=2,lwd=3,ylim=c(0,15),axes=F,xlab="",ylab="")
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.temp10.1.5,spar = 0.5),
+      type="l",col="cyan",lt=2,lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.temp10.5.10,spar = 0.5),
+      type="l",col="green",lt=2,lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.temp10.10.50,spar = 0.5),
+      type="l",col="red",lt=2,lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.temp10.50,spar = 0.5),
+      type="l",col="purple",lt=2,lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.temp20.diff10.1,spar = 0.5),
+      type="l",col="blue", lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.temp20.diff10.1.5,spar = 0.5),
+      type="l",col="cyan",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.temp20.diff10.5.10,spar = 0.5),
+      type="l",col="green",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.temp20.diff10.10.50,spar = 0.5),
+      type="l",col="red",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.temp20.diff10.50,spar = 0.5),
+      type="l",col="purple",lwd=3)
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+
+
+
+```
+
+
+
+
+
+
+```{r gene expression levels of differentially marked k4 genes at 10ºC}
+
+all.k4.repressed.10vs20.genes
+
+
+dif.k4.genes.10vs20.expression.temp10 <- gene.expression.10[all.k4.repressed.10vs20.genes]
+
+
+n.temp10.k4 <- length(dif.k4.genes.10vs20.expression.temp10)
+n.1.temp10.k4 <- length(dif.k4.genes.10vs20.expression.temp10[dif.k4.genes.10vs20.expression.temp10 < 1]) 
+n.1.5.temp10.k4 <- length(dif.k4.genes.10vs20.expression.temp10[dif.k4.genes.10vs20.expression.temp10 >1 & dif.k4.genes.10vs20.expression.temp10 <5])
+n.5.10.temp10.k4 <- length(dif.k4.genes.10vs20.expression.temp10[dif.k4.genes.10vs20.expression.temp10 >5 & dif.k4.genes.10vs20.expression.temp10 <10])
+n.10.50.temp10.k4 <- length(dif.k4.genes.10vs20.expression.temp10[dif.k4.genes.10vs20.expression.temp10 >10 & dif.k4.genes.10vs20.expression.temp10 <50])
+n.50.temp10.k4 <- length(dif.k4.genes.10vs20.expression.temp10[dif.k4.genes.10vs20.expression.temp10 >50])
+
+
+dif.k4.genes.10vs20.expression.temp20 <- gene.expression.20[all.k4.repressed.10vs20.genes]
+n.temp20.diff.10.k4 <- length(dif.k4.genes.10vs20.expression.temp20)
+n.1.temp20.diff.10.k4 <- length(dif.k4.genes.10vs20.expression.temp20[dif.k4.genes.10vs20.expression.temp20 < 1]) 
+n.1.5.temp20.diff.10.k4 <- length(dif.k4.genes.10vs20.expression.temp20[dif.k4.genes.10vs20.expression.temp20 >1 & dif.k4.genes.10vs20.expression.temp20 <5])
+n.5.10.temp20.diff.10.k4 <- length(dif.k4.genes.10vs20.expression.temp20[dif.k4.genes.10vs20.expression.temp20 >5 & dif.k4.genes.10vs20.expression.temp20 <10])
+n.10.50.temp20.diff.10.k4 <- length(dif.k4.genes.10vs20.expression.temp20[dif.k4.genes.10vs20.expression.temp20 >10 & dif.k4.genes.10vs20.expression.temp20 <50])
+n.50.temp20.diff.10.k4 <- length(dif.k4.genes.10vs20.expression.temp20[dif.k4.genes.10vs20.expression.temp20 >50])
+
+n.temp20.diff.10.k4 <- c(n.1.temp20.diff.10.k4,n.1.5.temp20.diff.10.k4,n.5.10.temp20.diff.10.k4,
+                      n.10.50.temp20.diff.10.k4,n.50.temp20.diff.10.k4)
+
+
+n.temp10.diff.10.k4 <- c(n.1.temp10.k4,n.1.5.temp10.k4,n.5.10.temp10.k4,
+                      n.10.50.temp10.k4,n.50.temp10.k4)
+
+library(ggplot2)
+library(gridExtra)
+
+mark.k4 <- rep("h3k4me3" , 5)
+levels <- c("<1 FPKM" , "1-5 FPKM" , "5-10 FPKM", "10-50 FPKM", ">50 FPKM")
+#value <- (100*n)/n
+values.temp20.k4 <- (n.temp20.diff.10.k4/n.temp10.k4)*100
+values.temp10.k4 <-  (n.temp10.diff.10.k4/n.temp10.k4)*100
+data.k4 <- data.frame(mark.k4,levels,values.temp20.k4, values.temp10.k4)
+ 
+# Ensure the stack order follows the order of 'condition'
+data.k4$levels <- factor(data.k4$levels, levels = c(">50 FPKM", "10-50 FPKM", "5-10 FPKM", "1-5 FPKM", "<1 FPKM"))
+
+custom_palette <- c(
+  "#08306B",  # Intense blue for >100 FPKM
+  "#2171b5",  # Medium blue
+  "#99CCFF",  # Light blue
+  "#DEEBF9",  # Very light blue
+  "#FFFFFF"   # White for <1 FPKM
+)
+
+# Create a stacked barplot
+plot1 <- ggplot(data.k4, aes(fill = levels, y = values.temp20.k4, x = mark.k4)) + 
+  geom_bar(position = "fill", stat = "identity",color = "grey", size = 0.5) +
+  labs(title = "Gene expression levels",
+       x = "20ºC",
+       y = "% of genes") +  
+   scale_fill_manual(values = custom_palette) +
+  scale_fill_manual(values = custom_palette) + 
+  theme(
+    legend.background = element_rect(fill = "white", color = "black"),  # White background for legend
+    plot.background = element_rect(fill = "white", color = "white"),  # White background for plot
+    panel.background = element_rect(fill = "white", color = "white"),
+    panel.grid = element_blank()
+  )
+
+
+plot2 <- ggplot(data.k4, aes(fill = levels, y = values.temp10.k4, x = mark.k4)) + 
+  geom_bar(position = "fill", stat = "identity", color = "grey", size = 0.5) +
+  labs(title = "",
+       x = "10ºC",
+       y = "") +
+  scale_fill_manual(values = custom_palette) + 
+  theme(
+    legend.background = element_rect(fill = "white", color = "black"),  # White background for legend
+    plot.background = element_rect(fill = "white", color = "white"),  # White background for plot
+    panel.background = element_rect(fill = "white", color = "white"),
+    panel.grid = element_blank()
+  )
+
+
+grid.arrange(plot1, plot2, ncol = 2)
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+
+custom_palette <- c(
+  "#08306B",  
+  "#2171b5",  
+  "#99CCFF",  
+  "#DEEBF9",  
+  "#FFFFFF"   
+)
+
+
+data_tidy <- data.frame(mark, levels, values.temp20, values.temp10)
+data_tidy$levels <- factor(data_tidy$levels, levels = c(">50 FPKM", "10-50 FPKM", "5-10 FPKM", "1-5 FPKM", "<1 FPKM"))
+
+
+ggplot(data_tidy, aes(fill = levels, y = values, x = mark)) + 
+  geom_bar(position = "fill", stat = "identity", color = "grey", size = 0.5) +
+  labs(title = "           Gene Expression Levels",
+       x = NULL,  # Remove x-axis title
+       y = "% of Genes") + 
+  scale_fill_manual(values = custom_palette, ) + 
+  theme_minimal() +
+  theme(
+    plot.background = element_rect(fill = "white", color = "white"),
+    panel.background = element_rect(fill = "white", color = "white"),
+    panel.grid = element_blank()  # Remove grid lines
+  ) +
+  facet_wrap(~temperature, scales = "free_x")  # Facet by temperature
+
+```
+
+
+
+```{r gene expression levels of differentially marked genes at 26ºC}
+
+all.k27.activated.26vs20.genes
+
+dif.k27.genes.26vs20.expression.temp10 <- gene.expression.26[all.k27.activated.26vs20.genes]
+
+n.temp26 <- length(dif.k27.genes.26vs20.expression.temp10)
+n.1.temp26 <- length(dif.k27.genes.26vs20.expression.temp10[dif.k27.genes.26vs20.expression.temp10 < 1]) 
+n.1.5.temp26 <- length(dif.k27.genes.26vs20.expression.temp10[dif.k27.genes.26vs20.expression.temp10 >1 & dif.k27.genes.26vs20.expression.temp10 <5])
+n.5.10.temp26 <- length(dif.k27.genes.26vs20.expression.temp10[dif.k27.genes.26vs20.expression.temp10 >5 & dif.k27.genes.26vs20.expression.temp10 <10])
+n.10.50.temp26 <- length(dif.k27.genes.26vs20.expression.temp10[dif.k27.genes.26vs20.expression.temp10 >10 & dif.k27.genes.26vs20.expression.temp10 <50])
+n.50.temp26 <- length(dif.k27.genes.26vs20.expression.temp10[dif.k27.genes.26vs20.expression.temp10 >50])
+
+
+dif.k27.genes.26vs20.expression.temp20 <- gene.expression.20[all.k27.activated.26vs20.genes]
+n.temp20.diff.26 <- length(dif.k27.genes.26vs20.expression.temp20)
+n.1.temp20.diff.26 <- length(dif.k27.genes.26vs20.expression.temp20[dif.k27.genes.26vs20.expression.temp20 < 1]) 
+n.1.5.temp20.diff.26 <- length(dif.k27.genes.26vs20.expression.temp20[dif.k27.genes.26vs20.expression.temp20 >1 & dif.k27.genes.26vs20.expression.temp20 <5])
+n.5.10.temp20.diff.26 <- length(dif.k27.genes.26vs20.expression.temp20[dif.k27.genes.26vs20.expression.temp20 >5 & dif.k27.genes.26vs20.expression.temp20 <10])
+n.10.50.temp20.diff.26 <- length(dif.k27.genes.26vs20.expression.temp20[dif.k27.genes.26vs20.expression.temp20 >10 & dif.k27.genes.26vs20.expression.temp20 <50])
+n.50.temp20.diff.26 <- length(dif.k27.genes.26vs20.expression.temp20[dif.k27.genes.26vs20.expression.temp20 >50])
+
+n.temp20.diff.26 <- c(n.1.temp20.diff.26,n.1.5.temp20.diff.26,n.5.10.temp20.diff.26,
+                      n.10.50.temp20.diff.26,n.50.temp20.diff.26)
+
+n.temp26.diff.26 <- c(n.1.temp26,n.1.5.temp26,n.5.10.temp26,
+                      n.10.50.temp26,n.50.temp26)
+
+library(ggplot2)
+library(gridExtra)
+
+mark <- rep("h3k27me3" , 5)
+levels <- c("<1 FPKM" , "1-5 FPKM" , "5-10 FPKM", "10-50 FPKM", ">50 FPKM")
+#value <- (100*n)/n
+values.temp20 <- n.temp20.diff.26
+values.temp10 <-  n.temp26.diff.26
+data <- data.frame(mark,levels,values.temp20, values.temp10)
+ 
+# Ensure the stack order follows the order of 'condition'
+data$levels <- factor(data$levels, levels = c(">50 FPKM", "10-50 FPKM", "5-10 FPKM", "1-5 FPKM", "<1 FPKM"))
+
+# Create a stacked barplot
+plot1 <- ggplot(data, aes(fill = levels, y = values.temp20, x = mark)) + 
+  geom_bar(position = "fill", stat = "identity") +
+  labs(title = "20ºC",
+       x = "",
+       y = "Proportion") +
+  theme_minimal()
+
+plot2 <- ggplot(data, aes(fill = levels, y = values.temp10, x = mark)) + 
+  geom_bar(position = "fill", stat = "identity") +
+  labs(title = "26ºC",
+       x = "",
+       y = "Proportion") +
+  theme_minimal()
+
+grid.arrange(plot1, plot2, ncol = 2)
+```
 
 ```{r h3k27me3_gene_expression}
 temp.gene.expression <- read.table(file="rnaseq_data/ostta_temperature_gene_expression.tsv",header = T,sep = "\t")
@@ -29,6 +805,8 @@ quintile.4 <- gene.expression.20[gene.expression.20 > 5.904818e+01 & gene.expres
 quintile.5 <- gene.expression.20[gene.expression.20 > 1.238396e+02 & gene.expression.20 
 < 1.360432e+04]
 
+
+
 non.k27.genes <- setdiff(names(gene.expression.20),c(k27.gene.body,k27.tss,k27.tes,k27.internal.gene.body))
 
 length(all.k27.genes)
@@ -44,40 +822,40 @@ quintile.5.k27.genes <-intersect(all.k27.genes,  names(quintile.5))
 length(quintile.5.k27.genes)
 
 
-metageneplot.data.k27.quintile.1 <- 
+metageneplot.data.k27.quintile.1.rep1 <- 
  metageneplot(gene.names = quintile.1.k27.genes,
               genes = ostta.genes,
               bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
               ntile.txs = 10,
               ntile.gene.body = 20)
-median.metageneplot.data.k27.quintile.1 <- 
- apply(X = metageneplot.data.k27.quintile.1,
+median.metageneplot.data.k27.quintile.1.rep1 <- 
+ apply(X = metageneplot.data.k27.quintile.1.rep1,
       MARGIN = 2,
       FUN = median,na.rm = T)
 
-metageneplot.data.k27.quintile.2 <- 
+metageneplot.data.k27.quintile.1.rep2 <- 
  metageneplot(gene.names = quintile.1.k27.genes,
               genes = ostta.genes,
               bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
               ntile.txs = 10,
               ntile.gene.body = 20)
-median.metageneplot.data.k27.quintile.2 <- 
- apply(X = metageneplot.data.k27.quintile.2,
+median.metageneplot.data.k27.quintile.1.rep2 <- 
+ apply(X = metageneplot.data.k27.quintile.1.rep2,
       MARGIN = 2,
       FUN = median,na.rm = T)
 
-metageneplot.data.k27.quintile.3 <- 
+metageneplot.data.k27.quintile.1.rep3 <- 
  metageneplot(gene.names = quintile.1.k27.genes,
               genes = ostta.genes,
               bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
               ntile.txs = 10,
               ntile.gene.body = 20)
-median.metageneplot.data.k27.quintile.3 <- 
- apply(X = metageneplot.data.k27.quintile.3,
+median.metageneplot.data.k27.quintile.1.rep3 <- 
+ apply(X = metageneplot.data.k27.quintile.1.rep3,
       MARGIN = 2,
       FUN = median,na.rm = T)
 
-median.metageneplot.data.k27.quintile.1 <- (median.metageneplot.data.k27.quintile.1 + median.metageneplot.data.quintile.2 +                                            median.metageneplot.data.quintile.3)/3
+median.metageneplot.data.k27.quintile.1 <- (median.metageneplot.data.k27.quintile.1.rep1 + median.metageneplot.data.k27.quintile.1.rep2 +                                            median.metageneplot.data.k27.quintile.1.rep3)/3
 
 
 metageneplot.data.k27.quintile.2.rep1 <- 
@@ -235,34 +1013,493 @@ axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2
 axis(side = 2,lwd=2)
 
 
-boxplot(gene.expression.20[quintile.1],
-        gene.expression.20[quintile.2],
-        gene.expression.20[quintile.3],
-        gene.expression.20[quintile.4],
-        gene.expression.20[quintile.5],
-        col=c("blue","cyan","green","red","purple"),
-        outline=F)
+
+length(all.k27.genes)
+quintile.1.k27.genes <-intersect(all.k27.genes,  names(quintile.1))
+length(quintile.1.k27.genes)
+quintile.2.k27.genes <-intersect(all.k27.genes,  names(quintile.2))
+length(quintile.2.k27.genes)
+quintile.3.k27.genes <-intersect(all.k27.genes,  names(quintile.3))
+length(quintile.3.k27.genes)
+quintile.4.k27.genes <-intersect(all.k27.genes,  names(quintile.4))
+length(quintile.4.k27.genes)
+quintile.5.k27.genes <-intersect(all.k27.genes,  names(quintile.5))
+length(quintile.5.k27.genes)
+
+n <- c(length(quintile.1.k27.genes), length(quintile.2.k27.genes), length(quintile.3.k27.genes),
+       length(quintile.4.k27.genes),length(quintile.5.k27.genes))
 
 
-all.k27.genes.expression.20 <- gene.expression.20[all.k27.genes]
-length(all.k27.genes.expression.20)
-length(all.k27.genes.expression.20[all.k27.genes.expression.20 < 1]) 
-length(all.k27.genes.expression.20[all.k27.genes.expression.20 >1 & all.k27.genes.expression.20 <5])
-length(all.k27.genes.expression.20[all.k27.genes.expression.20 >5 & all.k27.genes.expression.20 <10])
-length(all.k27.genes.expression.20[all.k27.genes.expression.20 >10 & all.k27.genes.expression.20 <100])
-length(all.k27.genes.expression.20[all.k27.genes.expression.20 >100])
+ # library
+library(ggplot2)
+ 
+# create a dataset
+mark <- rep("h3k27me3" , 5)
+condition <- c("quintile 1" , "quintile 2" , "quintile 3", "quintile 4", "quintile 5")
+
+value <- n
+data <- data.frame(mark,condition,value)
+ 
+# Ensure the stack order follows the order of 'condition'
+data$condition <- factor(data$condition, levels = c("quintile 5", "quintile 4", "quintile 3", "quintile 2", "quintile 1"))
+# Create a stacked barplot
+ggplot(data, aes(fill = condition, y = value, x = mark)) + 
+  geom_bar(position = "fill", stat = "identity") +
+  labs(title = "Stacked Barplot with Ordered Stacks",
+       x = "Mark",
+       y = "Proportion") +
+  theme_minimal()
+
+
+
+
+
+
+
+quintiles
+
+mark <- rep("h3k27me3" , 5)
+condition <- c(">0.004 and < 19 FPKM" , ">19 and <34 FPKM " , ">34 and <59 FPKM", ">59 and 124 FPKM ", ">124 and <136 FPKM")
+
+value <- n
+data <- data.frame(mark,condition,value)
+ 
+# Ensure the stack order follows the order of 'condition'
+data$condition <- factor(data$condition, levels = c(">124 and <136 FPKM", ">59 and 124 FPKM ", ">34 and <59 FPKM", ">19 and <34 FPKM ", ">0.004 and < 19 FPKM"))
+# Create a stacked barplot
+ggplot(data, aes(fill = condition, y = value, x = mark)) + 
+  geom_bar(position = "fill", stat = "identity") +
+  labs(title = "Stacked Barplot with Ordered Stacks",
+       x = "Mark",
+       y = "Proportion") +
+  theme_minimal()
+
+
 
 
 
 
 ```
 
-## Including Plots
+```{r h3k27me3_gene_expression_temp26}
+temp.gene.expression <- read.table(file="rnaseq_data/ostta_temperature_gene_expression.tsv",header = T,sep = "\t")
 
-You can also embed plots, for example:
+gene.expression.26 <- 
+  (temp.gene.expression$T26_1 + 
+     temp.gene.expression$T26_2 + 
+     temp.gene.expression$T26_3)/3
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+names(gene.expression.26) <- rownames(temp.gene.expression)
+
+gene.expression.26
+
+summary(gene.expression.26)
+
+quintiles.26 <- quantile(gene.expression.26, probs = seq(0, 1, by = 0.2))
+quintile.1.20.26 <- gene.expression.26[gene.expression.26 > 4.246413e-03 & gene.expression.26 <1.901200e+01]
+quintile.2.20.26 <- gene.expression.26[gene.expression.26 > 1.901200e+01 & gene.expression.26 <3.442747e+01]
+quintile.3.20.26 <- gene.expression.26[gene.expression.26 > 3.442747e+01 & gene.expression.26 
+< 5.904818e+01]
+quintile.4.20.26 <- gene.expression.26[gene.expression.26 > 5.904818e+01 & gene.expression.26 
+< 1.238396e+02]
+quintile.5.20.26 <- gene.expression.26[gene.expression.26 > 1.238396e+02 & gene.expression.26 
+< 1.360432e+04]
+
+non.k27.genes <- setdiff(names(gene.expression.20),c(k27.gene.body,k27.tss,k27.tes,k27.internal.gene.body))
+
+length(all.k27.genes)
+quintile.1.k27.genes <-intersect(all.k27.genes,  names(quintile.1))
+length(quintile.1.k27.genes)
+quintile.2.k27.genes <-intersect(all.k27.genes,  names(quintile.2))
+length(quintile.2.k27.genes)
+quintile.3.k27.genes <-intersect(all.k27.genes,  names(quintile.3))
+length(quintile.3.k27.genes)
+quintile.4.k27.genes <-intersect(all.k27.genes,  names(quintile.4))
+length(quintile.4.k27.genes)
+quintile.5.k27.genes <-intersect(all.k27.genes,  names(quintile.5))
+length(quintile.5.k27.genes)
+
+
+metageneplot.data.k27.temp26.quintile.1.rep1 <- 
+ metageneplot(gene.names = quintile.1.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp26/h3k27me3_26_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp26.quintile.1.rep1 <- 
+ apply(X = metageneplot.data.k27.temp26.quintile.1.rep1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp26.quintile.1.rep2 <- 
+ metageneplot(gene.names = quintile.1.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp26/h3k27me3_26_chip_2.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp26.quintile.1.rep2 <- 
+ apply(X = metageneplot.data.k27.temp26.quintile.1.rep2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp26.quintile.1.rep3 <- 
+ metageneplot(gene.names = quintile.1.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp26/h3k27me3_26_chip_3.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp26.quintile.1.rep3 <- 
+ apply(X = metageneplot.data.k27.temp26.quintile.1.rep3,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+median.metageneplot.data.k27.temp26.quintile.1 <- (median.metageneplot.data.k27.temp26.quintile.1.rep1 + median.metageneplot.data.k27.temp26.quintile.1.rep2 +                                            median.metageneplot.data.k27.temp26.quintile.1.rep3)/3
+
+
+metageneplot.data.k27.temp26.quintile.2.rep1 <- 
+ metageneplot(gene.names = quintile.2.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp26/h3k27me3_26_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp26.quintile.2.rep1 <- 
+ apply(X = metageneplot.data.k27.temp26.quintile.2.rep1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp26.quintile.2.rep2 <- 
+ metageneplot(gene.names = quintile.2.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp26/h3k27me3_26_chip_2.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp26.quintile.2.rep2 <- 
+ apply(X = metageneplot.data.k27.temp26.quintile.2.rep2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp26.quintile.2.rep3 <- 
+ metageneplot(gene.names = quintile.2.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp26/h3k27me3_26_chip_3.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp26.quintile.2.rep3 <- 
+ apply(X = metageneplot.data.k27.temp26.quintile.2.rep3,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+median.metageneplot.data.k27.temp26.quintile.2 <- (median.metageneplot.data.k27.temp26.quintile.2.rep1 + median.metageneplot.data.k27.temp26.quintile.2.rep2 +                                            median.metageneplot.data.k27.temp26.quintile.2.rep3)/3
+
+metageneplot.data.k27.temp26.quintile.3.rep1 <- 
+ metageneplot(gene.names = quintile.3.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp26/h3k27me3_26_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp26.quintile.3.rep1 <- 
+ apply(X = metageneplot.data.k27.temp26.quintile.3.rep1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp26.quintile.3.rep2 <- 
+ metageneplot(gene.names = quintile.3.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp26/h3k27me3_26_chip_2.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp26.quintile.3.rep2 <- 
+ apply(X = metageneplot.data.k27.temp26.quintile.3.rep2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp26.quintile.3.rep3 <- 
+ metageneplot(gene.names = quintile.3.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp26/h3k27me3_26_chip_3.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp26.quintile.3.rep3 <- 
+ apply(X = metageneplot.data.k27.temp26.quintile.3.rep3,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+median.metageneplot.data.k27.temp26.quintile.3 <- (median.metageneplot.data.k27.temp26.quintile.3.rep1 + median.metageneplot.data.k27.temp26.quintile.3.rep2 +                                            median.metageneplot.data.k27.temp26.quintile.3.rep3)/3
+
+metageneplot.data.k27.temp26.quintile.4.rep1 <- 
+ metageneplot(gene.names = quintile.4.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp26/h3k27me3_26_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp26.quintile.4.rep1 <- 
+ apply(X = metageneplot.data.k27.temp26.quintile.4.rep1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp26.quintile.4.rep2 <- 
+ metageneplot(gene.names = quintile.4.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp26/h3k27me3_26_chip_2.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp26.quintile.4.rep2 <- 
+ apply(X = metageneplot.data.k27.temp26.quintile.4.rep2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp26.quintile.4.rep3 <- 
+ metageneplot(gene.names = quintile.4.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp26/h3k27me3_26_chip_3.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp26.quintile.4.rep3 <- 
+ apply(X = metageneplot.data.k27.temp26.quintile.4.rep3,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+median.metageneplot.data.k27.temp26.quintile.4 <- (median.metageneplot.data.k27.temp26.quintile.4.rep1 + median.metageneplot.data.k27.temp26.quintile.4.rep2 +                                            median.metageneplot.data.k27.temp26.quintile.4.rep3)/3
+
+
+metageneplot.data.k27.temp26.quintile.5.rep1 <- 
+ metageneplot(gene.names = quintile.5.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp26/h3k27me3_26_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp26.quintile.5.rep1 <- 
+ apply(X = metageneplot.data.k27.temp26.quintile.5.rep1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp26.quintile.5.rep2 <- 
+ metageneplot(gene.names = quintile.5.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp26/h3k27me3_26_chip_2.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp26.quintile.5.rep2 <- 
+ apply(X = metageneplot.data.k27.temp26.quintile.5.rep2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.temp26.quintile.5.rep3 <- 
+ metageneplot(gene.names = quintile.5.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp26/h3k27me3_26_chip_3.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.temp26.quintile.5.rep3 <- 
+ apply(X = metageneplot.data.k27.temp26.quintile.5.rep3,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+median.metageneplot.data.k27.temp26.quintile.5 <- (median.metageneplot.data.k27.temp26.quintile.5.rep1 + median.metageneplot.data.k27.temp26.quintile.5.rep2 +                                            median.metageneplot.data.k27.temp26.quintile.5.rep3)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.temp26.quintile.1,spar = 0.5),
+     type="l",col="blue",lwd=3,ylim=c(0,30),axes=F,xlab="",ylab="")
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.temp26.quintile.2,spar = 0.5),
+      type="l",col="cyan",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.temp26.quintile.3,spar = 0.5),
+      type="l",col="green",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.temp26.quintile.4,spar = 0.5),
+      type="l",col="red",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.temp26.quintile.5,spar = 0.5),
+      type="l",col="purple",lwd=3)
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+
+
+
+length(all.k27.genes)
+quintile.1.k27.temp26.genes <-intersect(all.k27.genes,  names(quintile.1.20.26))
+length(quintile.1.k27.temp26.genes)
+quintile.2.k27.temp26.genes <-intersect(all.k27.genes,  names(quintile.2.20.26))
+length(quintile.2.k27.temp26.genes)
+quintile.3.k27.temp26.genes <-intersect(all.k27.genes,  names(quintile.3.20.26))
+length(quintile.3.k27.temp26.genes)
+quintile.4.k27.temp26.genes <-intersect(all.k27.genes,  names(quintile.4.20.26))
+length(quintile.4.k27.temp26.genes)
+quintile.5.k27.temp26.genes <-intersect(all.k27.genes,  names(quintile.5.20.26))
+length(quintile.5.k27.temp26.genes)
+
+n <- c(length(quintile.1.k27.genes), length(quintile.2.k27.genes), length(quintile.3.k27.genes),
+       length(quintile.4.k27.genes),length(quintile.5.k27.genes))
+
+
+ # library
+library(ggplot2)
+ 
+# create a dataset
+mark <- rep("h3k27me3" , 5)
+condition <- c("quintile 1" , "quintile 2" , "quintile 3", "quintile 4", "quintile 5")
+
+value <- n
+data <- data.frame(mark,condition,value)
+ 
+# Ensure the stack order follows the order of 'condition'
+data$condition <- factor(data$condition, levels = c("quintile 5", "quintile 4", "quintile 3", "quintile 2", "quintile 1"))
+# Create a stacked barplot
+ggplot(data, aes(fill = condition, y = value, x = mark)) + 
+  geom_bar(position = "fill", stat = "identity") +
+  labs(title = "Stacked Barplot with Ordered Stacks",
+       x = "Mark",
+       y = "Proportion") +
+  theme_minimal()
+
+
+
+
+
+
+
+quintiles
+
+mark <- rep("h3k27me3" , 5)
+condition <- c(">0.004 and < 19 FPKM" , ">19 and <34 FPKM " , ">34 and <59 FPKM", ">59 and 124 FPKM ", ">124 and <136 FPKM")
+
+value <- n
+data <- data.frame(mark,condition,value)
+ 
+# Ensure the stack order follows the order of 'condition'
+data$condition <- factor(data$condition, levels = c(">124 and <136 FPKM", ">59 and 124 FPKM ", ">34 and <59 FPKM", ">19 and <34 FPKM ", ">0.004 and < 19 FPKM"))
+# Create a stacked barplot
+ggplot(data, aes(fill = condition, y = value, x = mark)) + 
+  geom_bar(position = "fill", stat = "identity") +
+  labs(title = "Stacked Barplot with Ordered Stacks",
+       x = "Mark",
+       y = "Proportion") +
+  theme_minimal()
+
+
+
+
+
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r gene_expression_temp10}
+temp.gene.expression <- read.table(file="rnaseq_data/ostta_temperature_gene_expression.tsv",header = T,sep = "\t")
+
+gene.expression.10 <- 
+  (temp.gene.expression$T10_1 + 
+     temp.gene.expression$T10_2 + 
+     temp.gene.expression$T10_3)/3
+
+names(gene.expression.10) <- rownames(temp.gene.expression)
+
+gene.expression.10
+
+summary(gene.expression.10)
+
+```
+
+
+
+Exploring
+
+```{r}
+k27.gene.body
+length(k27.gene.body)
+length(k27.tss)
+k27.body.tss <- c(k27.gene.body,k27.tss)
+
+all.k27.repressed.10vs20.genes
+
+dif.k27.genes.expression.10 <- gene.expression.10[all.k27.repressed.10vs20.genes]
+
+n.dif.10 <- length(dif.k27.genes.expression.10)
+n.1.10 <- length(dif.k27.genes.expression.10[dif.k27.genes.expression.10 < 1]) 
+n.1.5.10 <- length(dif.k27.genes.expression.10[dif.k27.genes.expression.10 >1 & all.k27.genes.expression.10 <5])
+n.5.10.10 <- length(dif.k27.genes.expression.10[dif.k27.genes.expression.10 >5 & all.k27.genes.expression.10 <10])
+n.10.50.10 <- length(dif.k27.genes.expression.10[dif.k27.genes.expression.10 >10 & dif.k27.genes.expression.10 <50])
+n.50.10 <- length(dif.k27.genes.expression.10[dif.k27.genes.expression.10 >50])
+
+
+k27.genes.expression.20.dif.10 <- gene.expression.20[dif.k27.genes.expression.10]
+n.all <- length(k27.genes.expression.20.dif.10)
+n.1 <- length(k27.genes.expression.20.dif.10[k27.genes.expression.20.dif.10 < 1]) 
+n.1.5 <- length(k27.genes.expression.20.dif.10[k27.genes.expression.20.dif.10 >1 & k27.genes.expression.20.dif.10 <5])
+n.5.10 <- length(k27.genes.expression.20.dif.10[k27.genes.expression.20.dif.10 >5 & k27.genes.expression.20.dif.10 <10])
+n.10.50 <- length(k27.genes.expression.20.dif.10[k27.genes.expression.20.dif.10 >10 & k27.genes.expression.20.dif.10 <50])
+n.50 <- length(k27.genes.expression.20.dif.10[k27.genes.expression.20.dif.10 >50])
+
+length(all.k27.activated.26vs20.genes)
+dif.k27.genes.expression.26 <- gene.expression.26[all.k27.activated.26vs20.genes]
+
+n.dif.26 <- length(dif.k27.genes.expression.26)
+n.1.26 <- length(dif.k27.genes.expression.26[dif.k27.genes.expression.26 < 1]) 
+n.1.5.26 <- length(dif.k27.genes.expression.26[dif.k27.genes.expression.26 >1 & dif.k27.genes.expression.26 <5])
+n.5.10.26 <- length(dif.k27.genes.expression.26[dif.k27.genes.expression.26 >5 & dif.k27.genes.expression.26 <10])
+n.10.50.26 <- length(dif.k27.genes.expression.26[dif.k27.genes.expression.26 >10 & dif.k27.genes.expression.26 <50])
+n.50.26 <- length(dif.k27.genes.expression.26[dif.k27.genes.expression.26 >50])
+
+
+k27.genes.expression.20.dif.10 <- gene.expression.20[dif.k27.genes.expression.26]
+n.all <- length(k27.genes.expression.20.dif.10)
+n.1 <- length(k27.genes.expression.20.dif.10[k27.genes.expression.20.dif.10 < 1]) 
+n.1.5 <- length(k27.genes.expression.20.dif.10[k27.genes.expression.20.dif.10 >1 & k27.genes.expression.20.dif.10 <5])
+n.5.10 <- length(k27.genes.expression.20.dif.10[k27.genes.expression.20.dif.10 >5 & k27.genes.expression.20.dif.10 <10])
+n.10.50 <- length(k27.genes.expression.20.dif.10[k27.genes.expression.20.dif.10 >10 & k27.genes.expression.20.dif.10 <50])
+n.50 <- length(k27.genes.expression.20.dif.10[k27.genes.expression.20.dif.10 >50])
+
+n <- c(n.1, n.1.5, n.5.10, n.10.50, n.50)
+
+n.10 <- c(n.1.10, n.1.5.10, n.5.10.10, n.10.50.10, n.50.10)
+
+n.26 <- c(n.1.26, n.1.5.26, n.5.10.26, n.10.50.26, n.50.26)
+ # library
+library(ggplot2)
+ 
+# create a dataset
+mark <- rep("h3k27me3" , 5)
+condition <- c("<1 FPKM" , "1-5 FPKM" , "5-10 FPKM", "10-50 FPKM", ">50 FPKM")
+value <- (100*n)/n
+value <- n
+data <- data.frame(mark,condition,value)
+ 
+# Ensure the stack order follows the order of 'condition'
+data$condition <- factor(data$condition, levels = c(">50 FPKM", "10-50 FPKM", "5-10 FPKM", "1-5 FPKM", "<1 FPKM"))
+# Create a stacked barplot
+ggplot(data, aes(fill = condition, y = value, x = mark)) + 
+  geom_bar(position = "fill", stat = "identity") +
+  labs(title = "Stacked Barplot with Ordered Stacks",
+       x = "Mark",
+       y = "Proportion") +
+  theme_minimal()
+
+
+#Where are those marks found? Why are they expressed?
+
+n.10.100 <- length(all.k27.genes.expression.20[all.k27.genes.expression.20 >10 & all.k27.genes.expression.20 <100])
+all.k27.genes.expression.20[all.k27.genes.expression.20 >10 & all.k27.genes.expression.20 <100]
+n.100 <- length(all.k27.genes.expression.20[all.k27.genes.expression.20 >100])
+all.k27.genes.expression.20[all.k27.genes.expression.20 >100]
+
+k27.gene.body
+k27.internal.gene.body
+k27.tss
+k27.tes
+
+
+length(intersect(k27.gene.body,names(all.k27.genes.expression.20[all.k27.genes.expression.20 >10 & all.k27.genes.expression.20 <100])))
+
+length(intersect(k27.internal.gene.body,names(all.k27.genes.expression.20[all.k27.genes.expression.20 >10 & all.k27.genes.expression.20 <100])))
+
+length(intersect(k27.tss,names(all.k27.genes.expression.20[all.k27.genes.expression.20 >10 & all.k27.genes.expression.20 <100])))
+
+length(intersect(k27.tes,names(all.k27.genes.expression.20[all.k27.genes.expression.20 >10 & all.k27.genes.expression.20 <100]) ))
+
+
+length(intersect(k27.gene.body,names(all.k27.genes.expression.20[all.k27.genes.expression.20 >100])))
+
+length(intersect(k27.internal.gene.body,names(all.k27.genes.expression.20[all.k27.genes.expression.20 >100])))
+
+length(intersect(k27.tss,names(all.k27.genes.expression.20[all.k27.genes.expression.20 >100])))
+
+length(intersect(k27.tes,names(all.k27.genes.expression.20[all.k27.genes.expression.20 >100])))
+
+
+```
+

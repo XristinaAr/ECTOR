@@ -1,0 +1,1652 @@
+---
+title: "Untitled"
+output: html_document
+date: "2025-01-18"
+---
+
+
+
+```{r h3k27me3_gene_expression_temp26}
+temp.gene.expression <- read.table(file="rnaseq_data/ostta_temperature_gene_expression.tsv",header = T,sep = "\t")
+
+gene.expression.20 <- 
+  (temp.gene.expression$T20_1 + 
+     temp.gene.expression$T20_2 + 
+     temp.gene.expression$T20_3)/3
+
+names(gene.expression.20) <- rownames(temp.gene.expression)
+
+gene.expression.20
+
+summary(gene.expression.20)
+
+quintiles.20 <- quantile(gene.expression.20, probs = seq(0, 1, by = 0.2))
+quintile.1.20 <- gene.expression.20[gene.expression.20 > 4.246413e-03 & gene.expression.20 <1.901200e+01]
+quintile.2.20 <- gene.expression.20[gene.expression.20 > 1.901200e+01 & gene.expression.20 <3.442747e+01]
+quintile.3.20 <- gene.expression.20[gene.expression.20 > 3.442747e+01 & gene.expression.20 
+< 5.904818e+01]
+quintile.4.20.26 <- gene.expression.20[gene.expression.20 > 5.904818e+01 & gene.expression.20 
+< 1.238396e+02]
+quintile.5.20.26 <- gene.expression.20[gene.expression.20 > 1.238396e+02 & gene.expression.20 
+< 1.360432e+04]
+
+non.k27.genes <- setdiff(names(gene.expression.20),c(k27.gene.body,k27.tss,k27.tes,k27.internal.gene.body))
+
+length(all.k27.genes)
+quintile.1.k27.genes <-intersect(all.k27.genes,  names(quintile.1))
+length(quintile.1.k27.genes)
+quintile.2.k27.genes <-intersect(all.k27.genes,  names(quintile.2))
+length(quintile.2.k27.genes)
+quintile.3.k27.genes <-intersect(all.k27.genes,  names(quintile.3))
+length(quintile.3.k27.genes)
+quintile.4.k27.genes <-intersect(all.k27.genes,  names(quintile.4))
+length(quintile.4.k27.genes)
+quintile.5.k27.genes <-intersect(all.k27.genes,  names(quintile.5))
+length(quintile.5.k27.genes)
+
+```
+```{r k27_metageneplots_gene_body_quantile_1}
+
+length(quintile.1.k27.genes)
+length(k27.gene.body)
+length(intersect(quintile.1.k27.genes, k27.gene.body))
+
+
+metageneplot.data.k27.gene.body.1.q1 <- 
+ metageneplot(gene.names = intersect(quintile.1.k27.genes, k27.gene.body),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.gene.body.1.q1 <- 
+ apply(X = metageneplot.data.k27.gene.body.1.q1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.gene.body.2.q1 <- 
+ metageneplot(gene.names = intersect(quintile.1.k27.genes, k27.gene.body),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.gene.body.2.q1 <- 
+ apply(X = metageneplot.data.k27.gene.body.2.q1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.gene.body.3.q1 <- 
+ metageneplot(gene.names = intersect(quintile.1.k27.genes, k27.gene.body),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.gene.body.3.q1 <- 
+ apply(X = metageneplot.data.k27.gene.body.3.q1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+median.metageneplot.data.k27.gene.body.q1 <- (median.metageneplot.data.k27.gene.body.1.q1 + median.metageneplot.data.k27.gene.body.2.q1 +                                            median.metageneplot.data.k27.gene.body.3.q1)/3
+```
+
+
+```{r k27_metageneplots_internal_gene_body_quantile_1}
+
+
+length(quintile.1.k27.genes)
+length(k27.internal.gene.body)
+length(intersect(quintile.1.k27.genes, k27.internal.gene.body))
+
+
+metageneplot.data.k27.internal.gene.body.1.q1 <- 
+ metageneplot(gene.names = intersect(quintile.1.k27.genes, k27.internal.gene.body),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.internal.gene.body.1.q1 <- 
+ apply(X = metageneplot.data.k27.internal.gene.body.1.q1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.internal.gene.body.2.q1 <- 
+ metageneplot(gene.names = intersect(quintile.1.k27.genes, k27.internal.gene.body),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.internal.gene.body.2.q1 <- 
+ apply(X = metageneplot.data.k27.internal.gene.body.2.q1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.internal.gene.body.3.q1 <- 
+ metageneplot(gene.names = intersect(quintile.1.k27.genes, k27.internal.gene.body),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.internal.gene.body.3.q1 <- 
+ apply(X = metageneplot.data.k27.internal.gene.body.3.q1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+median.metageneplot.data.k27.internal.gene.body.q1 <- (median.metageneplot.data.k27.internal.gene.body.1.q1 + 
+ median.metageneplot.data.k27.internal.gene.body.2.q1 +                                            median.metageneplot.data.k27.internal.gene.body.3.q1)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.internal.gene.body.q1,spar = 0.5),
+     type="l",col="cyan",lwd=3,ylim=c(0,10),axes=F,xlab="",ylab="")
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+```
+
+
+```{r k27_metageneplots_tss_quantile_1}
+
+
+length(quintile.1.k27.genes)
+length(k27.tss)
+length(intersect(quintile.1.k27.genes, k27.tss))
+
+
+metageneplot.data.k27.tss.1.q1 <- 
+ metageneplot(gene.names = intersect(quintile.1.k27.genes, k27.tss),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.tss.1.q1 <- 
+ apply(X = metageneplot.data.k27.tss.1.q1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.tss.2.q1 <- 
+ metageneplot(gene.names = intersect(quintile.1.k27.genes, k27.tss),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.tss.2.q1 <- 
+ apply(X = metageneplot.data.k27.tss.2.q1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.tss.3.q1 <- 
+ metageneplot(gene.names = intersect(quintile.1.k27.genes, k27.tss),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.tss.3.q1 <- 
+ apply(X = metageneplot.data.k27.tss.3.q1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+
+
+median.metageneplot.data.k27.tss.q1 <- 
+ (median.metageneplot.data.k27.tss.1.q1 + 
+ median.metageneplot.data.k27.tss.2.q1 +                                            median.metageneplot.data.k27.tss.3.q1)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tss.q1,spar = 0.5),
+     type="l",col="green",lwd=3,ylim=c(0,20),axes=F,xlab="",ylab="")
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+
+```
+
+
+
+
+```{r k27_metageneplots_tes_quantile_1}
+
+length(quintile.1.k27.genes)
+length(k27.tes)
+length(intersect(quintile.1.k27.genes, k27.tes))
+
+metageneplot.data.k27.tes.1.q1 <- 
+ metageneplot(gene.names = intersect(quintile.1.k27.genes, k27.tes),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.tes.1.q1 <- 
+ apply(X = metageneplot.data.k27.tes.1.q1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.tes.2.q1 <- 
+ metageneplot(gene.names = intersect(quintile.1.k27.genes, k27.tes),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.tes.2.q1 <- 
+ apply(X = metageneplot.data.k27.tes.2.q1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.tes.3.q1 <- 
+ metageneplot(gene.names = intersect(quintile.1.k27.genes, k27.tes),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.tes.3.q1 <- 
+ apply(X = metageneplot.data.k27.tes.3.q1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+
+
+median.metageneplot.data.k27.tes.q1 <- 
+ (median.metageneplot.data.k27.tes.1.q1 + 
+ median.metageneplot.data.k27.tes.2.q1 +                                            median.metageneplot.data.k27.tes.3.q1)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tes.q1,spar = 0.5),
+     type="l",col="red",lwd=3,ylim=c(0,20),axes=F,xlab="",ylab="")
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+```
+
+
+
+```{r k27_quintile1_metageneplots}
+#jpeg(filename = "images/h3k27me3_metageneplots.jpg",res = 250,width = 900,height = 900)
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.gene.body.q1,spar = 0.5),
+     type="l",col="blue",lwd=3,ylim=c(0,45),axes=F,xlab="",ylab="")
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.internal.gene.body.q1,spar = 0.5),
+      type="l",col="cyan",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tss.q1,spar = 0.5),
+      type="l",col="green",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tes.q1,spar = 0.5),
+      type="l",col="red",lwd=3)
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+#dev.off()
+```
+
+
+```{r all_k27_metageneplots}
+#jpeg(filename = "images/h3k27me3_metageneplots.jpg",res = 250,width = 900,height = 900)
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.gene.body.q1,spar = 0.5),     #quantile1
+     type="l",col="blue",lwd=3,ylim=c(0,45),axes=F,xlab="",ylab="")
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.internal.gene.body.q1,spar = 0.5),
+      type="l",col="cyan",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tss.q1,spar = 0.5),
+      type="l",col="green",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tes.q1,spar = 0.5),
+      type="l",col="red",lwd=3),
+
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.gene.body.q2,spar = 0.5),   #quantile2
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.internal.gene.body.q2,spar = 0.5),
+      type="l",col="cyan",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tss.q2,spar = 0.5),
+      type="l",col="green",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tes.q2,spar = 0.5),
+      type="l",col="red",lwd=3),
+
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.gene.body.q3,spar = 0.5),   #quantile3
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.internal.gene.body.q3,spar = 0.5),
+            type="l",col="cyan",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tss.q3,spar = 0.5),
+            type="l",col="green",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tes.q3,spar = 0.5),
+            type="l",col="red",lwd=3),
+      
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.gene.body.q4,spar = 0.5),   #quantile4
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.internal.gene.body.q4,spar = 0.5),
+                  type="l",col="cyan",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tss.q4,spar = 0.5),
+                  type="l",col="green",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tes.q4,spar = 0.5),
+                  type="l",col="red",lwd=3),    
+
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.gene.body.q5,spar = 0.5),   #quantile5
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.internal.gene.body.q4,spar = 0.5),
+            type="l",col="cyan",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tss.q5,spar = 0.5),
+            type="l",col="green",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tes.q5,spar = 0.5),
+            type="l",col="red",lwd=3), 
+
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+#dev.off()
+```
+
+
+
+```{r k27_metageneplots_gene_body_quantile_2}
+
+length(quintile.2.k27.genes)
+length(k27.gene.body)
+length(intersect(quintile.2.k27.genes, k27.gene.body))
+
+
+metageneplot.data.k27.gene.body.1.q2 <- 
+ metageneplot(gene.names = intersect(quintile.2.k27.genes, k27.gene.body),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.gene.body.1.q2 <- 
+ apply(X = metageneplot.data.k27.gene.body.1.q2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.gene.body.2.q2 <- 
+ metageneplot(gene.names = intersect(quintile.2.k27.genes, k27.gene.body),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.gene.body.2.q2 <- 
+ apply(X = metageneplot.data.k27.gene.body.2.q2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.gene.body.3.q2 <- 
+ metageneplot(gene.names = intersect(quintile.2.k27.genes, k27.gene.body),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.gene.body.3.q2 <- 
+ apply(X = metageneplot.data.k27.gene.body.3.q2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+median.metageneplot.data.k27.gene.body.q2 <- (median.metageneplot.data.k27.gene.body.1.q2 + median.metageneplot.data.k27.gene.body.2.q2 +                                            median.metageneplot.data.k27.gene.body.3.q2)/3
+```
+
+
+```{r k27_metageneplots_internal_gene_body_quantile_1}
+
+
+length(quintile.2.k27.genes)
+length(k27.internal.gene.body)
+length(intersect(quintile.2.k27.genes, k27.internal.gene.body))
+
+
+metageneplot.data.k27.internal.gene.body.1.q2 <- 
+ metageneplot(gene.names = intersect(quintile.2.k27.genes, k27.internal.gene.body),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.internal.gene.body.1.q2 <- 
+ apply(X = metageneplot.data.k27.internal.gene.body.1.q2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.internal.gene.body.2.q2 <- 
+ metageneplot(gene.names = intersect(quintile.2.k27.genes, k27.internal.gene.body),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.internal.gene.body.2.q2 <- 
+ apply(X = metageneplot.data.k27.internal.gene.body.2.q2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.internal.gene.body.3.q2 <- 
+ metageneplot(gene.names = intersect(quintile.2.k27.genes, k27.internal.gene.body),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.internal.gene.body.3.q2 <- 
+ apply(X = metageneplot.data.k27.internal.gene.body.3.q2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+median.metageneplot.data.k27.internal.gene.body.q2 <- (median.metageneplot.data.k27.internal.gene.body.2.q2 + 
+ median.metageneplot.data.k27.internal.gene.body.2.q2 +                                            median.metageneplot.data.k27.internal.gene.body.3.q2)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.internal.gene.body.q2,spar = 0.5),
+     type="l",col="cyan",lwd=3,ylim=c(0,10),axes=F,xlab="",ylab="")
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+```
+
+
+```{r k27_metageneplots_tss_quantile_2}
+
+
+length(quintile.2.k27.genes)
+length(k27.tss)
+length(intersect(quintile.2.k27.genes, k27.tss))
+
+
+metageneplot.data.k27.tss.1.q2 <- 
+ metageneplot(gene.names = intersect(quintile.2.k27.genes, k27.tss),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.tss.1.q2 <- 
+ apply(X = metageneplot.data.k27.tss.1.q2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.tss.2.q2 <- 
+ metageneplot(gene.names = intersect(quintile.2.k27.genes, k27.tss),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.tss.2.q2 <- 
+ apply(X = metageneplot.data.k27.tss.2.q2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.tss.3.q2 <- 
+ metageneplot(gene.names = intersect(quintile.2.k27.genes, k27.tss),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.tss.3.q2 <- 
+ apply(X = metageneplot.data.k27.tss.3.q2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+
+
+median.metageneplot.data.k27.tss.q2 <- 
+ (median.metageneplot.data.k27.tss.1.q2 + 
+ median.metageneplot.data.k27.tss.2.q2 +                                            median.metageneplot.data.k27.tss.3.q2)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tss.q2,spar = 0.5),
+     type="l",col="green",lwd=3,ylim=c(0,20),axes=F,xlab="",ylab="")
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+
+```
+
+
+
+
+
+
+
+
+```{r k27_metageneplots_gene_body_quantile_3}
+
+length(quintile.3.k27.genes)
+length(k27.gene.body)
+length(intersect(quintile.3.k27.genes, k27.gene.body))
+
+
+metageneplot.data.k27.gene.body.1.q2 <- 
+ metageneplot(gene.names = intersect(quintile.2.k27.genes, k27.gene.body),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.gene.body.1.q2 <- 
+ apply(X = metageneplot.data.k27.gene.body.1.q2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.gene.body.2.q2 <- 
+ metageneplot(gene.names = intersect(quintile.2.k27.genes, k27.gene.body),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.gene.body.2.q2 <- 
+ apply(X = metageneplot.data.k27.gene.body.2.q2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.gene.body.3.q2 <- 
+ metageneplot(gene.names = intersect(quintile.2.k27.genes, k27.gene.body),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.gene.body.3.q2 <- 
+ apply(X = metageneplot.data.k27.gene.body.3.q2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+median.metageneplot.data.k27.gene.body.q2 <- (median.metageneplot.data.k27.gene.body.1.q2 + median.metageneplot.data.k27.gene.body.2.q2 +                                            median.metageneplot.data.k27.gene.body.3.q2)/3
+```
+
+
+```{r k27_metageneplots_internal_gene_body_quantile_1}
+
+
+length(quintile.2.k27.genes)
+length(k27.internal.gene.body)
+length(intersect(quintile.2.k27.genes, k27.internal.gene.body))
+
+
+metageneplot.data.k27.internal.gene.body.1.q2 <- 
+ metageneplot(gene.names = intersect(quintile.2.k27.genes, k27.internal.gene.body),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.internal.gene.body.1.q2 <- 
+ apply(X = metageneplot.data.k27.internal.gene.body.1.q2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.internal.gene.body.2.q2 <- 
+ metageneplot(gene.names = intersect(quintile.2.k27.genes, k27.internal.gene.body),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.internal.gene.body.2.q2 <- 
+ apply(X = metageneplot.data.k27.internal.gene.body.2.q2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.internal.gene.body.3.q2 <- 
+ metageneplot(gene.names = intersect(quintile.2.k27.genes, k27.internal.gene.body),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.internal.gene.body.3.q2 <- 
+ apply(X = metageneplot.data.k27.internal.gene.body.3.q2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+median.metageneplot.data.k27.internal.gene.body.q2 <- (median.metageneplot.data.k27.internal.gene.body.2.q2 + 
+ median.metageneplot.data.k27.internal.gene.body.2.q2 +                                            median.metageneplot.data.k27.internal.gene.body.3.q2)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.internal.gene.body.q2,spar = 0.5),
+     type="l",col="cyan",lwd=3,ylim=c(0,10),axes=F,xlab="",ylab="")
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+```
+
+
+```{r k27_metageneplots_tss_quantile_2}
+
+
+length(quintile.2.k27.genes)
+length(k27.tss)
+length(intersect(quintile.2.k27.genes, k27.tss))
+
+
+metageneplot.data.k27.tss.1.q2 <- 
+ metageneplot(gene.names = intersect(quintile.2.k27.genes, k27.tss),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.tss.1.q2 <- 
+ apply(X = metageneplot.data.k27.tss.1.q2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.tss.2.q2 <- 
+ metageneplot(gene.names = intersect(quintile.2.k27.genes, k27.tss),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.tss.2.q2 <- 
+ apply(X = metageneplot.data.k27.tss.2.q2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.tss.3.q2 <- 
+ metageneplot(gene.names = intersect(quintile.2.k27.genes, k27.tss),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.tss.3.q2 <- 
+ apply(X = metageneplot.data.k27.tss.3.q2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+
+
+median.metageneplot.data.k27.tss.q2 <- 
+ (median.metageneplot.data.k27.tss.1.q2 + 
+ median.metageneplot.data.k27.tss.2.q2 +                                            median.metageneplot.data.k27.tss.3.q2)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tss.q2,spar = 0.5),
+     type="l",col="green",lwd=3,ylim=c(0,20),axes=F,xlab="",ylab="")
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+
+```
+
+
+
+
+```{r k27_metageneplots_tes_quantile_2}
+
+length(quintile.2.k27.genes)
+length(k27.tes)
+length(intersect(quintile.2.k27.genes, k27.tes))
+
+metageneplot.data.k27.tes.1.q2 <- 
+ metageneplot(gene.names = intersect(quintile.2.k27.genes, k27.tes),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.tes.1.q2 <- 
+ apply(X = metageneplot.data.k27.tes.1.q2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.tes.2.q2 <- 
+ metageneplot(gene.names = intersect(quintile.2.k27.genes, k27.tes),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.tes.2.q2 <- 
+ apply(X = metageneplot.data.k27.tes.2.q2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.tes.3.q2 <- 
+ metageneplot(gene.names = intersect(quintile.2.k27.genes, k27.tes),
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.tes.3.q2 <- 
+ apply(X = metageneplot.data.k27.tes.3.q2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+
+
+median.metageneplot.data.k27.tes.q2 <- 
+ (median.metageneplot.data.k27.tes.1.q2 + 
+ median.metageneplot.data.k27.tes.2.q2 +                                            median.metageneplot.data.k27.tes.3.q2)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tes.q1,spar = 0.5),
+     type="l",col="red",lwd=3,ylim=c(0,20),axes=F,xlab="",ylab="")
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+```
+
+
+
+```{r k27_quintile2_metageneplots}
+#jpeg(filename = "images/h3k27me3_metageneplots.jpg",res = 250,width = 900,height = 900)
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.gene.body.q2,spar = 0.5),
+     type="l",col="blue",lwd=3,ylim=c(0,45),axes=F,xlab="",ylab="")
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.internal.gene.body.q2,spar = 0.5),
+      type="l",col="cyan",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tss.q2,spar = 0.5),
+      type="l",col="green",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tes.q2,spar = 0.5),
+      type="l",col="red",lwd=3)
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+#dev.off()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r k27_metageneplots_quantile_1}
+
+length(quintile.1.k27.genes)
+
+metageneplot.data.k27.1.q1 <- 
+ metageneplot(gene.names = quintile.1.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.1.q1 <- 
+ apply(X = metageneplot.data.k27.1.q1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.2.q1 <- 
+ metageneplot(gene.names = quintile.1.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.2.q1 <- 
+ apply(X = metageneplot.data.k27.2.q1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.3.q1 <- 
+ metageneplot(gene.names = quintile.1.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.3.q1 <- 
+ apply(X = metageneplot.data.k27.3.q1,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+
+
+median.metageneplot.data.k27.q1 <- 
+ (median.metageneplot.data.k27.1.q1 + 
+ median.metageneplot.data.k27.2.q1 +                                            median.metageneplot.data.k27.3.q1)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.q1,spar = 0.5),
+     type="l",col="red",lwd=3,ylim=c(0,20),axes=F,xlab="",ylab="")
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+```
+
+
+
+
+
+```{r k27_metageneplots_quantile_2}
+
+length(quintile.2.k27.genes)
+
+metageneplot.data.k27.1.q2 <- 
+ metageneplot(gene.names = quintile.2.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.1.q2 <- 
+ apply(X = metageneplot.data.k27.1.q2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.2.q2 <- 
+ metageneplot(gene.names = quintile.2.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.2.q2 <- 
+ apply(X = metageneplot.data.k27.2.q2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.3.q2 <- 
+ metageneplot(gene.names = quintile.2.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.3.q2 <- 
+ apply(X = metageneplot.data.k27.3.q2,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+
+
+median.metageneplot.data.k27.q2 <- 
+ (median.metageneplot.data.k27.1.q2 + 
+ median.metageneplot.data.k27.2.q2 +                                            median.metageneplot.data.k27.3.q2)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.q2,spar = 0.5),
+     type="l",col="red",lwd=3,ylim=c(0,20),axes=F,xlab="",ylab="")
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+```
+
+
+
+
+```{r k27_metageneplots_quantile_3}
+
+length(quintile.3.k27.genes)
+
+metageneplot.data.k27.1.q3 <- 
+ metageneplot(gene.names = quintile.3.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.1.q3 <- 
+ apply(X = metageneplot.data.k27.1.q3,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.2.q3 <- 
+ metageneplot(gene.names = quintile.3.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.2.q3 <- 
+ apply(X = metageneplot.data.k27.2.q3,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.3.q3 <- 
+ metageneplot(gene.names = quintile.3.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.3.q3 <- 
+ apply(X = metageneplot.data.k27.3.q3,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+
+
+median.metageneplot.data.k27.q3 <- 
+ (median.metageneplot.data.k27.1.q3 + 
+ median.metageneplot.data.k27.2.q3 +                                            median.metageneplot.data.k27.3.q3)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.q3,spar = 0.5),
+     type="l",col="red",lwd=3,ylim=c(0,20),axes=F,xlab="",ylab="")
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+```
+
+
+```{r k27_metageneplots_quantile_4}
+
+length(quintile.4.k27.genes)
+
+metageneplot.data.k27.1.q4 <- 
+ metageneplot(gene.names = quintile.4.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.1.q4 <- 
+ apply(X = metageneplot.data.k27.1.q4,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.2.q4 <- 
+ metageneplot(gene.names = quintile.4.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.2.q4 <- 
+ apply(X = metageneplot.data.k27.2.q4,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.3.q4 <- 
+ metageneplot(gene.names = quintile.4.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.3.q4 <- 
+ apply(X = metageneplot.data.k27.3.q4,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+
+
+median.metageneplot.data.k27.q4 <- 
+ (median.metageneplot.data.k27.1.q4 + 
+ median.metageneplot.data.k27.2.q4 +                                            median.metageneplot.data.k27.3.q4)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.q4,spar = 0.5),
+     type="l",col="red",lwd=3,ylim=c(0,20),axes=F,xlab="",ylab="")
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+```
+
+
+
+```{r k27_metageneplots_quantile_5}
+
+length(quintile.5.k27.genes)
+
+metageneplot.data.k27.1.q5 <- 
+ metageneplot(gene.names = quintile.5.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.1.q5 <- 
+ apply(X = metageneplot.data.k27.1.q5,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.2.q5 <- 
+ metageneplot(gene.names = quintile.5.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.2.q5 <- 
+ apply(X = metageneplot.data.k27.2.q5,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.3.q5 <- 
+ metageneplot(gene.names = quintile.5.k27.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.3.q5 <- 
+ apply(X = metageneplot.data.k27.3.q5,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+
+
+median.metageneplot.data.k27.q5 <- 
+ (median.metageneplot.data.k27.1.q5 + 
+ median.metageneplot.data.k27.2.q5 +                                            median.metageneplot.data.k27.3.q5)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.q5,spar = 0.5),
+     type="l",col="red",lwd=3,ylim=c(0,20),axes=F,xlab="",ylab="")
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+```
+```{r k27_quintiles_metageneplots}
+#jpeg(filename = "images/h3k27me3_metageneplots.jpg",res = 250,width = 900,height = 900)
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.q1,spar = 0.5),
+     type="l",col="blue",lwd=3,ylim=c(0,25),axes=F,xlab="",ylab="")
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.q2,spar = 0.5),
+      type="l",col="cyan",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.q3,spar = 0.5),
+      type="l",col="green",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.q4,spar = 0.5),
+      type="l",col="purple",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.q5,spar = 0.5),
+      type="l",col="red",lwd=3)
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+#dev.off()
+```
+
+
+```{r k27_metageneplots_temp10__common_10repr_26act}
+
+length(common.10.rep.26.act.genes)
+
+metageneplot.data.k27.1.temp10 <- 
+ metageneplot(gene.names = common.10.rep.26.act.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp10/h3k27me3_10_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.1.temp10 <- 
+ apply(X = metageneplot.data.k27.1.temp10,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.2.temp10 <- 
+ metageneplot(gene.names = common.10.rep.26.act.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp10/h3k27me3_10_chip_2.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.2.temp10 <- 
+ apply(X = metageneplot.data.k27.2.temp10,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.3.temp10 <- 
+ metageneplot(gene.names = common.10.rep.26.act.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp10/h3k27me3_10_chip_3.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.3.temp10 <- 
+ apply(X = metageneplot.data.k27.3.temp10,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+
+
+median.metageneplot.data.k27.temp10 <- 
+ (median.metageneplot.data.k27.1.temp10 + 
+ median.metageneplot.data.k27.2.temp10 +                                            median.metageneplot.data.k27.3.temp10)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.temp10,spar = 0.5),
+     type="l",col="red",lwd=3,ylim=c(0,20),axes=F,xlab="",ylab="")
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+```
+
+```{r k27_metageneplots_temp20_common_10repr_26act}
+
+length(common.10.rep.26.act.genes)
+
+metageneplot.data.k27.1.temp20 <- 
+ metageneplot(gene.names = common.10.rep.26.act.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.1.temp20 <- 
+ apply(X = metageneplot.data.k27.1.temp20,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.2.temp20 <- 
+ metageneplot(gene.names = common.10.rep.26.act.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.2.temp20 <- 
+ apply(X = metageneplot.data.k27.2.temp20,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.3.temp20 <- 
+ metageneplot(gene.names = common.10.rep.26.act.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.3.temp20 <- 
+ apply(X = metageneplot.data.k27.3.temp20,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+
+
+median.metageneplot.data.k27.temp20 <- 
+ (median.metageneplot.data.k27.1.temp20 + 
+ median.metageneplot.data.k27.2.temp20 +                                            median.metageneplot.data.k27.3.temp20)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.temp20,spar = 0.5),
+     type="l",col="red",lwd=3,ylim=c(0,20),axes=F,xlab="",ylab="")
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+```
+
+
+```{r k27_metageneplots_temp26_common_10repr_26act}
+
+length(common.10.rep.26.act.genes)
+
+metageneplot.data.k27.1.temp26 <- 
+ metageneplot(gene.names = common.10.rep.26.act.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp26/h3k27me3_26_chip_1.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.1.temp26 <- 
+ apply(X = metageneplot.data.k27.1.temp26,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.2.temp26 <- 
+ metageneplot(gene.names = common.10.rep.26.act.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp26/h3k27me3_26_chip_2.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.2.temp26 <- 
+ apply(X = metageneplot.data.k27.2.temp26,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+metageneplot.data.k27.3.temp26 <- 
+ metageneplot(gene.names = common.10.rep.26.act.genes,
+              genes = ostta.genes,
+              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp26/h3k27me3_26_chip_3.bw",
+              ntile.txs = 10,
+              ntile.gene.body = 20)
+median.metageneplot.data.k27.3.temp26 <- 
+ apply(X = metageneplot.data.k27.3.temp26,
+      MARGIN = 2,
+      FUN = median,na.rm = T)
+
+
+
+median.metageneplot.data.k27.temp26 <- 
+ (median.metageneplot.data.k27.1.temp26 + 
+ median.metageneplot.data.k27.2.temp26 +                                            median.metageneplot.data.k27.3.temp26)/3
+
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.temp26,spar = 0.5),
+     type="l",col="red",lwd=3,ylim=c(0,20),axes=F,xlab="",ylab="")
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+```
+
+
+
+```{r}
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.temp26,spar = 0.5),
+     type="l",col="red",lwd=3,ylim=c(0,20),axes=F,xlab="",ylab="")
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.temp20,spar = 0.5),
+      type="l",col="black",lwd=3)
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.temp10,spar = 0.5),
+      type="l",col="lightblue",lwd=3)
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 2,lwd=2)
+```
+
+```{r}
+
+gene.expression.20
+common.10.rep.26.act.genes
+
+gene.expr.common.temp20 <- gene.expression.20[common.10.rep.26.act.genes]
+gene.expr.common.temp10 <- gene.expression.10[common.10.rep.26.act.genes]
+gene.expr.common.temp26 <- gene.expression.26[common.10.rep.26.act.genes]
+
+boxplot(gene.expr.common.temp10, gene.expr.common.temp20,gene.expr.common.temp26 )
+
+wilcox.test(x = gene.expr.common.temp10,
+            y = gene.expr.common.temp20,
+            alternative = "greater")$p.value
+
+wilcox.test(x = gene.expr.common.temp10,
+            y = gene.expr.common.temp26,
+            alternative = "greater")$p.value
+
+```
+```{r limma k4}
+peak.cpm.k4
+
+summary(peak.cpm.k4)
+
+peak.names <- paste(paste(peak.cpm.k4$chr, peak.cpm.k4$start, sep = "_"), peak.cpm.k4$end, sep = "_")
+log2.peak.cpm.k4 <- matrix(data = NA, nrow = nrow(read.counts.k4.temp10c.1), ncol = 12)
+colnames(log2.peak.cpm.k4) <- c("k4_temp10_1","k4_temp10_2","k4_temp10_3", "k4_temp14_1","k4_temp14_2","k4_temp14_3","k4_temp20_1","k4_temp20_2","k4_temp20_3","k4_temp26_1","k4_temp26_2","k4_temp26_3")
+rownames(log2.peak.cpm.k4) <- peak.names 
+
+log2.peak.cpm.k4[,"k4_temp10_1"] <- log2(peak.cpm.k4$k4_temp10_1)
+log2.peak.cpm.k4[,"k4_temp10_2"] <- log2(peak.cpm.k4$k4_temp10_2)
+log2.peak.cpm.k4[,"k4_temp10_3"] <- log2(peak.cpm.k4$k4_temp10_3)
+
+log2.peak.cpm.k4[,"k4_temp14_1"] <- log2(peak.cpm.k4$k4_temp14_1)
+log2.peak.cpm.k4[,"k4_temp14_2"] <- log2(peak.cpm.k4$k4_temp14_2)
+log2.peak.cpm.k4[,"k4_temp14_3"] <- log2(peak.cpm.k4$k4_temp14_3)
+
+log2.peak.cpm.k4[,"k4_temp20_1"] <- log2(peak.cpm.k4$k4_temp20_1)
+log2.peak.cpm.k4[,"k4_temp20_2"] <- log2(peak.cpm.k4$k4_temp20_2)
+log2.peak.cpm.k4[,"k4_temp20_3"] <- log2(peak.cpm.k4$k4_temp20_3)
+
+log2.peak.cpm.k4[,"k4_temp26_1"] <- log2(peak.cpm.k4$k4_temp26_1)
+log2.peak.cpm.k4[,"k4_temp26_2"] <- log2(peak.cpm.k4$k4_temp26_2)
+log2.peak.cpm.k4[,"k4_temp26_3"] <- log2(peak.cpm.k4$k4_temp26_3)
+
+
+head(log2.peak.cpm.k4)
+
+
+library(limma)
+
+experimental.design <- model.matrix(~ -1+factor(c(1,1,1,2,2,2,3,3,3,4,4,4)))
+colnames(experimental.design) <- c("k4_temp10",
+                                   "k4_temp14",
+                                   "k4_temp20",
+                                   "k4_temp26")
+
+experimental.design
+
+linear.fit.k4 <- lmFit(log2.peak.cpm.k4, experimental.design)
+
+contrast.matrix.k4 <- makeContrasts(k4_temp10-k4_temp20,
+                                    k4_temp14-k4_temp20,
+                                    k4_temp26-k4_temp20,
+                                    levels=c("k4_temp10",
+                                             "k4_temp14",
+                                             "k4_temp20",
+                                             "k4_temp26"))
+
+contrast.linear.fit.k4 <- contrasts.fit(linear.fit.k4, contrast.matrix.k4)
+contrast.results.k4 <- eBayes(contrast.linear.fit.k4)
+
+
+
+
+temp10c.vs.temp20c.k4 <- topTable(contrast.results.k4, number=nrow(log2.peak.cpm.k4),coef=1)#,sort.by="logFC")
+head(temp10c.vs.temp20c.k4)
+peak.ids.10c.20c.k4 <- rownames(temp10c.vs.temp20c.k4) 
+fold.change.10c.20c.k4 <- temp10c.vs.temp20c.k4$logFC
+q.value.10c.20c.k4 <- temp10c.vs.temp20c.k4$adj.P.Val
+
+activated.peaks.temp10c.vs.temp20c.k4 <- peak.ids.10c.20c.k4[fold.change.10c.20c.k4 > log2(1.5) & q.value.10c.20c.k4 < 0.05]
+repressed.peaks.temp10c.vs.temp20c.k4 <- peak.ids.10c.20c.k4[fold.change.10c.20c.k4 < - log2(1.5) & q.value.10c.20c.k4 < 0.05]
+
+length(activated.peaks.temp10c.vs.temp20c.k4)
+length(repressed.peaks.temp10c.vs.temp20c.k4)
+
+
+length(activated.peaks.temp10c.vs.temp20c.k27)/length(peak.names)
+length(repressed.peaks.temp10c.vs.temp20c.k27)/length(peak.names)
+
+
+temp14c.vs.temp20c.k4 <- topTable(contrast.results.k4, number=nrow(temp14c.vs.temp20c.k4),coef=2)#,sort.by="logFC")
+head(temp14c.vs.temp20c.k4)
+peak.ids.14c.20c.k4 <- rownames(temp14c.vs.temp20c.k4) 
+fold.change.14c.20c.k4 <- temp14c.vs.temp20c.k4$logFC
+q.value.14c.20c.k4 <- temp14c.vs.temp20c.k4$adj.P.Val
+
+activated.peaks.temp14c.vs.temp20c.k4 <- peak.ids.14c.20c.k4[fold.change.14c.20c.k4 > log2(1.5) & q.value.14c.20c.k4 < 0.05]
+repressed.peaks.temp14c.vs.temp20c.k4 <- peak.ids.14c.20c.k4[fold.change.14c.20c.k4 < - log2(1.5) & q.value.14c.20c.k4 < 0.05]
+
+length(activated.peaks.temp14c.vs.temp20c.k4)
+length(repressed.peaks.temp14c.vs.temp20c.k4)
+
+
+length(activated.peaks.temp14c.vs.temp20c.k4)/length(peak.names)
+length(repressed.peaks.temp14c.vs.temp20c.k4)/length(peak.names)
+
+
+temp26c.vs.temp20c.k4 <- topTable(contrast.results.k4, number=nrow(log2.peak.cpm.k4),coef=3,sort.by="logFC")
+head(temp26c.vs.temp20c.k4)
+peak.ids.26c.20c.k4 <- rownames(temp26c.vs.temp20c.k4) 
+fold.change.26c.20c.k4 <- temp26c.vs.temp20c.k4$logFC
+q.value.26c.20c.k4 <- temp26c.vs.temp20c.k4$adj.P.Val
+
+
+activated.peaks.temp26c.vs.temp20c.k4 <- peak.ids.10c.20c.k4[fold.change.26c.20c.k4 > log2(1.5) & q.value.26c.20c.k4 < 0.05]
+repressed.peaks.temp26c.vs.temp20c.k4 <- peak.ids.10c.20c.k4[fold.change.26c.20c.k4 < - log2(1.5) & q.value.26c.20c.k4 < 0.05]
+
+length(activated.peaks.temp26c.vs.temp20c.k4)
+length(activated.peaks.temp26c.vs.temp20c.k4)/length(peak.names)
+length(repressed.peaks.temp26c.vs.temp20c.k4)
+
+
+wilcox.test(x = rowMeans(2^log2.peak.cpm.k4[repressed.peaks.temp10c.vs.temp20c.k4,paste("k4_temp10",1:3,sep="_")]), y = rowMeans(2^log2.peak.cpm.k4[repressed.peaks.temp10c.vs.temp20c.k4,paste("k4_temp20",1:3,sep="_")]),alternative = "less")
+
+wilcox.test(x = rowMeans(2^log2.peak.cpm.k4[repressed.peaks.temp14c.vs.temp20c.k4,paste("k4_temp14",1:3,sep="_")]), y = rowMeans(2^log2.peak.cpm.k4[repressed.peaks.temp14c.vs.temp20c.k4,paste("k4_temp20",1:3,sep="_")]),alternative = "less")
+
+wilcox.test(x = rowMeans(2^log2.peak.cpm.k4[activated.peaks.temp26c.vs.temp20c.k4,paste("k4_temp26",1:3,sep="_")]), y = rowMeans(2^log2.peak.cpm.k4[activated.peaks.temp26c.vs.temp20c.k4,paste("k4_temp20",1:3,sep="_")]),alternative = "greater")
+
+
+#jpeg(filename = "images/k4_dif_occupation_10_14vs20_barplot.jpg",res = 250,width = 600,height = 1000)
+boxplot(rowMeans(2^log2.peak.cpm.k4[repressed.peaks.temp10c.vs.temp20c.k4,paste("k4_temp10",1:3,sep="_")]),
+rowMeans(2^log2.peak.cpm.k4[repressed.peaks.temp10c.vs.temp20c.k4,paste("k4_temp14",1:3,sep="_")]),
+rowMeans(2^log2.peak.cpm.k4[repressed.peaks.temp10c.vs.temp20c.k4,paste("k4_temp20",1:3,sep="_")]),outline=F,col=c("#00FFFF","#6699FF", "#CC33FF"),ylab="CPM",names=c("10ºC","14ºC","20ºC"),las=2,cex.lab=1.3)
+#dev.off()
+
+#jpeg(filename = "images/k4_dif_occupation_26vs20_barplot.jpg",res = 250,width = 600,height = 1000)
+boxplot(
+rowMeans(2^log2.peak.cpm.k4[activated.peaks.temp26c.vs.temp20c.k4,paste("k4_temp20",1:3,sep="_")]),
+rowMeans(2^log2.peak.cpm.k4[activated.peaks.temp26c.vs.temp20c.k4,paste("k4_temp26",1:3,sep="_")]),outline=F,col=c("#CC33FF", "#FF0000"),ylab="CPM",names=c("20ºC","26ºC"),las=2,cex.lab=1.3)
+#dev.off()
+
+
+
+```
+
+
+```{r gene_annotation_k4_repressed_10vs20}
+
+library(TxDb.Otauri.JGI)
+txdb <- TxDb.Otauri.JGI
+ostta.genes <- as.data.frame(genes(txdb))
+head(ostta.genes)
+
+
+matrix.repressed.peaks.temp10c.vs.temp20c.k4 <- as.matrix(t(as.data.frame(strsplit(x = repressed.peaks.temp10c.vs.temp20c.k4, split = "_"))))
+rownames(matrix.repressed.peaks.temp10c.vs.temp20c.k4) <- NULL
+head(matrix.repressed.peaks.temp10c.vs.temp20c.k4)
+write.table(matrix.repressed.peaks.temp10c.vs.temp20c.k4, file = "chipseq_results/h3k4me3/limma.k4.repressed.peaks.temp10.vs.temp20.bed", sep = "\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
+
+repressed.peaks.10vs20.k4 <- read.table(file = "chipseq_results/h3k4me3/limma.k4.repressed.peaks.temp10.vs.temp20.bed", sep = "\t")
+colnames(repressed.peaks.10vs20.k4) <- c("chr", "start", "end")
+
+repressed.genes.10.20.k4 <- vector(mode = "character",length = nrow(repressed.peaks.10vs20.k4))
+peak.annotation.10.20.k4 <- vector(mode = "character",length = nrow(repressed.peaks.10vs20.k4))
+
+for(i in 1:nrow(repressed.peaks.10vs20.k4))
+{
+ current.chr <- repressed.peaks.10vs20.k4[i,1]
+ current.start <- repressed.peaks.10vs20.k4[i,2]
+ current.end <- repressed.peaks.10vs20.k4[i,3]
+ 
+ complete.gene.body <- subset(ostta.genes, 
+                              seqnames == current.chr & 
+                               start >= current.start & 
+                               end <= current.end)
+ 
+ overlap.tss.pos.strand <- subset(ostta.genes, 
+                                  seqnames == current.chr & 
+                                   start >= current.start & start <= current.end & 
+                                   strand == "+")
+ 
+ overlap.tss.neg.strand <- subset(ostta.genes, 
+                                  seqnames == current.chr & 
+                                   end >= current.start & end <= current.end & 
+                                   strand == "-")
+ 
+ overlap.tes.pos.strand <- subset(ostta.genes, 
+                                  seqnames == current.chr & 
+                                   end >= current.start & end <= current.end & 
+                                   strand == "+")
+ 
+ overlap.tes.neg.strand <- subset(ostta.genes, 
+                                  seqnames == current.chr & 
+                                   start >= current.start & start <= current.end & 
+                                   strand == "-")
+ 
+ inside.gene.body <- subset(ostta.genes, seqnames == current.chr & 
+                             start <= current.start & end >= current.end)
+ 
+ 
+ if(nrow(complete.gene.body) > 0)
+ {
+  repressed.genes.10.20.k4[i] <- paste(unlist(complete.gene.body$gene_id),collapse = ",")
+  peak.annotation.10.20.k4[i] <- "gene.body"
+ } else if((nrow(overlap.tss.pos.strand) > 0) | (nrow(overlap.tss.neg.strand) > 0))
+ {
+  repressed.genes.10.20.k4[i] <- paste(c(unlist(overlap.tss.pos.strand$gene_id),
+                             unlist(overlap.tss.neg.strand$gene_id)),collapse = ",")
+  peak.annotation.10.20.k4[i] <- "TSS"
+ } else if(nrow(overlap.tes.pos.strand) > 0)
+ {
+  repressed.genes.10.20.k4[i] <- paste(unlist(overlap.tes.pos.strand$gene_id),collapse = ",")
+  peak.annotation.10.20.k4[i] <- "TES"
+ } else if(nrow(overlap.tes.neg.strand) > 0)
+ {
+  repressed.genes.10.20.k4[i] <- paste(unlist(overlap.tes.neg.strand$gene_id),collapse = ",")
+  peak.annotation.10.20.k4[i] <- "TES"
+ } else if(nrow(inside.gene.body) > 0)
+ {
+  repressed.genes.10.20.k4[i] <- paste(unlist(inside.gene.body$gene_id),collapse = ",")
+  peak.annotation.10.20.k4[i] <- "internal.gene.body"
+ } else
+ {
+  peak.annotation.10.20.k4[i] <- "intergenic"
+ }
+}
+
+
+temp10vs20.peak.annotation.repressed.k4 <- cbind(repressed.peaks.10vs20.k4,data.frame(peak.annotation.10.20.k4,repressed.genes.10.20.k4))
+head(temp10vs20.peak.annotation.repressed.k4)
+
+
+write.table(x = temp10vs20.peak.annotation.repressed.k4,file = "tables/H3K4me3_repressed_10vs20_peak_annotation.tsv",quote = F,sep = "\t",row.names = F) 
+all.k4.repressed.10vs20.genes <- (unlist(sapply(X =temp10vs20.peak.annotation.repressed.k4$repressed.genes.10.20.k4,
+FUN = function(x) {strsplit(x,",")[[1]]})))
+names(all.k4.repressed.10vs20.genes) <- NULL
+
+write.table(x = all.k4.repressed.10vs20.genes,file = "tables/H3K4me3_repressed_10vs20_genes.tsv",quote = F,sep = "\t",row.names = F) 
+
+length(all.k4.repressed.10vs20.genes)
+length(all.k4.repressed.10vs20.genes)/7668
+length(all.k4.repressed.10vs20.genes)/length(all.k4.genes)
+
+```
+
+
+```{r bivalent genes temp10vs20}
+
+bivalent.genes.10 <- intersect(all.k4.repressed.10vs20.genes, all.k27.repressed.10vs20.genes)
+length(bivalent.genes.10)
+
+#jpeg(filename = "images/h3k27me3_h3k4me3_venndiagram_diff.temp10vs20.jpg",res = 250,width = 1500,height = 1500)
+grid.newpage()
+draw.pairwise.venn(area1 = length(all.k27.repressed.10vs20.genes),cat.pos = c(180,180),cat.dist = 0.05,
+                   area2 = length(all.k4.repressed.10vs20.genes),
+                   cross.area = length(intersect(all.k27.repressed.10vs20.genes,all.k4.repressed.10vs20.genes)),
+                   lwd = 3,category = c("H3K27me3","H3K4me3"),euler.d = T,
+                   col = c("blue","darkorange"),
+                   fill = c(" blue","darkorange"),alpha = 0.5,
+                   cex = 2,
+                   cat.cex = 2)
+#dev.off()
+
+
+gene.expression.10 <- 
+  (temp.gene.expression$T10_1 + 
+     temp.gene.expression$T10_2 + 
+     temp.gene.expression$T10_3)/3
+
+names(gene.expression.10) <- rownames(temp.gene.expression)
+
+gene.expression.10
+
+
+
+#jpeg(filename = "images/k27_gene_expr_diff.temp10vs20.jpg",res = 250,width = 1500,height = 2000)
+boxplot(gene.expression.10[all.k27.repressed.10vs20.genes],
+        gene.expression.20[all.k27.repressed.10vs20.genes],
+        col=c("lightblue","blue"),
+        names = c("10ºC", "20ºC" ),
+        main = "FPKM of repressed H3K27me3 genes at 10ºC",
+        outline=F)
+#dev.off()
+
+
+
+wilcox.test(x = gene.expression.10[all.k27.repressed.10vs20.genes], 
+            y =  gene.expression.20[all.k27.repressed.10vs20.genes],
+            alternative = "greater")
+
+
+#jpeg(filename = "images/k4_gene_expr_diff.temp10vs20.jpg",res = 250,width = 1500,height = 2000)
+boxplot(gene.expression.10[all.k4.repressed.10vs20.genes],
+        gene.expression.20[all.k4.repressed.10vs20.genes],
+        col=c("#f9ddb1","darkorange"),
+        names = c("10ºC", "20ºC" ),
+        main = "FPKM of repressed H3K4me3 genes at 10ºC",
+        outline=F)
+#dev.off()
+
+wilcox.test(x = gene.expression.10[all.k4.repressed.10vs20.genes], 
+            y =  gene.expression.20[all.k4.repressed.10vs20.genes],
+            alternative = "greater")
+
+```
+
+
+
+```{r bivalent genes temp26vs20}
+#bivalent.genes.10<- intersect(all.k4.repressed.10vs20.genes, all.k27.repressed.10vs20.genes)
+#length(bivalent.genes.10)
+#no.bivalent.genes.k27.10 <- setdiff(all.k27.repressed.10vs20.genes, bivalent.genes.10)
+#length(all.k27.repressed.10vs20.genes)
+#length(no.bivalent.genes.k27.10)
+ostta07g03820
+bivalent.genes.26<- intersect(all.k4.activated.26vs20.genes, all.k27.activated.26vs20.genes)
+length(bivalent.genes.26)
+no.bivalent.genes.k27.26 <- setdiff(all.k27.activated.26vs20.genes, bivalent.genes.26)
+length(no.bivalent.genes.k27.26)
+length(all.k27.activated.26vs20.genes)
+
+
+library(VennDiagram)
+#jpeg(filename = "images/h3k27me3_h3k4me3_venndiagram_diff.temp26vs20.jpg",res = 250,width = 1500,height = 1500)
+grid.newpage()
+draw.pairwise.venn(area1 = length(all.k27.activated.26vs20.genes),cat.pos = c(180,180),cat.dist = 0.05,
+                   area2 = length(all.k4.activated.26vs20.genes),
+                   cross.area = length(intersect(all.k27.activated.26vs20.genes,all.k4.activated.26vs20.genes)),
+                   lwd = 3,category = c("H3K27me3","H3K4me3"),euler.d = T,
+                   col = c("blue","darkorange"),
+                   fill = c(" blue","darkorange"),alpha = 0.5,
+                   cex = 2,
+                   cat.cex = 2)
+#dev.off()
+
+
+temp.gene.expression <- read.table(file="rnaseq_data/ostta_temperature_gene_expression.tsv",header = T,sep = "\t")
+
+gene.expression.20 <- 
+  (temp.gene.expression$T20_1 + 
+     temp.gene.expression$T20_2 + 
+     temp.gene.expression$T20_3)/3
+
+names(gene.expression.20) <- rownames(temp.gene.expression)
+
+gene.expression.20
+
+gene.expression.26 <- 
+  (temp.gene.expression$T26_1 + 
+     temp.gene.expression$T26_2 + 
+     temp.gene.expression$T26_3)/3
+
+names(gene.expression.26) <- rownames(temp.gene.expression)
+
+gene.expression.26
+
+
+marked.genes.26 <- c(all.k27.activated.26vs20.genes, all.k4.activated.26vs20.genes)
+ostta.names <- rownames(ostta.genes)
+length(ostta.names)
+non.marked.genes.26 <- setdiff(ostta.names,marked.genes.26)
+
+#jpeg(filename = "images/k27_k4_bivalent_gene_expr_diff.temp26vs20.jpg",res = 250,width = 1500,height = 2000)
+boxplot(gene.expression.26[no.bivalent.genes.k27.26],
+        gene.expression.26[bivalent.genes.26],
+        gene.expression.26[non.marked.genes.26],
+        col=c("blue","purple", "grey"),names = c("H3K27me3", "H3K27me3/H3K4me3", "non-marked"),
+        las=2,
+        outline=F)
+#dev.off()
+
+
+wilcox.test(x = gene.expression.26[bivalent.genes.26], 
+            y =  gene.expression.26[no.bivalent.genes.k27.26],
+            alternative = "greater")
+
+wilcox.test(x = gene.expression.26[bivalent.genes.26], 
+            y =  gene.expression.26[non.marked.genes.26],
+            alternative = "less")
+
+
+
+
+bivalent.genes.20<- intersect(all.k4.genes, all.k27.genes)
+length(bivalent.genes.20)
+no.bivalent.genes.k27.20 <- setdiff(all.k27.genes, bivalent.genes.20)
+no.bivalent.genes.k4.20 <- setdiff(all.k4.genes, bivalent.genes.20)
+length(no.bivalent.genes.k27.20)
+length(no.bivalent.genes.k4.20)
+length(all.k27.genes)
+length(all.k4.genes)
+marked.genes <- c(all.k27.genes, all.k4.genes)
+ostta.names <- rownames(ostta.genes)
+length(ostta.names)
+non.marked.genes <- setdiff(ostta.names,marked.genes)
+
+
+
+#jpeg(filename = "images/k27_k4_bivalent_gene_expr_diff.temp20.jpg",res = 250,width = 1500,height = 2000)
+boxplot(gene.expression.20[no.bivalent.genes.k27.20],
+        gene.expression.20[non.marked.genes],
+        gene.expression.20[bivalent.genes.20],
+        gene.expression.20[no.bivalent.genes.k4.20],
+        col=c("blue","grey", "purple", "orange"),names = c("H3K27me3","non marked","H3K27me3/H3K4me3", "H3K4me3"), las=2,
+        outline=F)
+#dev.off()
+
+wilcox.test(x = gene.expression.20[bivalent.genes.20], 
+            y =  gene.expression.20[no.bivalent.genes.k27.20],
+            alternative = "greater")
+
+
+
+length(bivalent.genes.20)
+length(bivalent.genes.26)
+length(setdiff(bivalent.genes.26, bivalent.genes.20))
+
+#jpeg(filename = "images/h3k27me3_h3k4me3_venndiagram_temp20_difftemp26vs20.jpg",res = 250,width = 1500,height = 1500)
+grid.newpage()
+draw.pairwise.venn(area1 = length(bivalent.genes.26),cat.pos = c(180,180),cat.dist = 0.05,
+                   area2 = length(bivalent.genes.20),
+                   cross.area = length(intersect(bivalent.genes.26,bivalent.genes.20)),
+                   lwd = 3,category = c("K27/K4 26ºC","27/K4 20ºC"),euler.d = T,
+                   col = c("blue","darkorange"),
+                   fill = c(" blue","darkorange"),alpha = 0.5,
+                   cex = 2,
+                   cat.cex = 2)
+#dev.off()
+
+
+library(clusterProfiler)
+library(enrichplot)
+library(org.Otauriv5.eg.db)
+
+k27.k4.bivalent.26.enrichment <- enrichGO(gene = bivalent.genes.26, pvalueCutoff = 1,qvalueCutoff = 1,
+                       OrgDb = org.Otauriv5.eg.db,
+                       ont = "BP", 
+                       keyType = "GID")
+k27.k4.bivalent.26.enrichment.df <- as.data.frame(k27.k4.bivalent.26.enrichment)
+
+
+k27.k4.no.bivalent.26.enrichment <- enrichGO(gene = no.bivalent.genes.k27.26, pvalueCutoff = 1,qvalueCutoff = 1,
+                       OrgDb = org.Otauriv5.eg.db,
+                       ont = "BP", 
+                       keyType = "GID")
+k27.k4.no.bivalent.26.enrichment.df <- as.data.frame(k27.k4.no.bivalent.26.enrichment)
+
+#write.table(x = k4.enrichment.df, file = "go_enrichment_k4.tsv",quote = F,sep = "\t",row.names = F)
+
+#jpeg(filename = "images/h3k4me3_revigo_treeplot.jpg",res = 300,width = 1400,height = 900)
+#par(cex = 0.1)
+#treeplot(x = pairwise_termsim(k4.enrichment), cex_category = 0.1)
+#dev.off()
+
+
+#jpeg(filename = "images/k27_difftemp26vs20_expres_20_and26.jpg",res = 250,width = 1600,height = 2000)
+boxplot(gene.expression.20[no.bivalent.genes.k27.26],
+        gene.expression.26[no.bivalent.genes.k27.26],
+        col=c("blue","lightblue"),names = c("temp26 non-bivalent at 20ºC", "temp26 non-bivalent at 26ºC"),
+        outline=F)
+#dev.off()
+
+wilcox.test(x = gene.expression.20[no.bivalent.genes.k27.26], 
+            y =  gene.expression.26[no.bivalent.genes.k27.26],
+            alternative = "greater")
+
+
+#jpeg(filename = "images/k27_k4_difftemp26vs20_expres_20_and26.jpg",res = 250,width = 1600,height = 2000)
+boxplot(gene.expression.20[bivalent.genes.26],
+        gene.expression.26[bivalent.genes.26],
+        col=c("purple","pink"),names = c("temp26 bivalent at 20ºC", "temp26 bivalent at 26ºC"),
+        outline=F)
+#dev.off()
+
+
+wilcox.test(x = gene.expression.20[no.bivalent.genes.k27.26], 
+            y =  gene.expression.26[no.bivalent.genes.k27.26],
+            alternative = "less")
+
+```
+```{r}
+length(all.k27.repressed.10vs20.genes)
+length(all.k27.activated.26vs20.genes)
+k27.common.rep10.act26 <- intersect(all.k27.repressed.10vs20.genes,no.bivalent.genes.k27.26)
+length(k27.common.rep10.act26)
+
+#jpeg(filename = "images/k27_common_rep10_act26_geneexpr.jpg",res = 250,width = 1600,height = 2000)
+boxplot(gene.expression.10[k27.common.rep10.act26],
+        gene.expression.20[k27.common.rep10.act26],
+        gene.expression.26[k27.common.rep10.act26],
+        col=c("purple","pink", "grey"),names = c("10ºC", "20ºC","26ºC"),
+        main = "Common differentially marked K27 genes at 10ºC and 26ºC",
+        outline=F)
+#dev.off()
+
+
+wilcox.test(x = gene.expression.10[k27.common.rep10.act26], 
+            y =  gene.expression.26[k27.common.rep10.act26],
+            alternative = "less")
+
+k4.common.rep10.act26 <- intersect(all.k4.repressed.10vs20.genes,all.k4.activated.26vs20.genes)
+length(k4.common.rep10.act26)
+
+
+
+
+```
+
