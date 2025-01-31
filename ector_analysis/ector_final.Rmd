@@ -11,12 +11,16 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## H3K27me3 genome wide distribution analysis
 
-We load the genome of Ostreococcus tauri and compute the length of its chromosomes. We determine the length of the largest chromosome and for technical reasons we reverse the verctor of lenghts. This will be used to represent graphically the genome wide distribution of H3K27me3. 
+We load the genome of Ostreococcus tauri and compute the length of its 
+chromosomes. We determine the length of the largest chromosome and for technical 
+reasons we reverse the vector of lengths. This will be used to represent 
+graphically the genome wide distribution of H3K27me3. 
 
 ```{r load_genome}
 library(seqinr)
 
-ostta.genome <- read.fasta(file = "ostta_genome/ostreococcus_tauri.fa",seqtype = "DNA")
+ostta.genome <- read.fasta(file = "../ostta_genome/ostreococcus_tauri.fa",
+                           seqtype = "DNA")
 chr.lens <- sapply(X = getSequence(ostta.genome),FUN = length)
 
 number.chrs <- length(getSequence(ostta.genome))
@@ -24,19 +28,23 @@ max.chr.len <- max(chr.lens)
 chr.lens <- rev(chr.lens)
 ```
 
-We load the H3K27me3 peaks identified in cultures grown under constant light at 20ºC. We represent each chromosome using a rectangle. Each H3K27me3 peak is represented in its precise genome location using a blue rectangle. 
+We load the H3K27me3 peaks identified in cultures grown under constant light at 20ºC. We represent each chromosome using a rectangle. Each H3K27me3 peak is 
+represented in its precise genome location using a blue rectangle. 
 
 ```{r visualization of H3K27me3 genome wide distribution}
-ll.20 <- read.table(file="chipseq_data/bed_data/h3k27me3/h3k27me3_ll_20.bed",
+ll.20 <- read.table(file="h3k27me3/h3k27me3_ll_20_peaks.bed",
                        header = F)
 
+#ll.20 <- read.table(file="h3k27me3/h3k27me3_peaks.bed",
+#                       header = F)
 ll.20 <- ll.20[,1:3]
 
 nrow(ll.20)
 
 #jpeg(filename = "images/h3k27me3_genome_wide_distribution_ll_20.jpg",res = 300,width = 900,height = 900)
 #par(mar=c(0,0,0,0))
-plot(x=c(0,max.chr.len), y=c(0,4*number.chrs), col = "white", xlab = "", ylab = "", axes=F)  
+plot(x=c(0,max.chr.len), y=c(0,4*number.chrs), col = "white", 
+     xlab = "", ylab = "", axes=F)  
 
 for(i in 1:number.chrs)
 {
@@ -53,14 +61,24 @@ for(i in 1:nrow(ll.20))
 
  current.line <- (20:1)[current.chr]
  
- polygon(x = c(current.start, current.end, current.end, current.start),   
-         y = c(4*current.line+1, 4*current.line+1, 4*current.line-1, 4*current.line-1),    
+ polygon(x = c(current.start, 
+               current.end, 
+               current.end, 
+               current.start),   
+         y = c(4*current.line+1, 
+               4*current.line+1, 
+               4*current.line-1, 
+               4*current.line-1),    
          col = "blue",border="blue")
 }
 #dev.off()
 ```
 
-We identified 480 genomic regions significantly occupied by H3K27me3 in the three different independent biological replicates. We compute the percentage of the whole genome occupied by H3K27me3 and the percentage in each chromosome. A barplot is used to represent the percentage of H3K27me3 in each chromosome. Z-scores and p-values are computed for each chromosome. A gradient from white to blue is used to represent significance levels.  
+We identified 948 genomic regions significantly occupied by H3K27me3 in the 
+three different independent biological replicates. We compute the percentage of the whole genome occupied by H3K27me3 and the percentage in each chromosome. A 
+barplot is used to represent the percentage of H3K27me3 in each chromosome. 
+Z-scores and p-values are computed for each chromosome. A gradient from white 
+to blue is used to represent significance levels.  
 
 ```{r k27_in_chrs}
 h3k27me3.peaks.len <- ll.20$V3 - ll.20$V2
@@ -99,10 +117,13 @@ abline(h = 100*mean(percentage.chr.k27[-19]),lty=5)
 #dev.off()
 ```
 
-Approximately 7.2% of the Ostreococcus genome is occupied by H3K27me3. 
-H3K27me3 is mostly uniformly distributed over the different chromosome although it significantly accumulates (p-value < 0.01) in Chr2 (sexual chromosome) and Chr19 (viral resistance chromosome) with p-values 6.68x10^-3^ and 2.06x10^-90^ respectively. 
+Approximately 15.2% of the Ostreococcus genome is occupied by H3K27me3. 
+H3K27me3 is mostly uniformly distributed over the different chromosome although it significantly accumulates (p-value < 0.01) in Chr2 (sexual chromosome) and 
+Chr19 (viral resistance chromosome) with p-values 6.5x10^-3^ and 2.24x10^-93^ 
+respectively. 
 
-We determine the gene features occupied by each H3K27me3 mark and the H3K27me3 marked genes. 
+We determine the gene features occupied by each H3K27me3 mark and the H3K27me3 
+marked genes. 
 
 ```{r k27_peaks_annotation}
 library(TxDb.Otauri.JGI)
@@ -151,27 +172,33 @@ for(i in 1:nrow(ll.20))
  
  if(nrow(complete.gene.body) > 0)
  {
-  target.genes[i] <- paste(unlist(complete.gene.body$gene_id),collapse = ",")
+  target.genes[i] <- paste(unlist(complete.gene.body$gene_id),
+                           collapse = ",")
   peak.annotation[i] <- "gene.body"
  } else if(nrow(overlap.tss.pos.strand) > 0)
  {
-  target.genes[i] <- paste(unlist(overlap.tss.pos.strand$gene_id),collapse = ",")
+  target.genes[i] <- paste(unlist(overlap.tss.pos.strand$gene_id),
+                           collapse = ",")
   peak.annotation[i] <- "TSS"
  } else if(nrow(overlap.tss.neg.strand) > 0)
  {
-  target.genes[i] <- paste(unlist(overlap.tss.neg.strand$gene_id),collapse = ",")
+  target.genes[i] <- paste(unlist(overlap.tss.neg.strand$gene_id),
+                           collapse = ",")
   peak.annotation[i] <- "TSS"
  } else if(nrow(overlap.tes.pos.strand) > 0)
  {
-  target.genes[i] <- paste(unlist(overlap.tes.pos.strand$gene_id),collapse = ",")
+  target.genes[i] <- paste(unlist(overlap.tes.pos.strand$gene_id),
+                           collapse = ",")
   peak.annotation[i] <- "TES"
  } else if(nrow(overlap.tes.neg.strand) > 0)
  {
-  target.genes[i] <- paste(unlist(overlap.tes.neg.strand$gene_id),collapse = ",")
+  target.genes[i] <- paste(unlist(overlap.tes.neg.strand$gene_id),
+                           collapse = ",")
   peak.annotation[i] <- "TES"
  } else if(nrow(inside.gene.body) > 0)
  {
-  target.genes[i] <- paste(unlist(inside.gene.body$gene_id),collapse = ",")
+  target.genes[i] <- paste(unlist(inside.gene.body$gene_id),
+                           collapse = ",")
   peak.annotation[i] <- "internal.gene.body"
  } else
  {
@@ -195,7 +222,8 @@ pie(freq.peak.annotation[c("gene.body",
     clockwise = T,border = "black",col=c("blue","cyan","green","red","grey"))
 #dev.off()
 
-percentage.freq.peak.annotation <- 100*freq.peak.annotation/sum(freq.peak.annotation)
+percentage.freq.peak.annotation <- 
+  100*freq.peak.annotation/sum(freq.peak.annotation)
 
 
 percentage.freq.peak.annotation["gene.body"] +
@@ -203,21 +231,32 @@ percentage.freq.peak.annotation["internal.gene.body"]
 
 percentage.freq.peak.annotation
 
-ll.20.peak.annotation <- cbind(ll.20[,1:3],data.frame(peak.annotation,target.genes))
+ll.20.peak.annotation <- cbind(ll.20[,1:3],
+                               data.frame(peak.annotation,target.genes))
 
 head(ll.20.peak.annotation)
 
-write.table(x = ll.20.peak.annotation,file = "tables/H3K27me3_LL_20C_peak_annotation.tsv",quote = F,sep = "\t",row.names = F)
+write.table(x = ll.20.peak.annotation,
+            file = "tables/H3K27me3_LL_20C_peak_annotation.tsv",
+            quote = F,sep = "\t",row.names = F)
 
-all.k27.genes <- (unlist(sapply(X =ll.20.peak.annotation$target.genes,
+all.k27.genes <- unique(unlist(sapply(X =ll.20.peak.annotation$target.genes,
                                 FUN = function(x) {strsplit(x,",")[[1]]})))
 names(all.k27.genes) <- NULL
 length(all.k27.genes)
 length(all.k27.genes)/7668
 ```
-We found 491 genes associated to H3K27me3 marks corresponding to 6.4% of the entire Ostreococcus genome. H3K27me3 is mostly located occupying either the entire gene body (23.75%) or internal regions of gene body (41.86%). Although some regions occupied by H3K27me3 has been found overlapping only with the TSS (11.04%) or the TES (15.42%). H3K27me3 was found in intergenic regions only in 7.92% of the cases. 
+We found 475 genes associated to H3K27me3 marks corresponding to 6.2% of the 
+entire Ostreococcus genome. H3K27me3 is mostly located occupying either the 
+entire gene body (24.4%) or internal regions of gene body (43.2%). Although 
+some regions occupied by H3K27me3 has been found overlapping only with the TSS 
+(10.8%) or the TES (17.1%). H3K27me3 was found in intergenic regions only in 
+4.5% of the cases. 
 
-Next we use metageneplots to determine the shape of the H3K27me3 over its occupied genes. We consider three different sets of marked genes, genes with their entire gene body marked, genes with H3K27 inside their gene body with no overlap in the TSS or TES and genes with H3K27me3 overlapping their TSS or TES
+Next we use metageneplots to determine the shape of the H3K27me3 over its 
+occupied genes. We consider three different sets of marked genes, genes with 
+their entire gene body marked, genes with H3K27 inside their gene body with no 
+overlap in the TSS or TES and genes with H3K27me3 overlapping their TSS or TES.
 
 ```{r k27_metageneplots}
 ## Function to compute ChIP signal over different tiles
@@ -297,64 +336,50 @@ metageneplot <- function(gene.names,genes,bw.file.name,ntile.txs,ntile.gene.body
 }
 
 ## Genes with their entire gene body marked
-k27.gene.body <- (unlist(sapply(X = subset(ll.20.peak.annotation, peak.annotation == "gene.body")[["target.genes"]],
-                                FUN = function(x) {strsplit(x,",")[[1]]})))
+k27.gene.body <- unique(unlist(sapply(
+  X = subset(ll.20.peak.annotation, 
+             peak.annotation == "gene.body")[["target.genes"]],
+  FUN = function(x) {strsplit(x,",")[[1]]})))
 names(k27.gene.body) <- NULL
 length(k27.gene.body)
 
 ## Genes with H3K27 inside their gene body with no overlap
 ## in the TSS or TES.
-k27.internal.gene.body <- (unlist(sapply(X = subset(ll.20.peak.annotation, peak.annotation == "internal.gene.body")[["target.genes"]],
-                                FUN = function(x) {strsplit(x,",")[[1]]})))
+k27.internal.gene.body <- unique(unlist(sapply(
+  X = subset(ll.20.peak.annotation, 
+             peak.annotation == "internal.gene.body")[["target.genes"]],
+  FUN = function(x) {strsplit(x,",")[[1]]})))
 names(k27.internal.gene.body) <- NULL
 length(k27.internal.gene.body)
 
 ## Genes with H3K27me3 overlapping their TSS
-k27.tss <- (unlist(sapply(X = subset(ll.20.peak.annotation, peak.annotation == "TSS")[["target.genes"]],
-                                         FUN = function(x) {strsplit(x,",")[[1]]})))
+k27.tss <- unique(unlist(sapply(
+  X = subset(ll.20.peak.annotation, 
+             peak.annotation == "TSS")[["target.genes"]],
+  FUN = function(x) {strsplit(x,",")[[1]]})))
 names(k27.tss) <- NULL
 length(k27.tss)
 
 ## Genes with H3K27me3 overlapping their TES
-k27.tes <- (unlist(sapply(X = subset(ll.20.peak.annotation, peak.annotation == "TES")[["target.genes"]],
-                          FUN = function(x) {strsplit(x,",")[[1]]})))
+k27.tes <- unique(unlist(sapply(
+  X = subset(ll.20.peak.annotation, 
+             peak.annotation == "TES")[["target.genes"]], 
+  FUN = function(x) {strsplit(x,",")[[1]]})))
 names(k27.tes) <- NULL
 length(k27.tes)
 ```
 
-Next we generate the metageneplots for genes where the H3K27me3 occupies their entire gene body including TSS and TES. 
+Next we generate the metageneplots for genes where the H3K27me3 occupies their 
+entire gene body including TSS and TES. 
 
 ```{r k27_metageneplots_gene_body}
 library(rtracklayer)
-## Genes with their entire gene body marked
-k27.gene.body <- (unlist(sapply(X = subset(ll.20.peak.annotation, peak.annotation == "gene.body")[["target.genes"]],
-                                FUN = function(x) {strsplit(x,",")[[1]]})))
-names(k27.gene.body) <- NULL
-length(k27.gene.body)
-
-## Genes with H3K27 inside their gene body with no overlap
-## in the TSS or TES.
-k27.internal.gene.body <- (unlist(sapply(X = subset(ll.20.peak.annotation, peak.annotation == "internal.gene.body")[["target.genes"]],
-                                FUN = function(x) {strsplit(x,",")[[1]]})))
-names(k27.internal.gene.body) <- NULL
-length(k27.internal.gene.body)
-
-## Genes with H3K27me3 overlapping their TSS
-k27.tss <- (unlist(sapply(X = subset(ll.20.peak.annotation, peak.annotation == "TSS")[["target.genes"]],
-                                         FUN = function(x) {strsplit(x,",")[[1]]})))
-names(k27.tss) <- NULL
-length(k27.tss)
-
-## Genes with H3K27me3 overlapping their TES
-k27.tes <- (unlist(sapply(X = subset(ll.20.peak.annotation, peak.annotation == "TES")[["target.genes"]],
-                          FUN = function(x) {strsplit(x,",")[[1]]})))
-names(k27.tes) <- NULL
-length(k27.tes)
 
 metageneplot.data.k27.gene.body.1 <- 
  metageneplot(gene.names = k27.gene.body,
               genes = ostta.genes,
-              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              bw.file.name =
+                "h3k27me3/h3k27me3_ll_20_chip_1.bw",
               ntile.txs = 10,
               ntile.gene.body = 20)
 median.metageneplot.data.k27.gene.body.1 <- 
@@ -365,7 +390,8 @@ median.metageneplot.data.k27.gene.body.1 <-
 metageneplot.data.k27.gene.body.2 <- 
  metageneplot(gene.names = k27.gene.body,
               genes = ostta.genes,
-              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              bw.file.name =
+                "h3k27me3/h3k27me3_ll_20_chip_2.bw",
               ntile.txs = 10,
               ntile.gene.body = 20)
 median.metageneplot.data.k27.gene.body.2 <- 
@@ -376,7 +402,8 @@ median.metageneplot.data.k27.gene.body.2 <-
 metageneplot.data.k27.gene.body.3 <- 
  metageneplot(gene.names = k27.gene.body,
               genes = ostta.genes,
-              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              bw.file.name =
+                "h3k27me3/h3k27me3_ll_20_chip_3.bw",
               ntile.txs = 10,
               ntile.gene.body = 20)
 median.metageneplot.data.k27.gene.body.3 <- 
@@ -384,20 +411,26 @@ median.metageneplot.data.k27.gene.body.3 <-
       MARGIN = 2,
       FUN = median,na.rm = T)
 
-median.metageneplot.data.k27.gene.body <- (median.metageneplot.data.k27.gene.body.1 + median.metageneplot.data.k27.gene.body.2 +                                            median.metageneplot.data.k27.gene.body.3)/3
+median.metageneplot.data.k27.gene.body <- 
+  (median.metageneplot.data.k27.gene.body.1 + 
+     median.metageneplot.data.k27.gene.body.2 + 
+     median.metageneplot.data.k27.gene.body.3)/3
 
 plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.gene.body,spar = 0.5),
      type="l",col="blue",lwd=3,ylim=c(0,45),axes=F,xlab="",ylab="")
-axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),
+     las=2,lwd=2)
 axis(side = 2,lwd=2)
 ```
-Next we generate the metageneplots for genes where the H3K27me3 occupies part of the gene body without overlapping with the TSS and TES. 
+Next we generate the metageneplots for genes where the H3K27me3 occupies part 
+of the gene body without overlapping with the TSS and TES. 
 
 ```{r k27_metageneplots_internal_gene_body}
 metageneplot.data.k27.internal.gene.body.1 <- 
  metageneplot(gene.names = k27.internal.gene.body,
               genes = ostta.genes,
-              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              bw.file.name =
+                "h3k27me3/h3k27me3_ll_20_chip_1.bw",
               ntile.txs = 10,
               ntile.gene.body = 20)
 median.metageneplot.data.k27.internal.gene.body.1 <- 
@@ -408,7 +441,8 @@ median.metageneplot.data.k27.internal.gene.body.1 <-
 metageneplot.data.k27.internal.gene.body.2 <- 
  metageneplot(gene.names = k27.internal.gene.body,
               genes = ostta.genes,
-              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              bw.file.name =
+                "h3k27me3/h3k27me3_ll_20_chip_2.bw",
               ntile.txs = 10,
               ntile.gene.body = 20)
 median.metageneplot.data.k27.internal.gene.body.2 <- 
@@ -419,7 +453,8 @@ median.metageneplot.data.k27.internal.gene.body.2 <-
 metageneplot.data.k27.internal.gene.body.3 <- 
  metageneplot(gene.names = k27.internal.gene.body,
               genes = ostta.genes,
-              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              bw.file.name =
+                "h3k27me3/h3k27me3_ll_20_chip_3.bw",
               ntile.txs = 10,
               ntile.gene.body = 20)
 median.metageneplot.data.k27.internal.gene.body.3 <- 
@@ -427,22 +462,28 @@ median.metageneplot.data.k27.internal.gene.body.3 <-
       MARGIN = 2,
       FUN = median,na.rm = T)
 
-median.metageneplot.data.k27.internal.gene.body <- (median.metageneplot.data.k27.internal.gene.body.1 + 
- median.metageneplot.data.k27.internal.gene.body.2 +                                            median.metageneplot.data.k27.internal.gene.body.3)/3
+median.metageneplot.data.k27.internal.gene.body <- 
+  (median.metageneplot.data.k27.internal.gene.body.1 + 
+     median.metageneplot.data.k27.internal.gene.body.2 +
+     median.metageneplot.data.k27.internal.gene.body.3)/3
 
-plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.internal.gene.body,spar = 0.5),
+plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.internal.gene.body,
+                   spar = 0.5),
      type="l",col="cyan",lwd=3,ylim=c(0,10),axes=F,xlab="",ylab="")
-axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),
+     las=2,lwd=2)
 axis(side = 2,lwd=2)
 ```
 
-Next we generate the metageneplots for genes where the H3K27me3 occupies only the TSS and the beginning of the gene.  
+Next we generate the metageneplots for genes where the H3K27me3 occupies only 
+the TSS and the beginning of the gene.  
 
 ```{r k27_metageneplots_tss}
 metageneplot.data.k27.tss.1 <- 
  metageneplot(gene.names = k27.tss,
               genes = ostta.genes,
-              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              bw.file.name = 
+                "h3k27me3/h3k27me3_ll_20_chip_1.bw",
               ntile.txs = 10,
               ntile.gene.body = 20)
 median.metageneplot.data.k27.tss.1 <- 
@@ -453,7 +494,8 @@ median.metageneplot.data.k27.tss.1 <-
 metageneplot.data.k27.tss.2 <- 
  metageneplot(gene.names = k27.tss,
               genes = ostta.genes,
-              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              bw.file.name =
+                "h3k27me3/h3k27me3_ll_20_chip_2.bw",
               ntile.txs = 10,
               ntile.gene.body = 20)
 median.metageneplot.data.k27.tss.2 <- 
@@ -464,7 +506,8 @@ median.metageneplot.data.k27.tss.2 <-
 metageneplot.data.k27.tss.3 <- 
  metageneplot(gene.names = k27.tss,
               genes = ostta.genes,
-              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              bw.file.name =
+                "h3k27me3/h3k27me3_ll_20_chip_3.bw",
               ntile.txs = 10,
               ntile.gene.body = 20)
 median.metageneplot.data.k27.tss.3 <- 
@@ -473,24 +516,26 @@ median.metageneplot.data.k27.tss.3 <-
       FUN = median,na.rm = T)
 
 
-
 median.metageneplot.data.k27.tss <- 
  (median.metageneplot.data.k27.tss.1 + 
  median.metageneplot.data.k27.tss.2 +                                            median.metageneplot.data.k27.tss.3)/3
 
 plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tss,spar = 0.5),
      type="l",col="green",lwd=3,ylim=c(0,20),axes=F,xlab="",ylab="")
-axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),
+     las=2,lwd=2)
 axis(side = 2,lwd=2)
 ```
 
-Next we generate the metageneplots for genes where the H3K27me3 occupies only the TES and the end of the gene.  
+Next we generate the metageneplots for genes where the H3K27me3 occupies only 
+the TES and the end of the gene.  
 
 ```{r k27_metageneplots_tes}
 metageneplot.data.k27.tes.1 <- 
  metageneplot(gene.names = k27.tes,
               genes = ostta.genes,
-              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_1.bw",
+              bw.file.name = 
+                "h3k27me3/h3k27me3_ll_20_chip_1.bw",
               ntile.txs = 10,
               ntile.gene.body = 20)
 median.metageneplot.data.k27.tes.1 <- 
@@ -501,7 +546,8 @@ median.metageneplot.data.k27.tes.1 <-
 metageneplot.data.k27.tes.2 <- 
  metageneplot(gene.names = k27.tes,
               genes = ostta.genes,
-              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_2n.bw",
+              bw.file.name =
+                "h3k27me3/h3k27me3_ll_20_chip_2.bw",
               ntile.txs = 10,
               ntile.gene.body = 20)
 median.metageneplot.data.k27.tes.2 <- 
@@ -512,7 +558,8 @@ median.metageneplot.data.k27.tes.2 <-
 metageneplot.data.k27.tes.3 <- 
  metageneplot(gene.names = k27.tes,
               genes = ostta.genes,
-              bw.file.name = "chipseq_data/bw_data/h3k27me3/temp20/h3k27me3_20_chip_3n.bw",
+              bw.file.name =
+                "h3k27me3/h3k27me3_ll_20_chip_3.bw",
               ntile.txs = 10,
               ntile.gene.body = 20)
 median.metageneplot.data.k27.tes.3 <- 
@@ -520,15 +567,14 @@ median.metageneplot.data.k27.tes.3 <-
       MARGIN = 2,
       FUN = median,na.rm = T)
 
-
-
 median.metageneplot.data.k27.tes <- 
  (median.metageneplot.data.k27.tes.1 + 
  median.metageneplot.data.k27.tes.2 +                                            median.metageneplot.data.k27.tes.3)/3
 
 plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tes,spar = 0.5),
      type="l",col="red",lwd=3,ylim=c(0,20),axes=F,xlab="",ylab="")
-axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),
+     las=2,lwd=2)
 axis(side = 2,lwd=2)
 ```
 
@@ -538,18 +584,21 @@ In order to compare the different metageneplots are represented in the same plot
 #jpeg(filename = "images/h3k27me3_metageneplots.jpg",res = 250,width = 900,height = 900)
 plot(smooth.spline(x=1:40,y=median.metageneplot.data.k27.gene.body,spar = 0.5),
      type="l",col="blue",lwd=3,ylim=c(0,45),axes=F,xlab="",ylab="")
-lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.internal.gene.body,spar = 0.5),
+lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.internal.gene.body,
+                    spar = 0.5),
       type="l",col="cyan",lwd=3)
 lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tss,spar = 0.5),
       type="l",col="green",lwd=3)
 lines(smooth.spline(x=1:40,y=median.metageneplot.data.k27.tes,spar = 0.5),
       type="l",col="red",lwd=3)
-axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),las=2,lwd=2)
+axis(side = 1, at=c(0,10,30,40),labels = c("-2Kb","TSS","TES","2Kb"),
+     las=2,lwd=2)
 axis(side = 2,lwd=2)
 #dev.off()
 ```
 
-It can be observed that the level of H3K27me3 mark varies depending on the part of gene that it occupies. Next we check if these differences are significant.  
+It can be observed that the level of H3K27me3 mark varies depending on the part 
+of gene that it occupies. Next we check if these differences are significant.  
 
 ```{r metageneplots_significance}
 max.metageneplot.data.k27.gene.body.1 <- 
@@ -582,9 +631,10 @@ max.metageneplot.data.k27.internal.gene.body.3 <-
        MARGIN = 1,
        FUN = max,na.rm = T)
 
-max.metageneplot.data.k27.internal.gene.body <- (max.metageneplot.data.k27.internal.gene.body.1 + 
-                                         max.metageneplot.data.k27.internal.gene.body.2 +
-                                         max.metageneplot.data.k27.internal.gene.body.3)/3
+max.metageneplot.data.k27.internal.gene.body <- 
+  (max.metageneplot.data.k27.internal.gene.body.1 + 
+     max.metageneplot.data.k27.internal.gene.body.2 +
+     max.metageneplot.data.k27.internal.gene.body.3)/3
 
 
 max.metageneplot.data.k27.tss.1 <- 
@@ -639,12 +689,15 @@ wilcox.test(x = max.metageneplot.data.k27.tss,
             y = max.metageneplot.data.k27.tes)
 ```
 
-Indeed the differences between the metageneplots are highly significant except the ones corresponding to the marks overlapping with the TSS or TES. 
+Indeed the differences between the metageneplots are highly significant except 
+the ones corresponding to the marks overlapping with the TSS or TES. 
 
 Now we analyse the gene expression level of marked genes.
 
 ```{r h3k27me3_gene_expression}
-temp.gene.expression <- read.table(file="rnaseq_data/ostta_temperature_gene_expression.tsv",header = T,sep = "\t")
+temp.gene.expression <- 
+  read.table(file="../rnaseq_data/ostta_temperature_gene_expression.tsv",
+             header = T,sep = "\t")
 
 gene.expression.20 <- 
  (temp.gene.expression$T20_1 + 
@@ -653,7 +706,9 @@ gene.expression.20 <-
 
 names(gene.expression.20) <- rownames(temp.gene.expression)
 
-non.k27.genes <- setdiff(names(gene.expression.20),c(k27.gene.body,k27.tss,k27.tes,k27.internal.gene.body))
+non.k27.genes <- 
+  setdiff(names(gene.expression.20),
+          c(k27.gene.body,k27.tss,k27.tes,k27.internal.gene.body))
 
 summary(gene.expression.20[k27.gene.body])
 summary(gene.expression.20[k27.internal.gene.body])
@@ -687,18 +742,30 @@ wilcox.test(x = gene.expression.20[k27.tes],
             alternative = "less")
 ```
 
-We can see all H3K27me3 genes present levels of expression significantly lower than non-marked genes. Specifically, genes whose entire gene body or TSS is occupied by H3K27me3 are completely repressed. Whereas, genes where only the TES or gene body is occupied by H3K27me3 are expressed although at a significantly lower level than non-marked genes.  
+We can see all H3K27me3 genes present levels of expression significantly lower 
+than non-marked genes. Specifically, genes whose entire gene body or TSS is 
+occupied by H3K27me3 are completely repressed. Whereas, genes where only the TES 
+or gene body is occupied by H3K27me3 are expressed although at a significantly 
+lower level than non-marked genes.  
 
-In what follows we perform a functional analysis over the H3K27me3 marked genes. First, we analyze the relationship between H3K27me3 peaks and transposable elements. 
+In what follows we perform a functional analysis over the H3K27me3 marked genes. 
+First, we analyze the relationship between H3K27me3 peaks and transposable 
+elements. 
 
 ```{r transposable_elements}
-dna.transposons <- read.table(file="te_analysis/dna_transposons_unsorted.bed",sep="\t",header=F)
+dna.transposons <- 
+  read.table(file="../te_analysis/dna_transposons_unsorted.bed",
+             sep="\t",header=F)
 nrow(dna.transposons)
 
-ltr.transposons <- read.table(file="te_analysis/ltr_transposons_unsorted.bed",sep="\t", header=F)
+ltr.transposons <- 
+  read.table(file="../te_analysis/ltr_transposons_unsorted.bed",
+             sep="\t", header=F)
 nrow(ltr.transposons)
 
-unclassified.transposons <- read.table(file="te_analysis/unknown_transposons_unsorted.bed", sep="\t",header = F)
+unclassified.transposons <- 
+  read.table(file="../te_analysis/unknown_transposons_unsorted.bed", 
+             sep="\t",header = F)
 nrow(unclassified.transposons)
 
 overlapping.peaks <- function(target.peak, peaks)
@@ -759,182 +826,393 @@ ll.20.peak.annotation <- cbind(ll.20.peak.annotation,peak.te)
 write.table(x = ll.20.peak.annotation,file = "tables/H3K27me3_LL_20C_peak_annotation.tsv",quote = F,sep = "\t",row.names = F)
 ```
 
-H3K27me3 is only partially associated with Transposable Elements. More than 81% of the peaks did not overlap with any TE. Only 1.5%, 0.6% and 17.3% of the H3K27me3 peaks were found overlapping with DNA, LTR and unclassified transposons respectively. Most TE were neither associated with H3K27me3 peaks, specifically 7 out of 35 (20%) DNA transposons, 3 out of 69 (4.3%) LTR transposons and 83 out of 988 unclassified transposons were H3K27me3 marked. Most H3K27me3 marks located at intergenic regions (81.6%) were associated with transposons    
+H3K27me3 is only partially associated with Transposable Elements. More than 84% of the peaks did not overlap with any TE. Only 1.5%, 0.5% and 13.5% of the 
+H3K27me3 peaks were found overlapping with DNA, LTR and unclassified
+transposons respectively. Most TE were neither associated with H3K27me3 peaks, 
+specifically 14 out of 35 (40%) DNA transposons, 5 out of 69 (7.25%) LTR 
+transposons and 128 out of 988 (13%) unclassified transposons were H3K27me3 
+marked. Nonetheless, most H3K27me3 marks 
+located at intergenic regions (74.42%) were associated with transposons    
 
 
 ```{r k27_go_terms}
 library(clusterProfiler)
 library(enrichplot)
 library(org.Otauriv5.eg.db)
-k27.enrichment <- enrichGO(gene = all.k27.genes, pvalueCutoff = 0.05,qvalueCutoff = 0.05,
-                       OrgDb = org.Otauriv5.eg.db,
-                       ont = "BP", 
-                       keyType = "GID")
-k27.enrichment.df <- as.data.frame(k27.enrichment)
+k27.go.terms <- enrichGO(gene = all.k27.genes, pvalueCutoff = 1,
+                         qvalueCutoff = 1,
+                         OrgDb = org.Otauriv5.eg.db,
+                         ont = "BP", 
+                         keyType = "GID")
+k27.go.terms.filtered <- k27.go.terms
+k27.go.terms.filtered@result <- subset(k27.go.terms@result, pvalue < 0.05)
 
-k27.go.terms <- enrichGO(gene = all.k27.genes, pvalueCutoff = 1,qvalueCutoff = 1,
-                       OrgDb = org.Otauriv5.eg.db,
-                       ont = "BP", 
-                       keyType = "GID")
-k27.go.terms.df <- as.data.frame(k27.go.terms)
+k27.go.terms.df <- as.data.frame(k27.go.terms.filtered)
 
 
-write.table(x = k27.go.terms.df, file = "go_enrichment_k27.tsv",quote = F,sep = "\t",row.names = F)
+write.table(x = k27.go.terms.df, file = "go_enrichment_k27.tsv",
+            quote = F,sep = "\t",row.names = F)
 
-treeplot(x = pairwise_termsim(k27.go.terms))
-
-#jpeg(filename = "images/h3k27me3_revigo_treemap.jpg",res = 300,width = 1400,height = 900)
-
-library(treemap)
-
-revigo.names <- c("term_ID","description","frequency","value","uniqueness","dispensability","representative");
-revigo.data <- rbind(c("GO:0000003","reproduction",1.1154428097959028,0.35455656429893245,1,-0,"reproduction"),
-                     c("GO:0001887","selenium compound metabolic process",0.0031524026730797234,0.33700103077893184,0.9533150770650385,0.05458229,"selenium compound metabolic process"),
-                     c("GO:0002376","immune system process",0.9427113541805001,0.3647586988245658,1,-0,"immune system process"),
-                     c("GO:0006099","tricarboxylic acid cycle",0.5040640114710979,0.40392617241762396,0.926776665398285,0.08410724,"tricarboxylic acid cycle"),
-                     c("GO:0006103","2-oxoglutarate metabolic process",0.017201421622692253,1.0244715302516616,0.900036020673125,0.06139517,"2-oxoglutarate metabolic process"),
-                     c("GO:0006525","arginine metabolic process",0.425056765430777,0.6822743332528265,0.8414193966872098,0.31651609,"2-oxoglutarate metabolic process"),
-                     c("GO:0006526","arginine biosynthetic process",0.2840884163423315,0.6822743332528265,0.8197776139390401,0.55006631,"2-oxoglutarate metabolic process"),
-                     c("GO:0006631","fatty acid metabolic process",1.936945636803579,0.661709121736741,0.8363267566648038,0.47549756,"2-oxoglutarate metabolic process"),
-                     c("GO:0019344","cysteine biosynthetic process",0.13937119746048948,0.3647586988245658,0.8182547791420745,0.64560862,"2-oxoglutarate metabolic process"),
-                     c("GO:0019541","propionate metabolic process",0.06516280052453614,0.3121779710446768,0.8755895054022355,0.56447247,"2-oxoglutarate metabolic process"),
-                     c("GO:0030258","lipid modification",0.7621839254181456,0.3121779710446768,0.9072895155224819,0.63919224,"2-oxoglutarate metabolic process"),
-                     c("GO:0042128","nitrate assimilation",0.06915814433459262,0.39602842215015766,0.872968299057155,0.3471953,"2-oxoglutarate metabolic process"),
-                     c("GO:0043648","dicarboxylic acid metabolic process",1.2968131796952338,0.34085777107681914,0.8591201035057788,0.53948233,"2-oxoglutarate metabolic process"),
-                     c("GO:0046487","glyoxylate metabolic process",0.1082932886998466,0.42431833266535085,0.8788025002701066,0.59108986,"2-oxoglutarate metabolic process"),
-                     c("GO:0007017","microtubule-based process",1.4522840599239462,2.9055417594493695,0.9846414615040694,0.01131391,"microtubule-based process"),
-                     c("GO:0007018","microtubule-based movement",0.6202173565622278,3.3618830741865118,0.9760729714791799,0,"microtubule-based movement"),
-                     c("GO:0007049","cell cycle",2.8073119376140743,1.055588520937294,0.9834821578378161,0.01350265,"cell cycle"),
-                     c("GO:0007154","cell communication",9.671968224175414,0.47456381848456913,0.9807530444684127,0.0178355,"cell communication"),
-                     c("GO:0009267","cellular response to starvation",0.27913921808780134,0.9270279660356058,0.8817472625874171,0.00961211,"cellular response to starvation"),
-                     c("GO:0000160","phosphorelay signal transduction system",2.0739975137672992,0.6100474021856732,0.8687040167686203,0.43251558,"cellular response to starvation"),
-                     c("GO:0007166","cell surface receptor signaling pathway",1.7699816731780171,0.5778037246528189,0.8709358661055234,0.56185435,"cellular response to starvation"),
-                     c("GO:0071496","cellular response to external stimulus",0.6305470826004429,0.7229162230356428,0.9204539188066697,0.65860564,"cellular response to starvation"),
-                     c("GO:0015074","DNA integration",0.7252350055806647,2.657762206770456,0.8035461550887487,0.01150715,"DNA integration"),
-                     c("GO:0000271","polysaccharide biosynthetic process",0.8445801891875397,0.42431833266535085,0.8524365468053611,0.2912699,"DNA integration"),
-                     c("GO:0005975","carbohydrate metabolic process",5.3400641443698875,0.6489525204320686,0.9194445968125812,0.10937561,"DNA integration"),
-                     c("GO:0006259","DNA metabolic process",5.6268046211314795,2.0741453286090206,0.7883371559851247,0.44302427,"DNA integration"),
-                     c("GO:0006270","DNA replication initiation",0.18677061560434888,1.524614033979224,0.8223941766176285,0.48453834,"DNA integration"),
-                     c("GO:0006281","DNA repair",2.895534847137308,0.7716708877524712,0.7159639044019359,0.64562006,"DNA integration"),
-                     c("GO:0006298","mismatch repair",0.21782141222315915,0.6187036479778791,0.7758261295536709,0.68512103,"DNA integration"),
-                     c("GO:0006468","protein phosphorylation",1.0150465485898383,2.0478177071574097,0.8059994933400036,0.18117637,"DNA integration"),
-                     c("GO:0006486","protein glycosylation",0.7526798873357411,0.6623793059324244,0.7700801528471054,0.66477721,"DNA integration"),
-                     c("GO:0006508","proteolysis",5.2622572267907,2.215841795989129,0.8331839915576025,0.43614593,"DNA integration"),
-                     c("GO:0006637","acyl-CoA metabolic process",0.5539971825062208,0.39602842215015766,0.766633541793333,0.51243251,"DNA integration"),
-                     c("GO:0008213","protein alkylation",0.000579213939150692,0.33320452706495884,0.8948472249778151,0.37850183,"DNA integration"),
-                     c("GO:0009100","glycoprotein metabolic process",0.9570906483124367,0.6014649273302938,0.8398249210805684,0.35568771,"DNA integration"),
-                     c("GO:0009119","ribonucleoside metabolic process",0.3506733719429951,0.39602842215015766,0.7958005207549018,0.45483879,"DNA integration"),
-                     c("GO:0009226","nucleotide-sugar biosynthetic process",0.35550672740969513,0.3033112734255381,0.7919369046997367,0.48997503,"DNA integration"),
-                     c("GO:0010501","RNA secondary structure unwinding",0.0022996025754365773,0.33700103077893184,0.8841308449932884,0.22153339,"DNA integration"),
-                     c("GO:0016266","O-glycan processing",0.009247705105078281,0.6822743332528265,0.832553230099121,0.68426048,"DNA integration"),
-                     c("GO:0016310","phosphorylation",5.235381700014107,0.9200287559031499,0.8995173712742447,0.51243059,"DNA integration"),
-                     c("GO:0016579","protein deubiquitination",0.0016070105886223452,1.363169883748535,0.8876399511853289,0.40321557,"DNA integration"),
-                     c("GO:0018202","peptidyl-histidine modification",1.0281836136778093,0.9270279660356058,0.8252111825191477,0.68739488,"DNA integration"),
-                     c("GO:0018342","protein prenylation",0.00018239077232830298,0.3647586988245658,0.8956376571084298,0.35393725,"DNA integration"),
-                     c("GO:0019439","aromatic compound catabolic process",2.2395984760807317,0.488426217953643,0.8298501364385389,0.67803842,"DNA integration"),
-                     c("GO:0032543","mitochondrial translation",0.2221051306327077,0.7671257790005732,0.8301308068014243,0.30712983,"DNA integration"),
-                     c("GO:0034404","nucleobase-containing small molecule biosynthetic process",0.2580336480412168,0.3647586988245658,0.8075679421637405,0.47645433,"DNA integration"),
-                     c("GO:0034655","nucleobase-containing compound catabolic process",1.6564680648053147,0.5761569684631386,0.8082436737396426,0.50011278,"DNA integration"),
-                     c("GO:0035383","thioester metabolic process",0.5539971825062208,0.39602842215015766,0.9156152717960674,0.69278956,"DNA integration"),
-                     c("GO:0042398","cellular modified amino acid biosynthetic process",0.5343877097407617,0.40392617241762396,0.8708997557571673,0.19203267,"DNA integration"),
-                     c("GO:0044270","cellular nitrogen compound catabolic process",2.004743244566209,0.4588180186234574,0.8286580702160516,0.69482359,"DNA integration"),
-                     c("GO:0046434","organophosphate catabolic process",0.9710632603168847,0.868457312023167,0.8769887779688311,0.41091092,"DNA integration"),
-                     c("GO:0046700","heterocycle catabolic process",2.042108705491845,0.4685002750565224,0.8310802481954842,0.69649215,"DNA integration"),
-                     c("GO:0070646","protein modification by small protein removal",0.0641152859537317,1.1763933331577958,0.8585287404338742,0.52767687,"DNA integration"),
-                     c("GO:0071897","DNA biosynthetic process",0.7667855953091854,2.0080982132635268,0.7764795050343053,0.55438786,"DNA integration"),
-                     c("GO:0090304","nucleic acid metabolic process",13.541109943481535,0.5761569684631386,0.7844903754380635,0.55585571,"DNA integration"),
-                     c("GO:0140053","mitochondrial gene expression",0.3272164397774754,0.7229162230356428,0.8689292553283973,0.16191549,"DNA integration"),
-                     c("GO:1901361","organic cyclic compound catabolic process",2.407836710372425,0.4588180186234574,0.8509596622336734,0.55813667,"DNA integration"),
-                     c("GO:0016441","regulation of gene expression",0.049918382594123255,0.7229162230356428,0.9152721684520655,0.09459438,"regulation of gene expression"),
-                     c("GO:0006450","regulation of translational fidelity",0.29561600610151356,0.3647586988245658,0.9565840743545636,0.13549893,"regulation of gene expression"),
-                     c("GO:0010608","post-transcriptional regulation of gene expression",1.6811968028967992,0.5129770046876073,0.9187967357951126,0.29038639,"regulation of gene expression"),
-                     c("GO:0010629","negative regulation of gene expression",1.1219250764340574,0.531092579249663,0.891938194299043,0.58730682,"regulation of gene expression"),
-                     c("GO:0017148","negative regulation of translation",0.21779183534115995,0.33700103077893184,0.9025830172260265,0.66877869,"regulation of gene expression"),
-                     c("GO:0031326","regulation of cellular biosynthetic process",14.068660464000152,0.3894214410778525,0.8933198148321295,0.55551169,"regulation of gene expression"),
-                     c("GO:0033044","regulation of chromosome organization",0.18193972487781543,0.3121779710446768,0.9545386992795665,0.15097414,"regulation of gene expression"),
-                     c("GO:0034249","negative regulation of amide metabolic process",0.23996217313971518,0.33700103077893184,0.9072896668585831,0.68743154,"regulation of gene expression"),
-                     c("GO:1903311","regulation of mRNA metabolic process",0.4779772015478174,0.3647586988245658,0.9285627652482316,0.34495101,"regulation of gene expression"),
-                     c("GO:2000241","regulation of reproductive process",0.1639520511419782,0.3121779710446768,0.9569481717332748,0.14866641,"regulation of gene expression"),
-                     c("GO:0030029","actin filament-based process",0.8246601591610891,0.6822743332528265,0.9855133147715953,0.01167087,"actin filament-based process"),
-                     c("GO:0030154","cell differentiation",2.279586420543629,0.4717135495803034,0.9548569791025598,0.01433045,"cell differentiation"),
-                     c("GO:0009888","tissue development",0.6842315881691289,0.3494179598129715,0.9723962948998165,0.69552749,"cell differentiation"),
-                     c("GO:0048229","gametophyte development",0.017253181166190824,0.3647586988245658,0.9784815653260818,0.48986076,"cell differentiation"),
-                     c("GO:0048507","meristem development",0.03934957675974807,0.33700103077893184,0.9773200335076074,0.52461364,"cell differentiation"),
-                     c("GO:0040011","locomotion",0.5148398554794674,2.9956162519741056,1,-0,"locomotion"),
-                     c("GO:0043547","positive regulation of GTPase activity",0.0008897712001421268,0.9270279660356058,0.945105760674195,-0,"positive regulation of GTPase activity"),
-                     c("GO:0051168","nuclear export",0.36225518598584233,0.8822380235820269,0.9193145237527721,0.00984617,"nuclear export"),
-                     c("GO:0006403","RNA localization",0.38503431460554743,0.5719097997394266,0.9492853307589769,0.48954515,"nuclear export"),
-                     c("GO:0006614","SRP-dependent cotranslational protein targeting to membrane",0.1731775735855571,0.3647586988245658,0.9239488841068346,0.45707974,"nuclear export"),
-                     c("GO:0006890","retrograde vesicle-mediated transport, Golgi to endoplasmic reticulum",0.1396694310206479,0.3121779710446768,0.9533956800814197,0.22525423,"nuclear export"),
-                     c("GO:0015931","nucleobase-containing compound transport",0.5729682875685309,0.3245363289714383,0.953096561853417,0.48659654,"nuclear export"),
-                     c("GO:0031503","protein-containing complex localization",0.2928998624379218,0.3647586988245658,0.9641396486534709,0.22721235,"nuclear export"),
-                     c("GO:0033750","ribosome localization",0.08453565823400183,0.39602842215015766,0.9615600081516522,0.20497386,"nuclear export"),
-                     c("GO:0050658","RNA transport",0.3380539022900098,0.6187036479778791,0.9329722181898726,0.24285839,"nuclear export"),
-                     c("GO:0051169","nuclear transport",0.5733749696960196,0.5066832555406448,0.9263142426302791,0.63305059,"nuclear export"),
-                     c("GO:0051301","cell division",1.5693197819947182,0.5659276631444706,0.9845137269828846,0.01363807,"cell division"),
-                     c("GO:0061982","meiosis I cell cycle process",0.22371953544182982,1.4436467858208988,0.8829935432772962,0.00942192,"meiosis I cell cycle process"),
-                     c("GO:0098813","nuclear chromosome segregation",0.33031461816688995,1.0576395600847068,0.9027750717677788,0.64747101,"meiosis I cell cycle process"),
-                     c("GO:0070085","glycosylation",0.8372204750500761,0.5642517085182833,0.9603127258883271,0.04818597,"glycosylation"),
-                     c("GO:0071103","plasma membrane bounded cell projection organization",0.8233982121957907,2.48892688143064,0.8072006030847753,0.01166889,"plasma membrane bounded cell projection organization"),
-                     c("GO:0000027","ribosomal large subunit assembly",0.012821578346646382,0.8154250425427645,0.8458879193561408,0.48240062,"plasma membrane bounded cell projection organization"),
-                     c("GO:0000245","spliceosomal complex assembly",0.1148766096848317,0.33700103077893184,0.7176266579933399,0.64218601,"plasma membrane bounded cell projection organization"),
-                     c("GO:0000280","nuclear division",0.45164391760787703,0.4717135495803034,0.8236095327076562,0.491872,"plasma membrane bounded cell projection organization"),
-                     c("GO:0006415","translational termination",0.15480047090339727,0.3647586988245658,0.7363259627235162,0.48918433,"plasma membrane bounded cell projection organization"),
-                     c("GO:0006479","protein methylation",0.000579213939150692,0.33320452706495884,0.8923844376711241,0.51387372,"plasma membrane bounded cell projection organization"),
-                     c("GO:0006996","organelle organization",6.781836087483291,0.901501456180904,0.8241728840064373,0.52336479,"plasma membrane bounded cell projection organization"),
-                     c("GO:0007010","cytoskeleton organization",1.98151060375585,1.5080424402092374,0.8150504345607171,0.61927091,"plasma membrane bounded cell projection organization"),
-                     c("GO:0030030","cell projection organization",1.3282977705833654,1.6133625971416043,0.8512620269157171,0.41569968,"plasma membrane bounded cell projection organization"),
-                     c("GO:0042255","ribosome assembly",0.2624923630025938,0.42431833266535085,0.8171364501582283,0.65665084,"plasma membrane bounded cell projection organization"),
-                     c("GO:0043248","proteasome assembly",0.04973352708162835,0.39602842215015766,0.8611074492352145,0.52931974,"plasma membrane bounded cell projection organization"),
-                     c("GO:0048285","organelle fission",0.5487596096521986,0.30148135432836,0.8356875754692098,0.50144746,"plasma membrane bounded cell projection organization"),
-                     c("GO:0051258","protein polymerization",0.1780454354145895,1.0725168728382306,0.8473253852004743,0.32972263,"plasma membrane bounded cell projection organization"),
-                     c("GO:0051276","chromosome organization",1.5299726699751368,1.9364166059501378,0.8195931631949569,0.55870698,"plasma membrane bounded cell projection organization"),
-                     c("GO:0070475","rRNA base methylation",0.22436283262531206,0.33700103077893184,0.6953574452494768,0.4998146,"plasma membrane bounded cell projection organization"),
-                     c("GO:0070897","transcription preinitiation complex assembly",0.11026754557329214,0.39602842215015766,0.7195583694392909,0.56139216,"plasma membrane bounded cell projection organization"),
-                     c("GO:0070925","organelle assembly",1.3561320812847646,0.6413546437511954,0.8010719571331075,0.5915788,"plasma membrane bounded cell projection organization"),
-                     c("GO:0097435","supramolecular fiber organization",0.801568008540226,0.5477838551470221,0.8581207014692784,0.38125869,"plasma membrane bounded cell projection organization"),
-                     c("GO:0120036","plasma membrane bounded cell projection organization",1.1030821378604103,1.7112755303804414,0.8324651987784939,0.3943391,"plasma membrane bounded cell projection organization"),
-                     c("GO:0097354","prenylation",0.009942761832059112,0.3647586988245658,0.9497005745047677,0.05901557,"prenylation"),
-                     c("GO:2001057","reactive nitrogen species metabolic process",0.11012952012396263,0.33700103077893184,0.9373241093491478,0.09288199,"reactive nitrogen species metabolic process"));
-
-stuff <- data.frame(revigo.data);
-names(stuff) <- revigo.names;
-
-stuff$value <- as.numeric( as.character(stuff$value) );
-stuff$frequency <- as.numeric( as.character(stuff$frequency) );
-stuff$uniqueness <- as.numeric( as.character(stuff$uniqueness) );
-stuff$dispensability <- as.numeric( as.character(stuff$dispensability) );
+treeplot(x = pairwise_termsim(k27.go.terms.filtered))
 
 
-treemap(
- stuff,
- index = c("representative","description"),
- vSize = "value",
- type = "categorical",
- vColor = "representative",
- title = "",
- inflate.labels = TRUE,
- lowerbound.cex.labels = 0,
- position.legend = "none"
-)
+k27.go.terms <- enrichGO(gene = c(k27.gene.body,k27.tss), pvalueCutoff = 1,
+                         qvalueCutoff = 1,
+                         OrgDb = org.Otauriv5.eg.db,
+                         ont = "BP", 
+                         keyType = "GID")
+k27.go.terms.filtered <- k27.go.terms
+k27.go.terms.filtered@result <- subset(k27.go.terms@result, pvalue < 0.05)
 
+k27.go.terms.df <- as.data.frame(k27.go.terms.filtered)
+
+jpeg(filename = "images/h3k27me3_treeplot_gene_body.jpg",res = 250,width = 3800,height = 1500)
+treeplot(x = pairwise_termsim(k27.go.terms.filtered),cluster.params = list(n = 3),color ="pvalue")
+dev.off()
+
+write.table(x = k27.go.terms.df, file = "go_enrichment_full_gene_body_tss_k27.tsv",
+            quote = F,sep = "\t",row.names = F)
+
+
+
+```
+
+Our GO enrichment analysis suggests that H3K27me3 is repressing the assembly of
+bounded cellular projection, microtubule-based movement and transcription
+regulation. 
+
+For example, the transcription factors ostta14g02090 (Arabidopsis ortholog 
+APETALA2 AT4G36920), ostta17g00450 (Arabidopsis ortholog BELL1 AT5G41410),
+ostta11g02490, ostta07g04340 (Arabidopsis orthologs WRKY AT2G04880) and 
+ostta02g03030 (Arabidopsis ortholog CSP, cold shock protein, AT2G17870).
+
+```{r function gene profile}
+library(rtracklayer)  
+library(ChIPpeakAnno)
+ 
+gene.profile <- function(gene.name, 
+                         promoter_length=1000, 
+                         selected.bigwig.files, 
+                         selected.bed.files)
+{
+  target.gene.body <- genes.data.df[gene.name,]
+  target.gene.chr <- as.character(target.gene.body$seqnames)
+  target.gene.start <- target.gene.body$start
+  target.gene.end <- target.gene.body$end
+  
+  target.gene.strand <- as.character(target.gene.body$strand)
+  
+  ## Extract cds annotation
+  cds.data.target.gene <- subset(cds.data, 
+                                 seqnames == target.gene.chr & 
+                                   (start >= target.gene.start & 
+                                      end <= target.gene.end))
+  
+  ## Extract exons annotation
+  exons.data.target.gene <- subset(exons.data, 
+                                   seqnames == target.gene.chr & 
+                                     (start >= target.gene.start & 
+                                        end <= target.gene.end))
+  
+  ## Determine the genome range to plot including promoter, gene body and 5' UTR
+  ## This depends on whether the gene is on the forward or reverse strand
+  range.to.plot <- target.gene.body
+  
+  if(target.gene.strand == "+")
+  {
+    range.to.plot$start <- range.to.plot$start - promoter_length
+    range.to.plot$end <- range.to.plot$end + promoter_length
+  } else if (target.gene.strand == "-")
+  {
+    range.to.plot$end <- range.to.plot$end + promoter_length
+    range.to.plot$start <- range.to.plot$start - promoter_length
+  }
+  
+  ## Compute the length of the genome range to represent
+  current.length <- range.to.plot$end - range.to.plot$start
+  
+  ## Compute profile in gene
+  ## Since ChIPpeakAnno needs more than one region to plot our region
+  ## is duplicated 
+  regions.plot <- GRanges(rbind(range.to.plot,range.to.plot))
+  
+  ## Import signal from the bigwig files
+  cvglists <- sapply(selected.bigwig.files, import, 
+                     format="BigWig", 
+                     which=regions.plot, 
+                     as="RleList")
+  
+  ## Compute signal in the region to plot
+  chip.signal <- featureAlignedSignal(cvglists, regions.plot, 
+                                      upstream=ceiling(current.length/2), 
+                                      downstream=ceiling(current.length/2),
+                                      n.tile=current.length) 
+  
+  ## Compute mean signal 
+  if(target.gene.strand == "+")
+  {
+    chip.signal.mean <- colMeans(chip.signal[[1]],na.rm = TRUE)
+  } else if (target.gene.strand == "-")
+  {
+    chip.signal.mean <- rev(colMeans(chip.signal[[1]],na.rm = TRUE))
+  }
+  
+  ## Normalization
+  #chip.signal.mean <- 20 * chip.signal.mean / max(chip.signal.mean)
+  upper.lim <- 1.1*max(chip.signal.mean)
+  ## Colors to draw signal
+  line.colors <- "blue"
+  area.colors <- "lightblue"
+  
+  
+  cord.x <- 1:current.length
+  
+  ## Exon width to plot
+  exon.width <- 2#1#2
+  
+  ## Cds width to plot
+  cds.width <- 3#1.5#3
+  
+  ## Width of the rectangule representing the peak reagion
+  peak.width <- 1#0.5#1
+  
+  ## Extract exons for target gene
+  exons.data.target.gene <- subset(exons.data, seqnames == target.gene.chr & (start >= target.gene.start & end <= target.gene.end))
+  
+  ## Transform exon coordinates to current range
+  min.pos <- min(exons.data.target.gene$start)
+  
+  exons.data.target.gene$start <- exons.data.target.gene$start - min.pos + promoter_length
+  exons.data.target.gene$end <- exons.data.target.gene$end - min.pos + promoter_length
+  
+  ## Extract cds for target gene
+  cds.data.target.gene <- subset(cds.data, seqnames == target.gene.chr & (start >= target.gene.start & end <= target.gene.end))
+  
+  cds.data.target.gene$start <- cds.data.target.gene$start - min.pos + promoter_length
+  cds.data.target.gene$end <- cds.data.target.gene$end - min.pos + promoter_length
+  
+  plot(cord.x, rep(gene.height,length(cord.x)),type="l",col="black",lwd=3,ylab="",
+       cex.lab=2,axes=FALSE,xlab="",main="",cex.main=2,
+       ylim=c(-35,upper.lim),xlim=c(0,max(cord.x)))
+  
+  ## Represent exons
+  for(i in 1:nrow(exons.data.target.gene))
+  {
+    # Determine start/end for each exon
+    current.exon.start <- exons.data.target.gene$start[i]
+    current.exon.end <- exons.data.target.gene$end[i]
+    
+    ## Determine coordinates for each exon polygon and represent it
+    exon.x <- c(current.exon.start,current.exon.end,current.exon.end,current.exon.start)
+    exon.y <- c(gene.height + exon.width, gene.height + exon.width, gene.height - exon.width, gene.height - exon.width)
+    
+    polygon(x = exon.x, y = exon.y, col = "blue",border = "blue")
+  }
+  
+  if(nrow(cds.data.target.gene) > 0)
+  {
+    for(i in 1:nrow(cds.data.target.gene))
+    {
+      # Determine current cds start/end
+      current.cds.start <- cds.data.target.gene$start[i]
+      current.cds.end <- cds.data.target.gene$end[i]
+      
+      # Determine curret cds coordinates for the polygon and represent it
+      cds.x <- c(current.cds.start,current.cds.end,current.cds.end,current.cds.start)
+      cds.y <- c(gene.height + cds.width, gene.height + cds.width, gene.height - cds.width, gene.height - cds.width)
+      polygon(x = cds.x, y = cds.y, col = "blue",border = "blue")
+    }
+  }
+  
+  ## Draw arrow to represent transcription direction 
+  if(target.gene.strand == "+")
+  {
+    lines(c(promoter_length,promoter_length,promoter_length+100),
+          y=c(gene.height,gene.height+5,gene.height+5),lwd=3)
+    lines(c(promoter_length+50,promoter_length+100),y=c(gene.height+6,gene.height+5),lwd=3)
+    lines(c(promoter_length+50,promoter_length+100),y=c(gene.height+4,gene.height+5),lwd=3)
+  } else if (target.gene.strand == "-")
+  {
+    lines(c(current.length - promoter_length, current.length - promoter_length, current.length - promoter_length-100),y=c(gene.height,gene.height+5,gene.height+5),lwd=3)
+    lines(c(current.length - promoter_length-50, current.length - promoter_length - 100),y=c(gene.height + 6, gene.height + 5),lwd=3)
+    lines(c(current.length - promoter_length-50, current.length - promoter_length - 100),y=c(gene.height + 4, gene.height + 5),lwd=3)
+  }
+  
+  ## Draw promoter range
+  if(target.gene.strand == "+")
+  {
+    axis(side = 1,labels = c(- promoter_length, - promoter_length / 2,"TSS"),at = c(1,promoter_length/2,promoter_length),lwd=2,cex=1.5,las=2,cex=2)
+  } else if(target.gene.strand == "-")
+  {
+    axis(side = 1,labels = c("TSS",- promoter_length / 2,- promoter_length),at = c(current.length-promoter_length,current.length-promoter_length/2, current.length),lwd=2,cex=1.5,las=2,cex=2)
+  }
+  
+  ## Draw gene name
+  text(x = current.length / 2, y = -33 , 
+       labels = bquote(italic(.(gene.name))),cex = 1.7,font = 3)
+  
+  ## Extract bed file name 1 and read it
+  current.peaks <- read.table(file=selected.bed.files,header = F, as.is = T)
+  current.peaks <- current.peaks[,1:3]
+  colnames(current.peaks) <- c("seqnames","start","end")
+  peak.coordinates <- subset(current.peaks, seqnames == as.character(range.to.plot$seqnames) & start >= range.to.plot$start & end <= range.to.plot$end) 
+  current.peaks.to.plot <- peak.coordinates[,2:3]
+  
+  ## Transform coordinates 
+  current.peaks.to.plot <- current.peaks.to.plot - range.to.plot$start
+  
+  ## Check if there are peaks for the target gene
+  if(nrow(current.peaks.to.plot) > 0)
+  {
+    #motifs.in.peaks <- vector(mode="list", length=nrow(current.peaks.to.plot))
+    for(j in 1:nrow(current.peaks.to.plot))
+    {
+      ## Extract start and end point of each peak region
+      current.peak.start <- current.peaks.to.plot[j,1]
+      current.peak.end <- current.peaks.to.plot[j,2]
+      
+      ## Computer coordinates for polygon and draw it
+      peak.x <- c(current.peak.start,current.peak.end,
+                  current.peak.end,current.peak.start)
+      peak.y <- c(peak.width - 12,   peak.width - 12, 
+                  - peak.width - 12, - peak.width - 12)  
+      
+      polygon(x = peak.x, y = peak.y, col = "blue", border = "blue",lwd=2)
+    }
+  }
+  
+  ## Draw profiles if bw file is provided
+  ## Compute base line for current TF
+  current.base.line <- - 10
+  
+  ## Represent signal from the current TF
+  lines(chip.signal.mean+current.base.line,type="l",col=line.colors,lwd=3)
+  ## Determine polygon coordinates and represent it
+  cord.y <- c(current.base.line,chip.signal.mean+current.base.line,current.base.line)
+  cord.x <- 1:length(cord.y)
+  polygon(cord.x,cord.y,col=area.colors)
+  
+  axis(side = 2,lwd = 2,
+       at = seq(from=0,to=ceiling(upper.lim/10)*10,by=10)+current.base.line,
+       labels = seq(from=0,to=ceiling(upper.lim/10)*10,by=10))
+}
+
+jpeg(filename = "images/example_ostta14g02090.jpg",res = 250,width = 3800,height = 1500)
+gene.profile(gene.name="ostta14g02090", 
+             promoter_length=1000, 
+             selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
+             selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
+dev.off()
+jpeg(filename = "images/example_ostta17g00450.jpg",res = 250,width = 3800,height = 1500)
+gene.profile(gene.name="ostta17g00450", 
+             promoter_length=1000, 
+             selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
+             selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
+dev.off()
+jpeg(filename = "images/example_ostta11g02490.jpg",res = 250,width = 3800,height = 1500)
+gene.profile(gene.name="ostta11g02490", 
+             promoter_length=1000, 
+             selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
+             selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
+dev.off()
+jpeg(filename = "images/example_ostta07g04340.jpg",res = 250,width = 3800,height = 1500)
+gene.profile(gene.name="ostta07g04340", 
+             promoter_length=1000, 
+             selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
+             selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
+dev.off()
+jpeg(filename = "images/example_ostta02g03030.jpg",res = 250,width = 3800,height = 1500)
+gene.profile(gene.name="ostta02g03030", 
+             promoter_length=1000, 
+             selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
+             selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
+dev.off()
+```
+
+Examples of genes involved in microtubule-based movement are ostta18g01040
+(kinesin) and ostta08g03710 (tubulin alpha).
+
+```{r microtubule_movement}
+#jpeg(filename = "images/example_ostta18g01040.jpg",res = 250,width = 3800,height = 1500)
+gene.profile(gene.name="ostta18g01040", 
+             promoter_length=1000, 
+             selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
+             selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
+#dev.off()
+
+#jpeg(filename = "images/example_ostta08g03710.jpg",res = 250,width = 3800,height = 1500)
+gene.profile(gene.name="ostta08g03710", 
+             promoter_length=1000, 
+             selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
+             selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
 #dev.off()
 ```
 
+We also perform KEGG pathway enrichment analysis.
 
-We next explore the association between ChIP signal and gene expression.
+```{r kegg_enrichment}
+gene.ids <- ostta.genes$gene_id
+k27.enrich.kegg <- enrichKEGG(gene  = paste0("OT_",c(k27.gene.body,k27.tss)),#all.k27.genes),
+                                    universe = paste0("OT_",gene.ids),
+                                    organism = "ota",
+                                    pAdjustMethod = "BH",
+                                    pvalueCutoff  = 0.05)
+
+df.activated.enrich.kegg <- as.data.frame(k27.enrich.kegg)
+head(df.activated.enrich.kegg)
+
+library(pathview)
+
+pathview.genes <- rep(0,length(gene.ids))
+names(pathview.genes) <- gene.ids
+
+pathview.genes[all.k27.genes] <- 1
+
+names(pathview.genes) <- paste0("OT_",gene.ids)
+
+pathview(gene.data = sort(pathview.genes,decreasing = TRUE),
+         pathway.id = "ota04814",
+         species = "ota",
+         gene.idtype = "KEGG")
+```
+
+Consistently we found the cellular process "Cell motility" significantly 
+represented in the H3K27me3 marked genes. 
+
+![Cell motility]("ota04814.pathview.png")
+
+We next explore the association between ChIP signal and gene expression. The
+Reads Per Kilobase of peak and Million of mapped reads (RPKM) is computed. 
+Marked genes with different levels of ChIP signal according to the quantiles
+of the distribution are separated into different sets adn their expression 
+level represented. 
 
 ```{r chip_signal_vs_expression}
-count.1 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp20c/k27_20_ll_chip_1_counts.bed",header = F,sep = "\t")
-count.2 <- read.table(file="chipseq_data/bed_data/h3k27me3/temp20c/k27_20_ll_chip_2n_counts.bed",header = F,sep = "\t")
-count.3 <- read.table(file="chipseq_data/bed_data/h3k27me3/temp20c/k27_20_ll_chip_3n_counts.bed",header = F,sep = "\t")
-count.1 <- count.1[,c(1:3,10)]
-count.2 <- count.2[,c(1:3,10)]
-count.3 <- count.3[,c(1:3,10)]
+count.1 <- 
+  read.table(
+    file = 
+      "h3k27me3/h3k27me3_ll_20_chip_1_counts.bed",
+      #"../chipseq_data/bed_data/h3k27me3/temp20c/k27_20_ll_chip_1_counts.bed",
+    header = F,sep = "\t")
+count.2 <- 
+  read.table(
+    file=
+      "h3k27me3/h3k27me3_ll_20_chip_2_counts.bed",
+      #"../chipseq_data/bed_data/h3k27me3/temp20c/k27_20_ll_chip_2n_counts.bed",
+    header = F,sep = "\t")
+count.3 <- 
+  read.table(
+    file=
+      "h3k27me3/h3k27me3_ll_20_chip_3_counts.bed",
+      #"../chipseq_data/bed_data/h3k27me3/temp20c/k27_20_ll_chip_3n_counts.bed",
+    header = F,sep = "\t")
+#count.1 <- count.1[,c(1:3,10)]
+#count.2 <- count.2[,c(1:3,10)]
+#count.3 <- count.3[,c(1:3,10)]
 
 mapped.reads.k27.20c.1 <- 3146662/1E6 
-mapped.reads.k27.20c.2 <- 5697849/1E6
-mapped.reads.k27.20c.3 <- 5157582/1E6
+mapped.reads.k27.20c.2 <- 7702115/1E6
+mapped.reads.k27.20c.3 <- 7102648/1E6
 
 rpm.1 <- count.1
 rpm.2 <- count.2
@@ -946,11 +1224,63 @@ rpm.3[,4] <- rpm.3[,4]/mapped.reads.k27.20c.3
 
 
 plot(log2(rpm.1[,4]),log2(rpm.2[,4]))
+lines(x=c(0,100),y=c(0,100))
+
 plot(log2(rpm.1[,4]),log2(rpm.3[,4]))
+lines(x=c(0,100),y=c(0,100))
+
 plot(log2(rpm.2[,4]),log2(rpm.3[,4]))
+lines(x=c(0,100),y=c(0,100))
 
 rpm <- rpm.1
 rpm[,4] <- (rpm.1[,4] + rpm.2[,4] + rpm.3[,4])/3
+
+rpkm <- rpm
+rpkm[,4] <- (rpm[,4]/(rpm[,3]-rpm[,2]))
+
+genes.2nd.quant <- 
+  (ll.20.peak.annotation$target.genes)[which(rpkm[,4] < quantile(rpkm[,4])[3])]
+genes.2nd.quant <- genes.2nd.quant[genes.2nd.quant != ""]
+genes.2nd.quant <- unlist(strsplit(x = genes.2nd.quant,split = ","))
+
+genes.3rd.quant <- 
+  ll.20.peak.annotation$target.genes[which(rpkm[,4] >= quantile(rpkm[,4])[3] &
+                                           rpkm[,4] < quantile(rpkm[,4])[4])]
+genes.3rd.quant <- genes.3rd.quant[genes.3rd.quant != ""]
+genes.3rd.quant <- unlist(strsplit(x = genes.3rd.quant,split = ","))
+
+genes.4th.quant <- 
+  ll.20.peak.annotation$target.genes[which(rpkm[,4] >= quantile(rpkm[,4])[4])]
+genes.4th.quant <- genes.4th.quant[genes.4th.quant != ""]
+genes.4th.quant <- unlist(strsplit(x = genes.4th.quant,split = ","))
+
+##jpeg(filename = "../images/boxplot_chip_signal_gene_expression.jpg",width = 400,height = 600)
+boxplot(gene.expression.20[genes.2nd.quant],
+        gene.expression.20[genes.3rd.quant],
+        gene.expression.20[genes.4th.quant],
+        names=c("RPKM < 0.3","0.3 < RPKM < 0.5", "RPKM > 0.5"),
+        ylab="TPM", cex.lab=1.5, outline=F, col=c("lightblue","blue","darkblue"))
+##dev.off()
+
+boxplot(gene.expression.20[intersect(k27.gene.body,genes.2nd.quant)],
+        gene.expression.20[intersect(k27.gene.body,genes.3rd.quant)],
+        gene.expression.20[intersect(k27.gene.body,genes.4th.quant)],
+        names=c("< 0.3","< 0.5", "> 0.5"),outline=F)
+
+boxplot(gene.expression.20[intersect(k27.tss,genes.2nd.quant)],
+        gene.expression.20[intersect(k27.tss,genes.3rd.quant)],
+        gene.expression.20[intersect(k27.tss,genes.4th.quant)],
+        names=c("< 0.3","< 0.5", "> 0.5"),outline=F)
+
+boxplot(gene.expression.20[intersect(k27.tes,genes.2nd.quant)],
+        gene.expression.20[intersect(k27.tes,genes.3rd.quant)],
+        gene.expression.20[intersect(k27.tes,genes.4th.quant)],
+        names=c("< 0.3","< 0.5", "> 0.5"),outline=F)
+
+boxplot(gene.expression.20[intersect(k27.internal.gene.body,genes.2nd.quant)],
+        gene.expression.20[intersect(k27.internal.gene.body,genes.3rd.quant)],
+        gene.expression.20[intersect(k27.internal.gene.body,genes.4th.quant)],
+        names=c("< 0.3","< 0.5", "> 0.5"),outline=F)
 ```
 
 ## H3K4me3 genome wide distribution analysis
