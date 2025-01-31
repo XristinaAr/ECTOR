@@ -1,0 +1,6 @@
+chr	start	end	peak.annotation.14.20.k27	activated.genes.14.20.k27
+8	101915	104764	gene.body	ostta08g00680
+8	509423	512717	TSS	ostta08g03000
+1	4368	4377	internal.gene.body	ostta01g00030
+8	508534	509013	internal.gene.body	ostta08g03000
+2	908349	909091	TES	ostta02g04620,ostta02g04630
