@@ -75,7 +75,8 @@ for(i in 1:nrow(ll.20))
 ```
 
 We identified 948 genomic regions significantly occupied by H3K27me3 in the 
-three different independent biological replicates. We compute the percentage of the whole genome occupied by H3K27me3 and the percentage in each chromosome. A 
+three different independent biological replicates. We compute the percentage of
+the whole genome occupied by H3K27me3 and the percentage in each chromosome. A 
 barplot is used to represent the percentage of H3K27me3 in each chromosome. 
 Z-scores and p-values are computed for each chromosome. A gradient from white 
 to blue is used to represent significance levels.  
@@ -118,7 +119,8 @@ abline(h = 100*mean(percentage.chr.k27[-19]),lty=5)
 ```
 
 Approximately 15.2% of the Ostreococcus genome is occupied by H3K27me3. 
-H3K27me3 is mostly uniformly distributed over the different chromosome although it significantly accumulates (p-value < 0.01) in Chr2 (sexual chromosome) and 
+H3K27me3 is mostly uniformly distributed over the different chromosome although 
+it significantly accumulates (p-value < 0.01) in Chr2 (sexual chromosome) and 
 Chr19 (viral resistance chromosome) with p-values 6.5x10^-3^ and 2.24x10^-93^ 
 respectively. 
 
@@ -826,7 +828,8 @@ ll.20.peak.annotation <- cbind(ll.20.peak.annotation,peak.te)
 write.table(x = ll.20.peak.annotation,file = "tables/H3K27me3_LL_20C_peak_annotation.tsv",quote = F,sep = "\t",row.names = F)
 ```
 
-H3K27me3 is only partially associated with Transposable Elements. More than 84% of the peaks did not overlap with any TE. Only 1.5%, 0.5% and 13.5% of the 
+H3K27me3 is only partially associated with Transposable Elements. More than 84% 
+of the peaks did not overlap with any TE. Only 1.5%, 0.5% and 13.5% of the 
 H3K27me3 peaks were found overlapping with DNA, LTR and unclassified
 transposons respectively. Most TE were neither associated with H3K27me3 peaks, 
 specifically 14 out of 35 (40%) DNA transposons, 5 out of 69 (7.25%) LTR 
@@ -866,7 +869,7 @@ k27.go.terms.filtered@result <- subset(k27.go.terms@result, pvalue < 0.05)
 
 k27.go.terms.df <- as.data.frame(k27.go.terms.filtered)
 
-jpeg(filename = "images/h3k27me3_treeplot_gene_body.jpg",res = 250,width = 3800,height = 1500)
+jpeg(filename = "images/h3k27me3_treeplot_gene_body.jpg",res = 250,width = 3500,height = 1300)
 treeplot(x = pairwise_termsim(k27.go.terms.filtered),cluster.params = list(n = 3),color ="pvalue")
 dev.off()
 
@@ -879,7 +882,8 @@ write.table(x = k27.go.terms.df, file = "go_enrichment_full_gene_body_tss_k27.ts
 
 Our GO enrichment analysis suggests that H3K27me3 is repressing the assembly of
 bounded cellular projection, microtubule-based movement and transcription
-regulation. 
+regulation. Other processes are also significantly affected such as fatty acid 
+metabolism and cell differentiation.
 
 For example, the transcription factors ostta14g02090 (Arabidopsis ortholog 
 APETALA2 AT4G36920), ostta17g00450 (Arabidopsis ortholog BELL1 AT5G41410),
@@ -890,6 +894,10 @@ ostta02g03030 (Arabidopsis ortholog CSP, cold shock protein, AT2G17870).
 library(rtracklayer)  
 library(ChIPpeakAnno)
  
+genes.data.df <- as.data.frame(genes(txdb))
+cds.data <- as.data.frame(cds(txdb))
+exons.data <- as.data.frame(exons(txdb))
+
 gene.profile <- function(gene.name, 
                          promoter_length=1000, 
                          selected.bigwig.files, 
@@ -964,7 +972,7 @@ gene.profile <- function(gene.name,
   line.colors <- "blue"
   area.colors <- "lightblue"
   
-  
+  gene.height <- -25
   cord.x <- 1:current.length
   
   ## Exon width to plot
@@ -1130,7 +1138,8 @@ dev.off()
 ```
 
 Examples of genes involved in microtubule-based movement are ostta18g01040
-(kinesin) and ostta08g03710 (tubulin alpha).
+(kinesin), ostta08g03710 (tubulin alpha), ostta06g04460 and ostta14g00070 
+(dyenin).
 
 ```{r microtubule_movement}
 #jpeg(filename = "images/example_ostta18g01040.jpg",res = 250,width = 3800,height = 1500)
@@ -1146,7 +1155,48 @@ gene.profile(gene.name="ostta08g03710",
              selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
              selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
 #dev.off()
+
+#jpeg(filename = "images/example_ostta14g00070.jpg",res = 250,width = 3800,height = 1500)
+gene.profile(gene.name="ostta14g00070", 
+             promoter_length=1000, 
+             selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
+             selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
+#dev.off()
+
+
+#jpeg(filename = "images/example_ostta06g04460.jpg",res = 250,width = 3800,height = 1500)
+gene.profile(gene.name="ostta06g04460", 
+             promoter_length=1000, 
+             selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
+             selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
+#dev.off()
+
+
 ```
+Examples of genes involved in fatty acid metabolism are ostta17g00300, enoyl-ACP 
+reductase, a component of the fatty acid synthase complex, ostta03g02570, 
+acetyl-CoA synthetase
+
+```{r fatty_acid_metabolism}
+
+#jpeg(filename = "images/example_ostta17g00300.jpg",res = 250,width = 3800,height = 1500)
+gene.profile(gene.name="ostta17g00300", 
+             promoter_length=1000, 
+             selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
+             selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
+#dev.off()
+
+#jpeg(filename = "images/example_ostta03g02570.jpg",res = 250,width = 3800,height = 1500)
+gene.profile(gene.name="ostta03g02570", 
+             promoter_length=1000, 
+             selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
+             selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
+#dev.off()
+
+
+```
+
+
 
 We also perform KEGG pathway enrichment analysis.
 
@@ -1285,7 +1335,7 @@ boxplot(gene.expression.20[intersect(k27.internal.gene.body,genes.2nd.quant)],
 
 ## H3K4me3 genome wide distribution analysis
 
-We load the H3K4me3 peaks identified in cultures grown under constant light at 20ºC. We represent each chromosome using a rectangle. Each H3k4me3 peak is represented in its precise genome location using a dark orange rectangle. 
+We load the H3K4me3 peaks identified in cultures grown under constant light at 20ºC. We represent each chromosome using a rectangle. Each H3K4me3 peak is represented in its precise genome location using a dark orange rectangle. 
 
 
 ```{r visualization of H3K4me3 genome wide distribution}
