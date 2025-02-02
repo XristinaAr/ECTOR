@@ -1174,8 +1174,9 @@ gene.profile(gene.name="ostta06g04460",
 
 ```
 Examples of genes involved in fatty acid metabolism are ostta17g00300, enoyl-ACP 
-reductase, a component of the fatty acid synthase complex, ostta03g02570, 
-acetyl-CoA synthetase
+reductase, a component of the fatty acid synthase complex and ostta03g02570, 
+acetyl-CoA synthetase, and ostta02g00710, ostta02g00720, 
+ostta02g00780,  Polyketide synthases.
 
 ```{r fatty_acid_metabolism}
 
@@ -1192,6 +1193,43 @@ gene.profile(gene.name="ostta03g02570",
              selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
              selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
 #dev.off()
+
+jpeg(filename = "images/example_ostta02g00710.jpg",res = 250,width = 3800,height = 1500)
+gene.profile(gene.name="ostta02g00710", 
+             promoter_length=1000, 
+             selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
+             selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
+dev.off()
+
+jpeg(filename = "images/example_ostta02g00720.jpg",res = 250,width = 3800,height = 1500)
+gene.profile(gene.name="ostta02g00720", 
+             promoter_length=1000, 
+             selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
+             selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
+dev.off()
+
+jpeg(filename = "images/example_ostta02g00780.jpg",res = 250,width = 3800,height = 1500)
+gene.profile(gene.name="ostta02g00780", 
+             promoter_length=1000, 
+             selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
+             selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
+dev.off()
+
+jpeg(filename = "images/example_ostta03g02570.jpg",res = 250,width = 3800,height = 1500)
+gene.profile(gene.name="ostta03g02570", 
+             promoter_length=1000, 
+             selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
+             selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
+dev.off()
+
+jpeg(filename = "images/example_ostta02g04200.jpg",res = 250,width = 3800,height = 1500)
+gene.profile(gene.name="ostta02g04200", 
+             promoter_length=1000, 
+             selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
+             selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
+dev.off()
+
+
 
 
 ```

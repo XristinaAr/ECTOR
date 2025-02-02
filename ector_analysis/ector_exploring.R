@@ -3209,10 +3209,27 @@ rownames(normalized.gene.expression) <- gene.ids
 write.table(x = normalized.gene.expression,file = "normalized_gene_expression.tsv",quote = F,sep = "\t")
 
 normalized.gene.expression <- read.table(file = "normalized_gene_expression.tsv",header = T,sep = "\t")
-
+head(normalized.gene.expression)
+normalized.gene.expression <- gene.expression
 
 
 gene.id <- "ostta17g00300"
+gene.id <- "ostta02g00720"
+gene.id <- "ostta17g00300" #ok
+gene.id <- "ostta03g02570"
+gene.id <- "ostta02g00780"
+gene.id <- "ostta18g01040"
+gene.id <- "ostta08g03710" #ok
+gene.id <- "ostta06g04460"
+gene.id <- "ostta14g00070"
+gene.id <- "ostta14g02090" #ok AP2
+gene.id <- "ostta17g00450" #ok BELL1
+gene.id <- "ostta11g02490" #ok WRKY
+gene.id <- "ostta07g04340"
+gene.id <- "ostta02g03030" #ok CSP
+gene.id <- "ostta15g01070"
+gene.id <- "ostta09g00590"
+gene.id <- "ostta02g04200"
 gene.expression.10 <- unlist(normalized.gene.expression[gene.id,paste("t10C",1:3,sep="_")])
 gene.expression.14 <- unlist(normalized.gene.expression[gene.id,paste("t14C",1:3,sep="_")])
 gene.expression.20 <- unlist(normalized.gene.expression[gene.id,paste("t20C",1:3,sep="_")])
@@ -3248,6 +3265,18 @@ points(x = rep(xpos+0.2,each=3),y=c(gene.expression.10,
 
 
 
+
+
+
+activated.enrich.go <- enrichGO(gene          = intersect(all.k27.genes,activated.genes.10.vs.20),
+                                OrgDb         = org.Otauriv5.eg.db,
+                                ont           = "BP",
+                                pAdjustMethod = "BH",
+                                pvalueCutoff  = 0.05,
+                                readable      = FALSE,
+                                keyType = "GID")
+
+as.data.frame(activated.enrich.go)
 
 rownames(ll.20.peak.annotation) <- rownames(chip.signal)
 
@@ -3573,7 +3602,8 @@ gene.profile <- function(gene.name,
   } else if (target.gene.strand == "-")
   {
     lines(c(current.length - promoter_length, current.length - promoter_length, current.length - promoter_length-100),y=c(gene.height,gene.height+5,gene.height+5),lwd=3)
-    lines(c(current.length - promoter_length-50, current.length - promoter_length - 100),y=c(gene.height + 6, gene.height + 5),lwd=3)
+    lines(c(current.length - promoter_length-50, current.length - promoter_length - 100),y=c(
+    gene.height + 6, gene.height + 5),lwd=3)
     lines(c(current.length - promoter_length-50, current.length - promoter_length - 100),y=c(gene.height + 4, gene.height + 5),lwd=3)
   }
   
@@ -3594,7 +3624,8 @@ gene.profile <- function(gene.name,
   current.peaks <- read.table(file=selected.bed.files,header = F, as.is = T)
   current.peaks <- current.peaks[,1:3]
   colnames(current.peaks) <- c("seqnames","start","end")
-  peak.coordinates <- subset(current.peaks, seqnames == as.character(range.to.plot$seqnames) & start >= range.to.plot$start & end <= range.to.plot$end) 
+  peak.coordinates <- subset(current.peaks, seqnames == as.character(range.to.plot$seqnames) 
+                             & start >= range.to.plot$start & end <= range.to.plot$end) 
   current.peaks.to.plot <- peak.coordinates[,2:3]
   
   ## Transform coordinates 
