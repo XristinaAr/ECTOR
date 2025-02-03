@@ -2871,7 +2871,7 @@ mapped.reads.k27.20c.3 <- 7102648/1E6
 
 mapped.reads.k27.26c.1 <- 5635098/1E6 
 mapped.reads.k27.26c.2 <- 4986577/1E6
-mapped.reads.k27.26c.3 <- 4586942/1E6
+mapped.reads.k27.26c.3 <- 3988645/1E6
 
 chip.signal.zt8.1 <- read.table(
   file = "h3k27me3/h3k27me3_ld_20_zt8_chip_1_counts.bed",
@@ -2982,17 +2982,17 @@ lines(x=c(0,20),y=c(0,20),col="blue")
 
 plot(log2(chip.signal.26.1[,4]),log2(chip.signal.26.2[,4]))
 lines(x=c(0,20),y=c(0,20),col="blue")
-plot(log2(chip.signal.26.1[,4]),log2(chip.signal.26.3[,4]))
+plot(log2(chip.signal.26.1[,4]),log2(chip.signal.26.3[,4])+0.3)
 lines(x=c(0,20),y=c(0,20),col="blue")
-plot(log2(chip.signal.26.2[,4]),log2(chip.signal.26.3[,4]))
+plot(log2(chip.signal.26.2[,4]),log2(chip.signal.26.3[,4])+log2(2^0.3))
 lines(x=c(0,20),y=c(0,20),col="blue")
 
 
 
-chip.signal <- matrix(data = c(#chip.signal.zt8.1[,4],
-                               #chip.signal.zt8.2[,4],
-                               #chip.signal.zt16.1[,4],
-                               #chip.signal.zt16.2[,4],
+chip.signal <- matrix(data = c(chip.signal.zt8.1[,4],
+                               chip.signal.zt8.2[,4],
+                               chip.signal.zt16.1[,4],
+                               chip.signal.zt16.2[,4],
                                chip.signal.10.1[,4],
                                chip.signal.10.2[,4],
                                chip.signal.10.3[,4],
@@ -3004,9 +3004,9 @@ chip.signal <- matrix(data = c(#chip.signal.zt8.1[,4],
                                chip.signal.20.3[,4],
                                chip.signal.26.1[,4],
                                chip.signal.26.2[,4],
-                               chip.signal.26.3[,4]),ncol=12)
-colnames(chip.signal) <- c(#"ZT8_1","ZT8_2",
-                           #"ZT16_1","ZT16_2",
+                               chip.signal.26.3[,4]),ncol=16)
+colnames(chip.signal) <- c("ZT8_1","ZT8_2",
+                           "ZT16_1","ZT16_2",
                            "t10C_1","t10C_2","t10C_3",
                            "t14C_1","t14C_2","t14C_3",
                            "t20C_1","t20C_2","t20C_3",
@@ -3019,6 +3019,8 @@ rownames(chip.signal) <- apply(X = chip.signal.10.1[,1:3],
                                      paste(x[1],paste(x[2],x[3],sep="-"),sep=":")
                                    }
                                )
+
+boxplot(log2(chip.signal),outline=F)
 
 
 head(chip.signal)
@@ -3043,6 +3045,45 @@ plot(log2(chip.signal.10),log2(chip.signal.26))
 lines(x=c(0,20),y=c(0,20),lwd=3,col="blue")
 
 
+library(FactoMineR)
+library(factoextra)
+
+pca.temp.chip.signal <- data.frame(colnames(normalized.temp.chip.signal),
+                                   t(normalized.temp.chip.signal))
+
+
+pca.temp.chip.signal <- data.frame(colnames(chip.signal),
+                                   t(chip.signal))
+
+colnames(pca.temp.chip.signal)[1] <- "Sample"
+res.pca <- PCA(pca.temp.chip.signal, 
+               graph = FALSE,
+               scale.unit = TRUE,
+               quali.sup = 1 )
+
+fviz_pca_ind(res.pca, col.ind = c("LD","LD","LD","LD",
+                                  rep("LL10",3),rep("LL14",3),
+                                  rep("LL20",3),rep("LL26",3)),#exp.design$group, 
+             pointsize=2, pointshape=21,fill="black",
+             repel = TRUE, 
+             addEllipses = TRUE,ellipse.type = "confidence",
+             legend.title="Conditions",
+             title="",
+             show_legend=TRUE,show_guide=TRUE)
+
+res.hcpc <- HCPC(res.pca, graph=FALSE,nb.clust = 4)   
+
+fviz_dend(res.hcpc,k=4,
+          cex = 0.75,                       # Label size
+          palette = "jco",               # Color palette see ?ggpubr::ggpar
+          rect = TRUE, rect_fill = TRUE, # Add rectangle around groups
+          rect_border = "jco",           # Rectangle color
+          type="rectangle",
+          labels_track_height = 50      # Augment the room for labels
+)
+
+
+
 log2.chip.signal <- log2(chip.signal)
 
 log2.chip.signal <- normalized.temp.chip.signal
@@ -3055,28 +3096,28 @@ log2(1.25)
 
 
 library(limma)
-limma.experimental.design <- model.matrix(~ -1+factor(c(1,1,1,
-                                                        2,2,2,
-                                                        3,3,3,
-                                                        4,4,4)))
-                                            #factor(c(1,1,2,2,3,3,3,4,4,4,5,5,5,6,6,6)))
-colnames(limma.experimental.design) <- c(#"LDZT8","LDZT16",
+limma.experimental.design <- model.matrix(~ -1+#factor(c(1,1,1,
+                                            #            2,2,2,
+                                            #            3,3,3,
+                                            #            4,4,4)))
+                                            factor(c(1,1,2,2,3,3,3,4,4,4,5,5,5,6,6,6)))
+colnames(limma.experimental.design) <- c("LDZT8","LDZT16",
                                          "LL10","LL14","LL20","LL26")
 
 linear.fit <- lmFit(log2.chip.signal, limma.experimental.design)
 
-contrast.matrix <- makeContrasts(#LDZT16-LDZT8,
-                                 LL10-LL26,
-                                 LL14-LL26,
-                                 LL20-LL26, 
-                                 levels = c("LL10","LL14","LL20","LL26"))
+contrast.matrix <- makeContrasts(LDZT16-LDZT8,
+                                 LL26-LL10,
+                                 LL20-LL10,
+                                 LL14-LL10, 
+                                 levels = c("LDZT8","LDZT16","LL10","LL14","LL20","LL26"))
 
 contrast.linear.fit <- contrasts.fit(linear.fit, contrast.matrix)
 contrast.results <- eBayes(contrast.linear.fit)                               
 
 t10.t26 <- topTable(contrast.results, 
                      number=nrow(log2.chip.signal), 
-                     coef = 1, sort.by = "logFC", )
+                     coef = 2, sort.by = "logFC", )
 head(t10.t26)
 t10.t26["8:624229-627058",] #ostta08g03710
 t10.t26["18:189253-192477",] #ostta18g01040
@@ -3409,23 +3450,25 @@ res.pca <- PCA(pca.temp.chip.signal,
                scale.unit = TRUE,
                quali.sup = 1 )
 
-fviz_pca_ind(res.pca, #col.ind = exp.design$group, 
+fviz_pca_ind(res.pca, col.ind = c("LD","LD","LD","LD",
+                                  rep("LL10",3),rep("LL14",3),
+                                  rep("LL20",3),rep("LL26",3)),#exp.design$group, 
              pointsize=2, pointshape=21,fill="black",
              repel = TRUE, 
-             #addEllipses = TRUE,ellipse.type = "confidence",
+             addEllipses = TRUE,ellipse.type = "confidence",
              legend.title="Conditions",
              title="",
              show_legend=TRUE,show_guide=TRUE)
 
-res.hcpc <- HCPC(res.pca, graph=FALSE,nb.clust = 2)   
+res.hcpc <- HCPC(res.pca, graph=FALSE,nb.clust = 4)   
 
-fviz_dend(res.hcpc,k=2,
+fviz_dend(res.hcpc,k=4,
           cex = 0.75,                       # Label size
           palette = "jco",               # Color palette see ?ggpubr::ggpar
           rect = TRUE, rect_fill = TRUE, # Add rectangle around groups
           rect_border = "jco",           # Rectangle color
           type="rectangle",
-          labels_track_height = 700      # Augment the room for labels
+          labels_track_height = 50      # Augment the room for labels
 )
 
 

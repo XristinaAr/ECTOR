@@ -1105,36 +1105,36 @@ gene.profile <- function(gene.name,
        labels = seq(from=0,to=ceiling(upper.lim/10)*10,by=10))
 }
 
-jpeg(filename = "images/example_ostta14g02090.jpg",res = 250,width = 3800,height = 1500)
+#jpeg(filename = "images/example_ostta14g02090.jpg",res = 250,width = 3800,height = 1500)
 gene.profile(gene.name="ostta14g02090", 
              promoter_length=1000, 
              selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
              selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
-dev.off()
-jpeg(filename = "images/example_ostta17g00450.jpg",res = 250,width = 3800,height = 1500)
+#dev.off()
+#jpeg(filename = "images/example_ostta17g00450.jpg",res = 250,width = 3800,height = 1500)
 gene.profile(gene.name="ostta17g00450", 
              promoter_length=1000, 
              selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
              selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
-dev.off()
-jpeg(filename = "images/example_ostta11g02490.jpg",res = 250,width = 3800,height = 1500)
+#dev.off()
+#jpeg(filename = "images/example_ostta11g02490.jpg",res = 250,width = 3800,height = 1500)
 gene.profile(gene.name="ostta11g02490", 
              promoter_length=1000, 
              selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
              selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
-dev.off()
-jpeg(filename = "images/example_ostta07g04340.jpg",res = 250,width = 3800,height = 1500)
+#dev.off()
+#jpeg(filename = "images/example_ostta07g04340.jpg",res = 250,width = 3800,height = 1500)
 gene.profile(gene.name="ostta07g04340", 
              promoter_length=1000, 
              selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
              selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
-dev.off()
-jpeg(filename = "images/example_ostta02g03030.jpg",res = 250,width = 3800,height = 1500)
+#dev.off()
+#jpeg(filename = "images/example_ostta02g03030.jpg",res = 250,width = 3800,height = 1500)
 gene.profile(gene.name="ostta02g03030", 
              promoter_length=1000, 
              selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
              selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
-dev.off()
+#dev.off()
 ```
 
 Examples of genes involved in microtubule-based movement are ostta18g01040
@@ -1194,46 +1194,41 @@ gene.profile(gene.name="ostta03g02570",
              selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
 #dev.off()
 
-jpeg(filename = "images/example_ostta02g00710.jpg",res = 250,width = 3800,height = 1500)
+#jpeg(filename = "images/example_ostta02g00710.jpg",res = 250,width = 3800,height = 1500)
 gene.profile(gene.name="ostta02g00710", 
              promoter_length=1000, 
              selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
              selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
-dev.off()
+#dev.off()
 
-jpeg(filename = "images/example_ostta02g00720.jpg",res = 250,width = 3800,height = 1500)
+#jpeg(filename = "images/example_ostta02g00720.jpg",res = 250,width = 3800,height = 1500)
 gene.profile(gene.name="ostta02g00720", 
              promoter_length=1000, 
              selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
              selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
-dev.off()
+#dev.off()
 
-jpeg(filename = "images/example_ostta02g00780.jpg",res = 250,width = 3800,height = 1500)
+#jpeg(filename = "images/example_ostta02g00780.jpg",res = 250,width = 3800,height = 1500)
 gene.profile(gene.name="ostta02g00780", 
              promoter_length=1000, 
              selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
              selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
-dev.off()
+#dev.off()
 
-jpeg(filename = "images/example_ostta03g02570.jpg",res = 250,width = 3800,height = 1500)
+#jpeg(filename = "images/example_ostta03g02570.jpg",res = 250,width = 3800,height = 1500)
 gene.profile(gene.name="ostta03g02570", 
              promoter_length=1000, 
              selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
              selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
-dev.off()
+#dev.off()
 
-jpeg(filename = "images/example_ostta02g04200.jpg",res = 250,width = 3800,height = 1500)
+#jpeg(filename = "images/example_ostta02g04200.jpg",res = 250,width = 3800,height = 1500)
 gene.profile(gene.name="ostta02g04200", 
              promoter_length=1000, 
              selected.bigwig.files="h3k27me3/h3k27me3_ll_20_chip_1.bw", 
              selected.bed.files="h3k27me3/h3k27me3_ll_20_peaks.bed")
-dev.off()
-
-
-
-
+#dev.off()
 ```
-
 
 
 We also perform KEGG pathway enrichment analysis.
@@ -2069,29 +2064,626 @@ wilcox.test(x = gene.expression.20[k4.k27.genes], y = gene.expression.20[all.k4.
 ```
 
 
-## H3K27me3 response to diel cycles and constant light
+## H3K27me3 consensus peaks covering different temperatures
 
-```{r load_data_initial_exploration}
-mapped.reads.k27.20c.1 <- 3146662/1E6 
-mapped.reads.k27.20c.2 <- 5697849/1E6
-mapped.reads.k27.20c.3 <- 5157582/1E6
-mapped.reads.k27.20c.zt8.1 <- 2254676/1E6 
-mapped.reads.k27.20c.zt8.2 <- 2639017/1E6
-mapped.reads.k27.20c.zt16.1 <- 3605883/1E6
-mapped.reads.k27.20c.zt16.2 <- 3405826/1E6
+We determined the genome wide distribution of H3K27me3 under different 
+temperatures, 10ºC, 14ºC, 20ºC and 26ºC. We found differences as a response to
+temperature. In order to compare H3K27me3 marks under different temperature we
+merge all the peaks detected consistently in the three replicates for each 
+temperature to generate a set of consensus peaks. Next we analyze the genome
+wide distribution of the consensus H3K27me3 peaks.
+
+```{r visualization of H3K27me3 genome wide distribution over different temps}
+k27.consensus <- read.table(file="h3k27me3/h3k27me3_peaks.bed",
+                       header = F)
+
+nrow(k27.consensus)
+
+#jpeg(filename = "images/h3k27me3_genome_wide_distribution_ll_20.jpg",res = 300,width = 900,height = 900)
+#par(mar=c(0,0,0,0))
+plot(x=c(0,max.chr.len), y=c(0,4*number.chrs), col = "white", 
+     xlab = "", ylab = "", axes=F)  
+
+for(i in 1:number.chrs)
+{
+ polygon(x = c(0, chr.lens[i], chr.lens[i], 0),   
+         y = c(4*i+1, 4*i+1, 4*i-1, 4*i-1),    
+         col = "white") 
+}
+
+for(i in 1:nrow(k27.consensus))
+{
+ current.chr <- k27.consensus[i,1]
+ current.start <- k27.consensus[i,2]
+ current.end <- k27.consensus[i,3]
+
+ current.line <- (20:1)[current.chr]
+ 
+ polygon(x = c(current.start, 
+               current.end, 
+               current.end, 
+               current.start),   
+         y = c(4*current.line+1, 
+               4*current.line+1, 
+               4*current.line-1, 
+               4*current.line-1),    
+         col = "blue",border="blue")
+}
+#dev.off()
+```
+
+We identified 1056 genomic regions significantly occupied by H3K27me3 in the 
+three different  biological replicates at 10ºC, 14ºC, 20ºC or 26ºC. We compute 
+the percentage of the whole genome occupied by H3K27me3 and the percentage in 
+each chromosome. A  barplot is used to represent the percentage of H3K27me3 in 
+each chromosome.  Z-scores and p-independentvalues are computed for each 
+chromosome. A gradient from white to blue is used to represent significance 
+levels.  
+
+```{r k27_in_chrs consensus}
+h3k27me3.peaks.len <- k27.consensus$V3 - k27.consensus$V2
+sum(h3k27me3.peaks.len)/sum(chr.lens)
+k27.consensus <- cbind(k27.consensus,h3k27me3.peaks.len)
+colnames(k27.consensus) <- c("chr","start","end","length")
+head(k27.consensus)
+number.of.h3k27.peaks.chr <- vector(mode = "numeric",length = 20)
+peaks.len.chr <- vector(mode = "numeric",length = 20)
+
+for(i in 1:20)
+{
+ number.of.h3k27.peaks.chr[i] <- nrow(subset(k27.consensus, chr == i))
+ peaks.len.chr[i] <- sum(subset(k27.consensus, chr == i)[,4]) 
+}
+
+percentage.chr.k27 <- peaks.len.chr/rev(chr.lens)
+
+z.scores <- (percentage.chr.k27 - mean(percentage.chr.k27))/sd(percentage.chr.k27)
+
+which(z.scores > 2.5)
+
+p.vals <- pnorm((percentage.chr.k27 - mean(percentage.chr.k27[-19]))/sd(percentage.chr.k27[-19]),lower.tail = F)
+
+p.vals
+
+values.for.colors <- round(-log10(p.vals)*40)
+values.for.colors[19] <- 100
+
+white.blue.palette <- colorRampPalette(c('white','blue'))
+
+#jpeg(filename = "images/h3k27me3_chr_barplot_ll_20.jpg",res = 300,width = 1800,height = 900)
+barplot(100*percentage.chr.k27,border="black",names.arg = paste0("Chr",1:20),las=2,col=white.blue.palette(100)[values.for.colors]
+)
+abline(h = 100*mean(percentage.chr.k27[-19]),lty=5)
+#dev.off()
+```
+
+Approximately 14.5% of the Ostreococcus genome is occupied by H3K27me3. 
+H3K27me3 is mostly uniformly distributed over the different chromosome although 
+it significantly accumulates (p-value < 0.01) in Chr2 (sexual chromosome), Chr16
+and Chr19 (viral resistance chromosome) with p-values 1.58x10^-2^, 3.36x10^-2^ 
+and 4.05x10^-39^respectively. 
+
+We determine the gene features occupied by each H3K27me3 mark and the H3K27me3 
+marked genes. 
+
+```{r k27_peaks_annotation consensus}
+library(TxDb.Otauri.JGI)
+txdb <- TxDb.Otauri.JGI
+
+ostta.genes <- as.data.frame(genes(txdb))
+head(ostta.genes)
+
+target.genes <- vector(mode = "character",length = nrow(k27.consensus))
+peak.annotation <- vector(mode = "character",length = nrow(k27.consensus))
+
+for(i in 1:nrow(k27.consensus))
+{
+ current.chr <- k27.consensus[i,1]
+ current.start <- k27.consensus[i,2]
+ current.end <- k27.consensus[i,3]
+
+ complete.gene.body <- subset(ostta.genes, 
+                              seqnames == current.chr & 
+                               start >= current.start & 
+                               end <= current.end)
+ 
+ overlap.tss.pos.strand <- subset(ostta.genes, 
+                              seqnames == current.chr & 
+                              start >= current.start & start <= current.end & 
+                              strand == "+")
+ 
+ overlap.tss.neg.strand <- subset(ostta.genes, 
+                              seqnames == current.chr & 
+                              end >= current.start & end <= current.end & 
+                              strand == "-")
+ 
+ overlap.tes.pos.strand <- subset(ostta.genes, 
+                              seqnames == current.chr & 
+                              end >= current.start & end <= current.end & 
+                              strand == "+")
+ 
+ overlap.tes.neg.strand <- subset(ostta.genes, 
+                              seqnames == current.chr & 
+                              start >= current.start & start <= current.end & 
+                              strand == "-")
+
+ inside.gene.body <- subset(ostta.genes, seqnames == current.chr & 
+                             start <= current.start & end >= current.end)
+ 
+ 
+ if(nrow(complete.gene.body) > 0)
+ {
+  target.genes[i] <- paste(unlist(complete.gene.body$gene_id),
+                           collapse = ",")
+  peak.annotation[i] <- "gene.body"
+ } else if(nrow(overlap.tss.pos.strand) > 0)
+ {
+  target.genes[i] <- paste(unlist(overlap.tss.pos.strand$gene_id),
+                           collapse = ",")
+  peak.annotation[i] <- "TSS"
+ } else if(nrow(overlap.tss.neg.strand) > 0)
+ {
+  target.genes[i] <- paste(unlist(overlap.tss.neg.strand$gene_id),
+                           collapse = ",")
+  peak.annotation[i] <- "TSS"
+ } else if(nrow(overlap.tes.pos.strand) > 0)
+ {
+  target.genes[i] <- paste(unlist(overlap.tes.pos.strand$gene_id),
+                           collapse = ",")
+  peak.annotation[i] <- "TES"
+ } else if(nrow(overlap.tes.neg.strand) > 0)
+ {
+  target.genes[i] <- paste(unlist(overlap.tes.neg.strand$gene_id),
+                           collapse = ",")
+  peak.annotation[i] <- "TES"
+ } else if(nrow(inside.gene.body) > 0)
+ {
+  target.genes[i] <- paste(unlist(inside.gene.body$gene_id),
+                           collapse = ",")
+  peak.annotation[i] <- "internal.gene.body"
+ } else
+ {
+  peak.annotation[i] <- "intergenic"
+ }
+}
+
+freq.peak.annotation <- table(peak.annotation)
+#jpeg(filename = "images/h3k27me3_pie_chart_ll_20.jpg",res = 300,width = 900,height = 900)
+#par(mar=c(0,0,0,0))
+pie(freq.peak.annotation[c("gene.body",
+                           "internal.gene.body",
+                           "TSS", 
+                           "TES",
+                           "intergenic")],
+    labels = c("Full Gene Body", 
+               "Gene Body", 
+               "TSS", 
+               "TES", 
+               "Intergenic"),
+    clockwise = T,border = "black",col=c("blue","cyan","green","red","grey"))
+#dev.off()
+
+percentage.freq.peak.annotation <- 
+  100*freq.peak.annotation/sum(freq.peak.annotation)
 
 
-read.counts.k27.temp20c.1 <- read.table(file ="chipseq_data/consensus_counts/h3k27me3_ll_ld_consensus_ll1_counts.bed", header = F, sep = "\t" )
-read.counts.k27.temp20c.2 <- read.table(file = "chipseq_data/consensus_counts/h3k27me3_ll_ld_consensus_ll2_counts.bed", header = F, sep = "\t" )
-read.counts.k27.temp20c.3 <- read.table(file = "chipseq_data/consensus_counts/h3k27me3_ll_ld_consensus_ll3_counts.bed", header = F, sep = "\t" )
+percentage.freq.peak.annotation["gene.body"] +
+percentage.freq.peak.annotation["internal.gene.body"]
 
-read.counts.k27.20c.zt8.1 <- read.table(file = "chipseq_data/consensus_counts/h3k27me3_ll_ld_consensus_zt8_1_counts.bed", header = F, sep = "\t" )
-read.counts.k27.20c.zt8.2 <- read.table(file = "chipseq_data/consensus_counts/h3k27me3_ll_ld_consensus_zt8_2_counts.bed", header = F, sep = "\t" )
+percentage.freq.peak.annotation
 
-read.counts.k27.20c.zt16.1 <- read.table(file = "chipseq_data/consensus_counts/h3k27me3_ll_ld_consensus_zt16_1_counts.bed", header = F, sep = "\t" )
-read.counts.k27.20c.zt16.2 <- read.table(file = "chipseq_data/consensus_counts/h3k27me3_ll_ld_consensus_zt16_2_counts.bed", header = F, sep = "\t" )
+k27.consensus.peak.annotation <- cbind(k27.consensus[,1:3],
+                               data.frame(peak.annotation,target.genes))
+
+head(k27.consensus.peak.annotation)
+
+write.table(x = k27.consensus.peak.annotation,
+            file = "tables/H3K27me3_consensus_peak_annotation.tsv",
+            quote = F,sep = "\t",row.names = F)
+
+all.k27.genes <- unique(unlist(sapply(X =k27.consensus.peak.annotation$target.genes,
+                                FUN = function(x) {strsplit(x,",")[[1]]})))
+names(all.k27.genes) <- NULL
+length(all.k27.genes)
+length(all.k27.genes)/7668
+
+## Genes with their entire gene body marked
+k27.gene.body <- unique(unlist(sapply(
+  X = subset(k27.consensus.peak.annotation, 
+             peak.annotation == "gene.body")[["target.genes"]],
+  FUN = function(x) {strsplit(x,",")[[1]]})))
+names(k27.gene.body) <- NULL
+length(k27.gene.body)
+
+## Genes with H3K27me3 overlapping their TSS
+k27.tss <- unique(unlist(sapply(
+  X = subset(k27.consensus.peak.annotation, 
+             peak.annotation == "TSS")[["target.genes"]],
+  FUN = function(x) {strsplit(x,",")[[1]]})))
+names(k27.tss) <- NULL
+length(k27.tss)
+
+## Genes with H3K27me3 overlapping their TES
+k27.tes <- unique(unlist(sapply(
+  X = subset(k27.consensus.peak.annotation, 
+             peak.annotation == "TES")[["target.genes"]], 
+  FUN = function(x) {strsplit(x,",")[[1]]})))
+names(k27.tes) <- NULL
+length(k27.tes)
+
+## Genes with H3K27 inside their gene body with no overlap
+## in the TSS or TES.
+k27.internal.gene.body <- unique(unlist(sapply(
+  X = subset(k27.consensus.peak.annotation, 
+             peak.annotation == "internal.gene.body")[["target.genes"]],
+  FUN = function(x) {strsplit(x,",")[[1]]})))
+names(k27.internal.gene.body) <- NULL
+k27.internal.gene.body <- setdiff(k27.internal.gene.body,c(k27.tss,k27.tes))
+length(k27.internal.gene.body)
+
+```
+We found 994 genes associated to H3K27me3 marks corresponding to 13% of the 
+entire Ostreococcus genome. H3K27me3 is mostly located occupying either the 
+entire gene body (19.6%, 314 genes) or internal regions of gene body (52.8%, 
+433 genes). Although some regions occupied by H3K27me3 has been found 
+overlapping only with the TSS (4.5%, 49 genes) or the TES (18.8%, 198 genes).
+H3K27me3 was found in intergenic regions only in 4.3% of the cases. 
+
+In what follows we perform a functional analysis over the H3K27me3 consensus
+marked genes. First, we analyze the relationship between H3K27me3 consensus 
+peaks and transposable elements. 
+
+```{r transposable_elements}
+dna.transposons <- 
+  read.table(file="../te_analysis/dna_transposons_unsorted.bed",
+             sep="\t",header=F)
+nrow(dna.transposons)
+
+ltr.transposons <- 
+  read.table(file="../te_analysis/ltr_transposons_unsorted.bed",
+             sep="\t", header=F)
+nrow(ltr.transposons)
+
+unclassified.transposons <- 
+  read.table(file="../te_analysis/unknown_transposons_unsorted.bed", 
+             sep="\t",header = F)
+nrow(unclassified.transposons)
+
+overlapping.peaks <- function(target.peak, peaks)
+{
+ subset(peaks, V1 == target.peak[1] & (
+             (V2 >= target.peak[2] & V2 <= target.peak[3]) |
+             (V3 >= target.peak[2] & V3 <= target.peak[3]) |
+             (V2 <= target.peak[2] & V3 >= target.peak[3])))
+}
+
+
+peak.te <- vector(mode = "character",length = nrow(k27.consensus.peak.annotation))
+
+for(i in 1:nrow(k27.consensus.peak.annotation))
+{
+ current.peak <- unlist(k27.consensus.peak.annotation[i,1:3])
+ 
+ if(nrow(overlapping.peaks(current.peak,dna.transposons)) > 0)
+ {
+  peak.te[i] <- "DNA_transposon"
+ } else if (nrow(overlapping.peaks(current.peak,ltr.transposons)) > 0)
+ {
+  peak.te[i] <- "LTR_transposon"
+ } else if (nrow(overlapping.peaks(current.peak,unclassified.transposons)) > 0)
+ {
+  peak.te[i] <- "Unclassified_transposon"
+ } else
+ {
+  peak.te[i] <- "No_transposon"
+ }
+}
+
+100*table(peak.te)/sum(table(peak.te))
+
+pie(table(peak.te), col=c("black","grey","white","lightblue"))
+
+nrow(dna.transposons)
+100*table(peak.te)["DNA_transposon"]/nrow(dna.transposons)
+
+nrow(ltr.transposons)
+100*table(peak.te)["LTR_transposon"]/nrow(ltr.transposons)
+
+nrow(unclassified.transposons)
+100*table(peak.te)["Unclassified_transposon"]/nrow(unclassified.transposons)
+
+
+table(k27.consensus.peak.annotation$peak.annotation[peak.te == "DNA_transposon"])
+table(k27.consensus.peak.annotation$peak.annotation[peak.te == "LTR_transposon"])
+table(k27.consensus.peak.annotation$peak.annotation[peak.te == "Unclassified_transposon"])
+
+table(k27.consensus.peak.annotation$peak.annotation)
+
+(table(k27.consensus.peak.annotation$peak.annotation[peak.te == "DNA_transposon"])["intergenic"] +
+table(k27.consensus.peak.annotation$peak.annotation[peak.te == "LTR_transposon"])["intergenic"] +
+table(k27.consensus.peak.annotation$peak.annotation[peak.te == "Unclassified_transposon"])["intergenic"]) / table(k27.consensus.peak.annotation$peak.annotation)["intergenic"]
+
+k27.consensus.peak.annotation <- cbind(k27.consensus.peak.annotation,peak.te)
+write.table(x = k27.consensus.peak.annotation,file = "tables/H3K27me3_consensus_peak_annotation.tsv",quote = F,sep = "\t",row.names = F)
+```
+
+H3K27me3 is only partially associated with Transposable Elements. More than 88.4% 
+of the peaks did not overlap with any TE. Only 1.1%, 0.6% and 9.9% of the 
+H3K27me3 peaks were found overlapping with DNA, LTR and unclassified
+transposons respectively. Most TE were neither associated with H3K27me3 peaks, 
+specifically 12 out of 35 (34.3%) DNA transposons, 6 out of 69 (8.7%) LTR 
+transposons and 104 out of 988 (10.5%) unclassified transposons were H3K27me3 
+marked. Nonetheless, most H3K27me3 marks located at intergenic regions (71.1%) 
+were associated with transposons.    
+
+
+```{r k27_go_terms}
+library(clusterProfiler)
+library(enrichplot)
+library(org.Otauriv5.eg.db)
+k27.go.terms <- enrichGO(gene = all.k27.genes, pvalueCutoff = 1,
+                         qvalueCutoff = 1,
+                         OrgDb = org.Otauriv5.eg.db,
+                         ont = "BP", 
+                         keyType = "GID")
+k27.go.terms.filtered <- k27.go.terms
+k27.go.terms.filtered@result <- subset(k27.go.terms@result, pvalue < 0.05)
+
+k27.go.terms.df <- as.data.frame(k27.go.terms.filtered)
+
+
+write.table(x = k27.go.terms.df, file = "go_enrichment_consensus_k27.tsv",
+            quote = F,sep = "\t",row.names = F)
+
+treeplot(x = pairwise_termsim(k27.go.terms.filtered))
+
+
+k27.go.terms <- enrichGO(gene = c(k27.gene.body,k27.tss), pvalueCutoff = 1,
+                         qvalueCutoff = 1,
+                         OrgDb = org.Otauriv5.eg.db,
+                         ont = "BP", 
+                         keyType = "GID")
+k27.go.terms.filtered <- k27.go.terms
+k27.go.terms.filtered@result <- subset(k27.go.terms@result, pvalue < 0.05)
+
+k27.go.terms.df <- as.data.frame(k27.go.terms.filtered)
+
+jpeg(filename = "images/consensus_h3k27me3_treeplot_gene_body.jpg",res = 250,width = 3500,height = 1300)
+treeplot(x = pairwise_termsim(k27.go.terms.filtered),cluster.params = list(n = 3),color ="pvalue")
+dev.off()
+
+write.table(x = k27.go.terms.df, file = "go_enrichment_full_gene_body_tss_consensus_k27.tsv",
+            quote = F,sep = "\t",row.names = F)
 
 
 
 ```
 
+Our GO enrichment analysis suggests that H3K27me3 is repressing the assembly of
+bounded cellular projection, microtubule-based movement and transcription
+regulation. Other processes are also significantly affected such as fatty acid 
+metabolism and cell differentiation.
+
+## H3K27me3 response to different temperature and constant light
+
+We study the changes in H3K27me3 as a response to temperature. We estimate 
+ChIP intensities using CPM (Counts Per Million of mapped reads). Limma (linear
+models) are applied to determined significant differences. 
+
+
+```{r load_data_initial_exploration}
+## Million of mapped reads for each sample
+mapped.reads.k27.20c.zt8.1 <- 2254676/1E6 
+mapped.reads.k27.20c.zt8.2 <- 2639017/1E6
+mapped.reads.k27.20c.zt16.1 <- 3605883/1E6
+mapped.reads.k27.20c.zt16.2 <- 3405826/1E6
+
+mapped.reads.k27.10c.1 <- 6764067/1E6 
+mapped.reads.k27.10c.2 <- 6429853/1E6
+mapped.reads.k27.10c.3 <- 6625634/1E6
+
+mapped.reads.k27.14c.1 <- 24537863/1E6 
+mapped.reads.k27.14c.2 <- 6592650/1E6
+mapped.reads.k27.14c.3 <- 4317544/1E6
+
+mapped.reads.k27.20c.1 <- 3146662/1E6 
+mapped.reads.k27.20c.2 <- 7702115/1E6
+mapped.reads.k27.20c.3 <- 7102648/1E6
+
+mapped.reads.k27.26c.1 <- 5635098/1E6 
+mapped.reads.k27.26c.2 <- 4986577/1E6
+mapped.reads.k27.26c.3 <- 3988645/1E6
+
+
+## Load read counts and normalization by dividing by the millions
+## of mapped reads
+chip.signal.zt8.1 <- read.table(
+  file = "h3k27me3/h3k27me3_ld_20_zt8_chip_1_counts.bed",
+  header = F,sep = "\t")
+chip.signal.zt8.1[,4] <- chip.signal.zt8.1[,4]/mapped.reads.k27.20c.zt8.1
+
+chip.signal.zt8.2 <- read.table(
+  file = "h3k27me3/h3k27me3_ld_20_zt8_chip_2_counts.bed",
+  header = F,sep = "\t")
+chip.signal.zt8.2[,4] <- chip.signal.zt8.2[,4]/mapped.reads.k27.20c.zt8.2
+
+chip.signal.zt16.1 <- read.table(
+  file = "h3k27me3/h3k27me3_ld_20_zt16_chip_1_counts.bed",
+  header = F,sep = "\t")
+chip.signal.zt16.1[,4] <- chip.signal.zt16.1[,4]/mapped.reads.k27.20c.zt16.1
+
+chip.signal.zt16.2 <- read.table(
+  file = "h3k27me3/h3k27me3_ld_20_zt16_chip_2_counts.bed",
+  header = F,sep = "\t")
+chip.signal.zt16.2[,4] <- chip.signal.zt16.2[,4]/mapped.reads.k27.20c.zt16.2
+
+chip.signal.20.1 <- read.table(
+  file = "h3k27me3/h3k27me3_ll_20_chip_1_counts.bed",
+  header = F,sep = "\t")
+chip.signal.20.1[,4] <- chip.signal.20.1[,4]/mapped.reads.k27.20c.1
+
+chip.signal.20.2 <- read.table(
+  file = "h3k27me3/h3k27me3_ll_20_chip_2_counts.bed",
+  header = F,sep = "\t")
+chip.signal.20.2[,4] <- chip.signal.20.2[,4]/mapped.reads.k27.20c.2
+
+chip.signal.20.3 <- read.table(
+  file = "h3k27me3/h3k27me3_ll_20_chip_3_counts.bed",
+  header = F,sep = "\t")
+chip.signal.20.3[,4] <- chip.signal.20.3[,4]/mapped.reads.k27.20c.3
+
+chip.signal.10.1 <- read.table(
+  file = "h3k27me3/h3k27me3_ll_10_chip_1_counts.bed",
+  header = F,sep = "\t")
+chip.signal.10.1[,4] <- chip.signal.10.1[,4]/mapped.reads.k27.10c.1
+
+chip.signal.10.2 <- read.table(
+  file = "h3k27me3/h3k27me3_ll_10_chip_2_counts.bed",
+  header = F,sep = "\t")
+chip.signal.10.2[,4] <- chip.signal.10.2[,4]/mapped.reads.k27.10c.2
+
+chip.signal.10.3 <- read.table(
+  file = "h3k27me3/h3k27me3_ll_10_chip_3_counts.bed",
+  header = F,sep = "\t")
+chip.signal.10.3[,4] <- chip.signal.10.3[,4]/mapped.reads.k27.10c.3
+
+chip.signal.14.1 <- read.table(
+  file = "h3k27me3/h3k27me3_ll_14_chip_1_counts.bed",
+  header = F,sep = "\t")
+chip.signal.14.1[,4] <- chip.signal.14.1[,4]/mapped.reads.k27.14c.1
+
+chip.signal.14.2 <- read.table(
+  file = "h3k27me3/h3k27me3_ll_14_chip_2_counts.bed",
+  header = F,sep = "\t")
+chip.signal.14.2[,4] <- chip.signal.14.2[,4]/mapped.reads.k27.14c.2
+
+chip.signal.14.3 <- read.table(
+  file = "h3k27me3/h3k27me3_ll_14_chip_3_counts.bed",
+  header = F,sep = "\t")
+chip.signal.14.3[,4] <- chip.signal.14.3[,4]/mapped.reads.k27.14c.3
+
+chip.signal.26.1 <- read.table(
+  file = "h3k27me3/h3k27me3_ll_26_chip_1_counts.bed",
+  header = F,sep = "\t")
+chip.signal.26.1[,4] <- chip.signal.26.1[,4]/mapped.reads.k27.26c.1
+
+chip.signal.26.2 <- read.table(
+  file = "h3k27me3/h3k27me3_ll_26_chip_2_counts.bed",
+  header = F,sep = "\t")
+chip.signal.26.2[,4] <- chip.signal.26.2[,4]/mapped.reads.k27.26c.2
+
+chip.signal.26.3 <- read.table(
+  file = "h3k27me3/h3k27me3_ll_26_chip_3_counts.bed",
+  header = F,sep = "\t")
+chip.signal.26.3[,4] <- chip.signal.26.3[,4]/mapped.reads.k27.26c.3
+```
+
+Scatter plots between replicates to check similarity. 
+
+
+```{r replicate_scatter_plots}
+plot(log2(chip.signal.zt8.1[,4]),log2(chip.signal.zt8.2[,4]))
+lines(x=c(0,20),y=c(0,20),col="blue")
+plot(log2(chip.signal.zt16.1[,4]),log2(chip.signal.zt16.2[,4]))
+lines(x=c(0,20),y=c(0,20),col="blue")
+
+
+plot(log2(chip.signal.10.1[,4]),log2(chip.signal.10.2[,4]))
+lines(x=c(0,20),y=c(0,20),col="blue")
+plot(log2(chip.signal.10.1[,4]),log2(chip.signal.10.3[,4]))
+lines(x=c(0,20),y=c(0,20),col="blue")
+plot(log2(chip.signal.10.2[,4]),log2(chip.signal.10.3[,4]))
+lines(x=c(0,20),y=c(0,20),col="blue")
+
+plot(log2(chip.signal.14.1[,4]),log2(chip.signal.14.2[,4]))
+lines(x=c(0,20),y=c(0,20),col="blue")
+plot(log2(chip.signal.14.1[,4]),log2(chip.signal.14.3[,4]))
+lines(x=c(0,20),y=c(0,20),col="blue")
+plot(log2(chip.signal.14.2[,4]),log2(chip.signal.14.3[,4]))
+lines(x=c(0,20),y=c(0,20),col="blue")
+
+plot(log2(chip.signal.20.1[,4]),log2(chip.signal.20.2[,4]))
+lines(x=c(0,20),y=c(0,20),col="blue")
+plot(log2(chip.signal.20.1[,4]),log2(chip.signal.20.3[,4]))
+lines(x=c(0,20),y=c(0,20),col="blue")
+plot(log2(chip.signal.20.2[,4]),log2(chip.signal.20.3[,4]))
+lines(x=c(0,20),y=c(0,20),col="blue")
+
+plot(log2(chip.signal.26.1[,4]),log2(chip.signal.26.2[,4]))
+lines(x=c(0,20),y=c(0,20),col="blue")
+plot(log2(chip.signal.26.1[,4]),log2(chip.signal.26.3[,4])+0.3)
+lines(x=c(0,20),y=c(0,20),col="blue")
+plot(log2(chip.signal.26.2[,4]),log2(chip.signal.26.3[,4])+log2(2^0.3))
+lines(x=c(0,20),y=c(0,20),col="blue")
+```
+
+```{r generate_chip_signal_matrix}
+chip.signal <- matrix(data = c(chip.signal.zt8.1[,4],
+                               chip.signal.zt8.2[,4],
+                               chip.signal.zt16.1[,4],
+                               chip.signal.zt16.2[,4],
+                               chip.signal.10.1[,4],
+                               chip.signal.10.2[,4],
+                               chip.signal.10.3[,4],
+                               chip.signal.14.1[,4],
+                               chip.signal.14.2[,4],
+                               chip.signal.14.3[,4],
+                               chip.signal.20.1[,4],
+                               chip.signal.20.2[,4],
+                               chip.signal.20.3[,4],
+                               chip.signal.26.1[,4],
+                               chip.signal.26.2[,4],
+                               chip.signal.26.3[,4]),ncol=16)
+colnames(chip.signal) <- c("ZT8_1","ZT8_2",
+                           "ZT16_1","ZT16_2",
+                           "t10C_1","t10C_2","t10C_3",
+                           "t14C_1","t14C_2","t14C_3",
+                           "t20C_1","t20C_2","t20C_3",
+                           "t26C_1","t26C_2","t26C_3")
+rownames(chip.signal) <- apply(X = chip.signal.10.1[,1:3],
+                               MARGIN = 1,
+                               FUN = 
+                                 function(x)
+                                   {
+                                     paste(x[1],paste(x[2],x[3],sep="-"),sep=":")
+                                   }
+                               )
+head(chip.signal)
+```
+
+Principal component analysis to analyze the underlying data structure.
+
+```{r pca_chip_signal}
+library(FactoMineR)
+library(factoextra)
+
+pca.temp.chip.signal <- data.frame(colnames(chip.signal),
+                                   t(chip.signal))
+
+colnames(pca.temp.chip.signal)[1] <- "Sample"
+res.pca <- PCA(pca.temp.chip.signal, 
+               graph = FALSE,
+               scale.unit = TRUE,
+               quali.sup = 1 )
+
+fviz_pca_ind(res.pca, col.ind = c("LD","LD","LD","LD",
+                                  rep("LL10",3),rep("LL14",3),
+                                  rep("LL20",3),rep("LL26",3)), 
+             pointsize=2, pointshape=21,fill="black",
+             repel = TRUE, 
+             addEllipses = TRUE,ellipse.type = "confidence",
+             legend.title="Conditions",
+             title="",
+             show_legend=TRUE,show_guide=TRUE)
+
+res.hcpc <- HCPC(res.pca, graph=FALSE,nb.clust = 4)   
+
+fviz_dend(res.hcpc,k=4,
+          cex = 0.75,                       # Label size
+          palette = "jco",               # Color palette see ?ggpubr::ggpar
+          rect = TRUE, rect_fill = TRUE, # Add rectangle around groups
+          rect_border = "jco",           # Rectangle color
+          type="rectangle",
+          labels_track_height = 50      # Augment the room for labels
+)
+```
