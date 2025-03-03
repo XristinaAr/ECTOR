@@ -1,4 +1,4 @@
-chr	start	end	peak.annotation	target.genes
+V1	V2	V3	peak.annotation	target.genes
 1	12890	13380	TSS	ostta01g00090
 1	34365	35163	TSS	ostta01g00220,ostta01g00210
 1	73034	73837	TSS	ostta01g00485
