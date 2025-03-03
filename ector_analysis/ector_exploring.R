@@ -3086,15 +3086,6 @@ fviz_dend(res.hcpc,k=4,
 
 log2.chip.signal <- log2(chip.signal)
 
-log2.chip.signal <- normalized.temp.chip.signal
-log2.chip.signal["8:624229-627058",]
-chip.signal["8:624229-627058",]
-
-
-t10.t26["8:624229-627058",]
-log2(1.25)
-
-
 library(limma)
 limma.experimental.design <- model.matrix(~ -1+#factor(c(1,1,1,
                                             #            2,2,2,
@@ -3114,6 +3105,235 @@ contrast.matrix <- makeContrasts(LDZT16-LDZT8,
 
 contrast.linear.fit <- contrasts.fit(linear.fit, contrast.matrix)
 contrast.results <- eBayes(contrast.linear.fit)                               
+
+zt16.zt8 <- topTable(contrast.results, 
+                     number=nrow(log2.chip.signal), 
+                     coef = 1, sort.by = "logFC") 
+
+zt16.zt8.logfc <- zt16.zt8$logFC
+zt16.zt8.adj.p.val <- zt16.zt8$adj.P.Val
+zt16.zt8.peak.ids <- rownames(zt16.zt8)
+
+zt16.zt8.higher.peaks <- zt16.zt8.peak.ids[zt16.zt8.logfc > log2(1) & 
+                                           zt16.zt8.adj.p.val < 0.05]
+
+zt16.zt8.lower.peaks <- zt16.zt8.peak.ids[zt16.zt8.logfc < -log2(1) & 
+                                             zt16.zt8.adj.p.val < 0.05]
+
+
+
+t26.t10 <- topTable(contrast.results, 
+                     number=nrow(log2.chip.signal), 
+                     coef = 2, sort.by = "logFC") 
+
+t26.t10.logfc <- t26.t10$logFC
+t26.t10.adj.p.val <- t26.t10$adj.P.Val
+t26.t10.peak.ids <- rownames(t26.t10)
+
+t26.t10.higher.peaks <- t26.t10.peak.ids[t26.t10.logfc > log2(2) & 
+                                           t26.t10.adj.p.val < 0.05]
+
+t26.t10.lower.peaks <- t26.t10.peak.ids[t26.t10.logfc < -log2(2) & 
+                                          t26.t10.adj.p.val < 0.05]
+
+
+t26.t10.higher.peaks.genes <- unique(unlist(
+  strsplit(x = subset(k27.consensus.peak.annotation,
+                      rownames(k27.consensus.peak.annotation) %in% 
+                        t26.t10.higher.peaks)$target.genes,split=",")))
+
+t26.t10.lower.peaks.genes <- unique(unlist(
+  strsplit(x = subset(k27.consensus.peak.annotation,
+                      rownames(k27.consensus.peak.annotation) %in% 
+                        t26.t10.lower.peaks)$target.genes,split=",")))
+
+
+t20.t10 <- topTable(contrast.results, 
+                    number=nrow(log2.chip.signal), 
+                    coef = 3, sort.by = "logFC") 
+
+t20.t10.logfc <- t20.t10$logFC
+t20.t10.adj.p.val <- t20.t10$adj.P.Val
+t20.t10.peak.ids <- rownames(t20.t10)
+
+t20.t10.higher.peaks <- t20.t10.peak.ids[t20.t10.logfc > log2(2) & 
+                                           t20.t10.adj.p.val < 0.05]
+
+t20.t10.lower.peaks <- t20.t10.peak.ids[t20.t10.logfc < -log2(2) & 
+                                          t20.t10.adj.p.val < 0.05]
+
+
+t20.t10.higher.peaks.genes <- unique(unlist(
+  strsplit(x = subset(k27.consensus.peak.annotation,
+                      rownames(k27.consensus.peak.annotation) %in% 
+                        t20.t10.higher.peaks)$target.genes,split=",")))
+
+t20.t10.lower.peaks.genes <- unique(unlist(
+  strsplit(x = subset(k27.consensus.peak.annotation,
+                      rownames(k27.consensus.peak.annotation) %in% 
+                        t20.t10.lower.peaks)$target.genes,split=",")))
+
+
+t14.t10 <- topTable(contrast.results, 
+                    number=nrow(log2.chip.signal), 
+                    coef = 4, sort.by = "logFC") 
+
+t14.t10.logfc <- t14.t10$logFC
+t14.t10.adj.p.val <- t14.t10$adj.P.Val
+t14.t10.peak.ids <- rownames(t14.t10)
+
+t14.t10.higher.peaks <- t14.t10.peak.ids[t14.t10.logfc > log2(2) & 
+                                           t14.t10.adj.p.val < 0.05]
+
+t14.t10.lower.peaks <- t14.t10.peak.ids[t14.t10.logfc < -log2(2) & 
+                                          t14.t10.adj.p.val < 0.05]
+
+
+t14.t10.higher.peaks.genes <- unique(unlist(
+  strsplit(x = subset(k27.consensus.peak.annotation,
+                      rownames(k27.consensus.peak.annotation) %in% 
+                        t14.t10.higher.peaks)$target.genes,split=",")))
+
+t14.t10.lower.peaks.genes <- unique(unlist(
+  strsplit(x = subset(k27.consensus.peak.annotation,
+                      rownames(k27.consensus.peak.annotation) %in% 
+                        t14.t10.lower.peaks)$target.genes,split=",")))
+
+
+
+k27.temp.responsive.activated.genes <- unique(c(t26.t10.higher.peaks.genes,
+                                                t20.t10.higher.peaks.genes,
+                                                t14.t10.higher.peaks.genes))
+
+length(k27.temp.responsive.activated.genes)/length(all.k27.genes)
+
+
+
+
+
+
+log2.chip.signal <- log2(chip.signal[,c("ZT8_1","ZT8_2","ZT16_1","ZT16_2")])
+
+library(limma)
+limma.experimental.design <- model.matrix(~ -1+factor(c(1,1,2,2)))
+colnames(limma.experimental.design) <- c("LDZT8","LDZT16")
+
+linear.fit <- lmFit(log2.chip.signal, limma.experimental.design)
+
+contrast.matrix <- makeContrasts(LDZT16-LDZT8,
+                                 levels = c("LDZT8","LDZT16"))
+
+contrast.linear.fit <- contrasts.fit(linear.fit, contrast.matrix)
+contrast.results <- eBayes(contrast.linear.fit)                               
+
+zt16.zt8 <- topTable(contrast.results, 
+                     number=nrow(log2.chip.signal), 
+                     coef = 1, sort.by = "logFC") 
+
+zt16.zt8.logfc <- zt16.zt8$logFC
+zt16.zt8.adj.p.val <- zt16.zt8$adj.P.Val
+zt16.zt8.peak.ids <- rownames(zt16.zt8)
+
+zt16.zt8.higher.peaks <- zt16.zt8.peak.ids[zt16.zt8.logfc > log2(1) & 
+                                             zt16.zt8.adj.p.val < 0.05]
+
+zt16.zt8.lower.peaks <- zt16.zt8.peak.ids[zt16.zt8.logfc < -log2(1) & 
+                                            zt16.zt8.adj.p.val < 0.05]
+
+
+log2.chip.signal <- log2(chip.signal)
+
+library(limma)
+limma.experimental.design <- model.matrix(~ -1+factor(c(1,1,1,1,
+                                                        2,2,2,2,2,2,2,2,2,2,2,2)))
+colnames(limma.experimental.design) <- c("LD20","LL20")
+
+linear.fit <- lmFit(log2.chip.signal, limma.experimental.design)
+
+contrast.matrix <- makeContrasts(LL-LD,
+                                 levels = c("LD","LL"))
+
+contrast.linear.fit <- contrasts.fit(linear.fit, contrast.matrix)
+contrast.results <- eBayes(contrast.linear.fit)                               
+
+ll.ld <- topTable(contrast.results, 
+                  number=nrow(log2.chip.signal), 
+                  coef = 1, sort.by = "logFC") 
+
+ll.ld.logfc <- ll.ld$logFC
+ll.ld.adj.p.val <- ll.ld$adj.P.Val
+ll.ld.peak.ids <- rownames(ll.ld)
+
+ll.ld.higher.peaks <- ll.ld.peak.ids[ll.ld.logfc > log2(1.5) & 
+                                          ll.ld.adj.p.val < 0.05]
+
+
+rownames(k27.consensus.peak.annotation) <- apply(X = k27.consensus.peak.annotation[,1:3],
+      MARGIN = 1,
+      FUN = 
+        function(x)
+        {
+          paste(x[1],paste(x[2],x[3],sep="-"),sep=":")
+        })
+
+
+
+higher.ll.ld.genes <- unlist(strsplit(x = subset(k27.consensus.peak.annotation,rownames(k27.consensus.peak.annotation) %in% ll.ld.higher.peaks)$target.genes,split=","))
+
+
+
+ll.ld.lower.peaks <- ll.ld.peak.ids[ll.ld.logfc < -log2(1.5) & 
+                                         ll.ld.adj.p.val < 0.05]
+
+lower.ll.ld.genes <- unlist(strsplit(x = subset(k27.consensus.peak.annotation,rownames(k27.consensus.peak.annotation) %in% ll.ld.lower.peaks)$target.genes,split=","))
+
+lower.ll.ld.genes <- intersect(lower.ll.ld.genes,c(k27.tss,k27.gene.body))
+
+
+
+
+
+
+
+
+
+activated.enrich.go <- enrichGO(gene          = t26.t10.higher.peaks.genes,#higher.ll.ld.genes,
+                                OrgDb         = org.Otauriv5.eg.db,
+                                ont           = "BP",
+                                pAdjustMethod = "BH",
+                                pvalueCutoff  = 0.05,
+                                readable      = FALSE,
+                                keyType = "GID")
+
+as.data.frame(activated.enrich.go)
+
+
+k27.go.terms <- enrichGO(gene = t26.t10.higher.peaks.genes, pvalueCutoff = 1,
+                         qvalueCutoff = 1,
+                         OrgDb = org.Otauriv5.eg.db,
+                         ont = "BP", 
+                         keyType = "GID")
+k27.go.terms.filtered <- k27.go.terms
+k27.go.terms.filtered@result <- subset(k27.go.terms@result, pvalue < 0.01)
+
+k27.go.terms.df <- as.data.frame(k27.go.terms.filtered)
+
+treeplot(x = pairwise_termsim(k27.go.terms.filtered),cluster.params = list(n = 3),color ="pvalue")
+
+
+
+
+
+#ostta13g01250
+#ostta08g00030
+
+
+
+
+
+
+
+
 
 t10.t26 <- topTable(contrast.results, 
                      number=nrow(log2.chip.signal), 
@@ -3253,28 +3473,47 @@ normalized.gene.expression <- read.table(file = "normalized_gene_expression.tsv"
 head(normalized.gene.expression)
 normalized.gene.expression <- gene.expression
 
-
+gene.id <- "ostta17g00800"
+ostta10g00130
+gene.id <- "ostta10g00170"
+gene.id <- "ostta10g00130"
 gene.id <- "ostta17g00300"
 gene.id <- "ostta02g00720"
 gene.id <- "ostta17g00300" #ok
+gene.id %in% k27.temp.responsive.activated.genes
 gene.id <- "ostta03g02570"
 gene.id <- "ostta02g00780"
 gene.id <- "ostta18g01040"
+gene.id %in% k27.temp.responsive.activated.genes
 gene.id <- "ostta08g03710" #ok
+gene.id %in% k27.temp.responsive.activated.genes
 gene.id <- "ostta06g04460"
 gene.id <- "ostta14g00070"
 gene.id <- "ostta14g02090" #ok AP2
+gene.id %in% k27.temp.responsive.activated.genes
 gene.id <- "ostta17g00450" #ok BELL1
+gene.id %in% k27.temp.responsive.activated.genes
 gene.id <- "ostta11g02490" #ok WRKY
+gene.id %in% t26.t10.higher.peaks.genes
 gene.id <- "ostta07g04340"
 gene.id <- "ostta02g03030" #ok CSP
+gene.id %in% k27.temp.responsive.activated.genes
 gene.id <- "ostta15g01070"
 gene.id <- "ostta09g00590"
 gene.id <- "ostta02g04200"
-gene.expression.10 <- unlist(normalized.gene.expression[gene.id,paste("t10C",1:3,sep="_")])
-gene.expression.14 <- unlist(normalized.gene.expression[gene.id,paste("t14C",1:3,sep="_")])
-gene.expression.20 <- unlist(normalized.gene.expression[gene.id,paste("t20C",1:3,sep="_")])
-gene.expression.26 <- unlist(normalized.gene.expression[gene.id,paste("t26C",1:3,sep="_")])
+gene.id <- "ostta04g03110"
+gene.id <- "ostta08g02900"
+gene.id <- "ostta01g05160" #MADS
+gene.id <- "ostta14g01760" #Nin-like ok
+gene.id <- "ostta17g00450" #HB-other
+gene.id <- "ostta03g02220" #AP2
+gene.id <- "ostta03g02750" #C3H
+gene.id <- "ostta07g04340" #WRKY
+gene.id <- "ostta14g02090" #AP2
+gene.expression.10 <- unlist(gene.expression[gene.id,paste("t10C",1:3,sep="_")])
+gene.expression.14 <- unlist(gene.expression[gene.id,paste("t14C",1:3,sep="_")])
+gene.expression.20 <- unlist(gene.expression[gene.id,paste("t20C",1:3,sep="_")])
+gene.expression.26 <- unlist(gene.expression[gene.id,paste("t26C",1:3,sep="_")])
 
 means <- c(mean(gene.expression.10),
            mean(gene.expression.14),
@@ -3303,7 +3542,7 @@ points(x = rep(xpos+0.2,each=3),y=c(gene.expression.10,
 
 
 
-
+length(intersect(activated.genes.10.vs.20,k27.temp.responsive.activated.genes))/length(activated.genes.10.vs.20)
 
 
 
@@ -3498,6 +3737,8 @@ promoter_length <- 1000
 gene.name <- "ostta02g03030"
 selected.bigwig.files <- "h3k27me3/h3k27me3_ll_20_chip_1.bw"
 selected.bed.files <- "h3k27me3/h3k27me3_ll_20_peaks.bed"
+
+
 
 gene.profile <- function(gene.name, 
                          promoter_length, 
@@ -3710,3 +3951,978 @@ gene.profile <- function(gene.name,
        labels = seq(from=0,to=ceiling(upper.lim/10)*10,by=10))
 }
 
+
+
+regions.plot
+current.length <- 1074072 
+
+zt8.1.bw <- import.bw("h3k27me3/h3k27me3_20_zt8_1.bw", as = "GRanges")
+zt8.2.bw <- import.bw("h3k27me3/h3k27me3_20_zt8_2.bw", as = "GRanges")
+
+
+zt8.1.bw.chr2 <- subset(as.data.frame(zt8.1.bw),seqnames==2)
+zt8.2.bw.chr2 <- subset(as.data.frame(zt8.2.bw),seqnames==2)
+length(zt8.1.bw.chr2$score)
+length(zt8.2.bw.chr2$score)
+
+zt8.h3k27me3.signal.chr2 <- (zt8.1.bw.chr2$score + zt8.2.bw.chr2$score)/2
+
+
+
+
+zt16.1.bw <- import.bw("h3k27me3/h3k27me3_20_zt16_1.bw", as = "GRanges")
+zt16.2.bw <- import.bw("h3k27me3/h3k27me3_20_zt16_2.bw", as = "GRanges")
+
+
+zt16.1.bw.chr2 <- subset(as.data.frame(zt16.1.bw),seqnames==2)
+zt16.2.bw.chr2 <- subset(as.data.frame(zt16.2.bw),seqnames==2)
+length(zt16.1.bw.chr2$score)
+length(zt16.2.bw.chr2$score)
+
+plot(x=subset(as.data.frame(zt8.2.bw),seqnames==2)$start,
+     y=subset(as.data.frame(zt8.2.bw),seqnames==2)$score,type="l")
+
+plot(x=subset(as.data.frame(zt8.1.bw),seqnames==2)$start,
+     y=subset(as.data.frame(zt8.1.bw),seqnames==2)$score,type="l")
+
+plot(x=subset(as.data.frame(zt16.2.bw),seqnames==2)$start,
+     y=subset(as.data.frame(zt16.2.bw),seqnames==2)$score,type="l")
+
+
+plot(x=subset(as.data.frame(zt16.2.bw),seqnames==2)$start,
+     y=rollmean(subset(as.data.frame(zt16.2.bw),seqnames==2)$score, k = 200, fill = NA, align = "center")
+,type="l")
+
+plot(x=subset(as.data.frame(zt16.1.bw),seqnames==2)$start,
+     y=rollmean(subset(as.data.frame(zt16.1.bw),seqnames==2)$score, k = 200, fill = NA, align = "center")
+     ,type="l",ylim=c(0,100))
+
+plot(x=subset(as.data.frame(zt8.2.bw),seqnames==2)$start,
+     y=rollmean(subset(as.data.frame(zt8.2.bw),seqnames==2)$score, k = 200, fill = NA, align = "center")
+     ,type="l",ylim=c(0,100))
+
+plot(x=subset(as.data.frame(zt8.1.bw),seqnames==2)$start,
+     y=rollmean(subset(as.data.frame(zt8.1.bw),seqnames==2)$score, k = 200, fill = NA, align = "center")
+     ,type="l")
+
+
+plot(subset(as.data.frame(zt16.2.bw),seqnames==2)$score,type="l")
+
+chip.signal <- featureAlignedSignal(cvglists, regions.plot, 
+#                                    upstream=ceiling(current.length/2), 
+#                                    downstream=ceiling(current.length/2),
+                                    n.tile=current.length)
+
+
+jpeg(filename = "images/h3k27me3_higher.jpg",res = 160,width = 750,height = 900)
+boxplot(chip.signal.10C[k27.temp.higher.peaks],
+        chip.signal.14C[k27.temp.higher.peaks],
+        chip.signal.20C[k27.temp.higher.peaks],
+        chip.signal.26C[k27.temp.higher.peaks],
+        outline=F,
+        names=c("10ºC","14ºC","20ºC","26ºC"),
+        col = colorRampPalette(c("blue", "red"))(4),lwd=2,cex.axis=1.5)
+dev.off()
+
+jpeg(filename = "images/h3k27me3_lower.jpg",res = 160,width = 750,height = 900)
+boxplot(chip.signal.10C[k27.temp.lower.peaks],
+        chip.signal.14C[k27.temp.lower.peaks],
+        chip.signal.20C[k27.temp.lower.peaks],
+        chip.signal.26C[k27.temp.lower.peaks],
+        outline=F,
+        names=c("10ºC","14ºC","20ºC","26ºC"),
+        col = colorRampPalette(c("blue", "red"))(4),lwd=2,cex.axis=1.5)
+dev.off()
+
+
+# Example data with an outlier
+data <- chip.signal.10C[k27.temp.lower.peaks]#c(1, 2, 2, 3, 3, 4, 5, 20)  
+
+# Compute quartiles including all data points
+Q1 <- quantile(data, 0.25)  # First quartile
+Q3 <- quantile(data, 0.75)  # Third quartile
+IQR <- Q3 - Q1             # Interquartile range
+
+# Define whiskers as min/max instead of 1.5*IQR rule
+lower_whisker <- min(data)  
+upper_whisker <- max(data)  
+
+# Create boxplot without excluding outliers
+boxplot(data1, range = 0, col = "lightblue", main = "Boxplot with Outliers Included")
+boxplot(data,range=0)
+boxplot(data,ylim=c(0,3802))
+
+
+temp.repressed <- unique(c(repressed.genes.14.vs.10, repressed.genes.20.vs.10, repressed.genes.26.vs.10))
+length(temp.repressed)
+
+
+length(intersect(k27.temp.higher.genes,temp.repressed))/length(temp.repressed)
+length(intersect(k27.temp.lower.genes,temp.repressed))/length(temp.repressed)
+
+
+length(intersect(k27.temp.higher.genes,temp.repressed))/length(k27.temp.higher.genes)
+
+"ostta18g01040" %in% intersect(k27.temp.higher.genes,temp.repressed)
+"ostta18g01040" %in% temp.repressed
+"ostta18g01040" %in% k27.temp.higher.genes  
+
+"ostta18g01040" %in% intersect(k27.temp.higher.genes,temp.repressed)
+"ostta08g03710" %in% k27.temp.higher.genes  
+
+"ostta04g03110" %in% intersect(k27.temp.higher.genes,temp.repressed)
+
+res["ostta18g01040",]
+res["ostta08g03710",]
+
+gene.id <- "ostta18g01040"
+gene.id %in% k27.temp.responsive.activated.genes
+gene.id <- "ostta08g03710" #ok
+gene.id %in% k27.temp.responsive.activated.genes
+
+intersect(k27.temp.higher.genes,temp.repressed)
+
+
+temp.activated <- unique(c(repressed.genes.14.vs.10, repressed.genes.20.vs.10, repressed.genes.26.vs.10))
+
+
+k27.go.terms <- enrichGO(gene = intersect(k27.temp.higher.genes,temp.repressed), pvalueCutoff = 1,
+                         qvalueCutoff = 1,
+                         OrgDb = org.Otauriv5.eg.db,
+                         ont = "BP", 
+                         keyType = "GID")
+k27.go.terms.filtered <- k27.go.terms
+k27.go.terms.filtered@result <- subset(k27.go.terms@result, pvalue < 0.05)
+
+k27.go.terms.df <- as.data.frame(k27.go.terms.filtered)
+
+
+write.table(x = k27.go.terms.df, file = "go_enrichment_k27.tsv",
+            quote = F,sep = "\t",row.names = F)
+
+treeplot(x = pairwise_termsim(k27.go.terms.filtered))
+
+
+res.df <- as.data.frame(res)
+colnames(res.df)
+
+nrow(subset(res.df[all.k27.genes,], log2FoldChange < 0 & padj < 0.05))/length(all.k27.genes)
+
+
+intersect(all.k27.genes,temp.repressed)
+length(intersect(all.k27.genes,temp.repressed))/length(temp.repressed)
+
+
+length(rownames(subset(k27.consensus.peak.annotation, target.genes %in% intersect(all.k27.genes,temp.repressed))))
+
+sum(t26.t10[rownames(subset(k27.consensus.peak.annotation, target.genes %in% intersect(all.k27.genes,temp.repressed))) ,"logFC"] > 0)
+
+
+
+
+t26.t10.higher.peaks <- t26.t10.peak.ids[t26.t10.logfc > 0 & 
+                                           t26.t10.adj.p.val < 0.01]
+length(t26.t10.higher.peaks)
+
+
+t26.t10.higher.peaks.genes <- unlist(strsplit(x = k27.consensus.peak.annotation[t26.t10.higher.peaks,"target.genes"],split = ","))
+length(t26.t10.higher.peaks.genes)
+
+repressed.genes.26.vs.10 <- gene.ids.26.vs.10[log.fold.change < 0 & 
+                                                adjusted.pval < 0.01]
+repressed.genes.26.vs.10 <- repressed.genes.26.vs.10[!is.na(repressed.genes.26.vs.10)]
+length(repressed.genes.26.vs.10)
+
+length(intersect(t26.t10.higher.peaks.genes,repressed.genes.26.vs.10))/length(repressed.genes.26.vs.10)
+
+length(intersect(t26.t10.higher.peaks.genes,repressed.genes.26.vs.10))/length(t26.t10.higher.peaks.genes)
+
+
+
+## con umbrales
+temp.repressed <- unique(c(repressed.genes.14.vs.10, repressed.genes.20.vs.10, repressed.genes.26.vs.10))
+length(temp.repressed)
+
+length(k27.temp.higher.genes)
+
+temp.repressed.k27.higher.genes <- intersect(temp.repressed,k27.temp.higher.genes)
+
+length(temp.repressed.k27.higher.genes)/length(temp.repressed)
+length(temp.repressed.k27.higher.genes)/length(k27.temp.higher.genes)
+
+sum(as.data.frame(res)[k27.temp.higher.genes,"log2FoldChange"] < 0)/length(k27.temp.higher.genes)
+
+library(VennDiagram)
+
+grid.newpage()
+draw.pairwise.venn(area1 = length(temp.repressed),
+                   area2 = length(k27.temp.higher.genes),
+                   cross.area =  length(temp.repressed.k27.higher.genes),
+                   lwd = 5,category = c("",""),
+                   euler.d = T,
+                   col = c("blue","red"),fill = c(" blue","red"),alpha = 0.5,cex = 3,cat.cex = 2)
+
+
+boxplot(as.data.frame(res)[setdiff(k27.temp.higher.genes,temp.repressed),"log2FoldChange"])
+
+
+library(clusterProfiler)
+library(enrichplot)
+library(org.Otauriv5.eg.db)
+temp.repressed.k27.higher.genes.enrichment <- enrichGO(gene = temp.repressed.k27.higher.genes, 
+                           pvalueCutoff = 0.05,
+                           qvalueCutoff = 0.05,
+                           OrgDb = org.Otauriv5.eg.db,
+                           ont = "BP", 
+                           keyType = "GID")
+as.data.frame(temp.repressed.k27.higher.genes.enrichment)
+
+temp.repressed.k27.higher.genes.enrichment <- enrichGO(gene = temp.repressed.k27.higher.genes, 
+                                                       pvalueCutoff = 1,
+                         qvalueCutoff = 1,
+                         OrgDb = org.Otauriv5.eg.db,
+                         ont = "BP", 
+                         keyType = "GID")
+k27.go.terms.filtered <- k27.go.terms
+k27.go.terms.filtered@result <- subset(k27.go.terms@result, pvalue < 0.001)
+
+k27.go.terms.df <- as.data.frame(k27.go.terms.filtered)
+
+
+
+gene.name <- "ostta17g00300" 
+promoter_length=1000
+selected.bigwig.files <- c("h3k27me3/h3k27me3_ll_26_chip_2.bw",
+                           "h3k27me3/h3k27me3_ll_20_chip_2.bw",
+                           "h3k27me3/h3k27me3_ll_14_chip_1.bw",
+                           "h3k27me3/h3k27me3_ll_10_chip_2.bw")
+cols <- rev(colorRampPalette(c("blue", "red"))(4))
+selected.bed.files <- "h3k27me3/h3k27me3_peaks.bed"
+
+
+
+
+gene.profile.complete(gene.name = "ostta17g00300", 
+                      promoter_length=1000, 
+                      selected.bigwig.files = c("h3k27me3/h3k27me3_ll_26_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_20_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_14_chip_1.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
+                      cols = rev(colorRampPalette(c("blue", "red"))(4)),
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+
+
+gene.profile.complete(gene.name = "ostta02g03030", 
+                      promoter_length=1000, 
+                      selected.bigwig.files = c("h3k27me3/h3k27me3_ll_26_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_20_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_14_chip_1.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
+                      cols = rev(colorRampPalette(c("blue", "red"))(4)),
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+
+
+gene.profile.complete(gene.name = "ostta08g03710", 
+                      promoter_length=1000, 
+                      selected.bigwig.files = c("h3k27me3/h3k27me3_ll_26_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_20_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_14_chip_1.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
+                      cols = rev(colorRampPalette(c("blue", "red"))(4)),
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+
+
+
+
+gene.profile.complete <- function(gene.name, 
+                         promoter_length=1000, 
+                         selected.bigwig.files,
+                         cols,
+                         selected.bed.files)
+{
+  target.gene.body <- genes.data.df[gene.name,]
+  target.gene.chr <- as.character(target.gene.body$seqnames)
+  target.gene.start <- target.gene.body$start
+  target.gene.end <- target.gene.body$end
+  
+  target.gene.strand <- as.character(target.gene.body$strand)
+  
+  ## Extract cds annotation
+  cds.data.target.gene <- subset(cds.data, 
+                                 seqnames == target.gene.chr & 
+                                   (start >= target.gene.start & 
+                                      end <= target.gene.end))
+  
+  ## Extract exons annotation
+  exons.data.target.gene <- subset(exons.data, 
+                                   seqnames == target.gene.chr & 
+                                     (start >= target.gene.start & 
+                                        end <= target.gene.end))
+  
+  ## Determine the genome range to plot including promoter, gene body and 5' UTR
+  ## This depends on whether the gene is on the forward or reverse strand
+  range.to.plot <- target.gene.body
+  
+  if(target.gene.strand == "+")
+  {
+    range.to.plot$start <- range.to.plot$start - promoter_length
+    range.to.plot$end <- range.to.plot$end + promoter_length
+  } else if (target.gene.strand == "-")
+  {
+    range.to.plot$end <- range.to.plot$end + promoter_length
+    range.to.plot$start <- range.to.plot$start - promoter_length
+  }
+  
+  ## Compute the length of the genome range to represent
+  current.length <- range.to.plot$end - range.to.plot$start
+  
+  ## Compute profile in gene
+  ## Since ChIPpeakAnno needs more than one region to plot our region
+  ## is duplicated 
+  regions.plot <- GRanges(rbind(range.to.plot,range.to.plot))
+  
+  ## Import signal from the bigwig files
+  cvglists <- sapply(selected.bigwig.files, import, 
+                     format="BigWig", 
+                     which=regions.plot, 
+                     as="RleList")
+  
+  ## Compute signal in the region to plot
+  chip.signal <- featureAlignedSignal(cvglists, regions.plot, 
+                                      upstream=ceiling(current.length/2), 
+                                      downstream=ceiling(current.length/2),
+                                      n.tile=current.length) 
+  
+  
+  
+  chip.signal[[1]][1:2,1:5]
+  
+  
+  chip.signal.mean <- matrix(nrow=length(selected.bigwig.files),ncol=dim(chip.signal[[1]])[2])
+
+  ## Compute mean signal 
+  for(i in 1:length(selected.bigwig.files))
+  {
+    if(target.gene.strand == "+")
+    {
+      chip.signal.mean[i,] <- colMeans(chip.signal[[i]],na.rm = TRUE)
+    } else if (target.gene.strand == "-")
+    {
+      chip.signal.mean[i,] <- rev(colMeans(chip.signal[[i]],na.rm = TRUE))
+    }
+  }
+  
+  ## Normalization
+  #chip.signal.mean <- 20 * chip.signal.mean / max(chip.signal.mean)
+  upper.lim <- 1.1*max(chip.signal.mean)
+  ## Colors to draw signal
+  line.colors <- cols[i]#"blue"
+  area.colors <- cols[i]#"lightblue"
+  
+  gene.height <- -25
+  cord.x <- 1:current.length
+  
+  ## Exon width to plot
+  exon.width <- 2#1#2
+  
+  ## Cds width to plot
+  cds.width <- 3#1.5#3
+  
+  ## Width of the rectangule representing the peak reagion
+  peak.width <- 1#0.5#1
+  
+  ## Extract exons for target gene
+  exons.data.target.gene <- subset(exons.data, seqnames == target.gene.chr & (start >= target.gene.start & end <= target.gene.end))
+  
+  ## Transform exon coordinates to current range
+  min.pos <- min(exons.data.target.gene$start)
+  
+  exons.data.target.gene$start <- exons.data.target.gene$start - min.pos + promoter_length
+  exons.data.target.gene$end <- exons.data.target.gene$end - min.pos + promoter_length
+  
+  ## Extract cds for target gene
+  cds.data.target.gene <- subset(cds.data, seqnames == target.gene.chr & (start >= target.gene.start & end <= target.gene.end))
+  
+  cds.data.target.gene$start <- cds.data.target.gene$start - min.pos + promoter_length
+  cds.data.target.gene$end <- cds.data.target.gene$end - min.pos + promoter_length
+  
+  plot(cord.x, rep(gene.height,length(cord.x)),type="l",col="black",lwd=3,ylab="",
+       cex.lab=2,axes=FALSE,xlab="",main="",cex.main=2,
+       ylim=c(-35,upper.lim),xlim=c(0,max(cord.x)))
+  
+  ## Represent exons
+  for(i in 1:nrow(exons.data.target.gene))
+  {
+    # Determine start/end for each exon
+    current.exon.start <- exons.data.target.gene$start[i]
+    current.exon.end <- exons.data.target.gene$end[i]
+    
+    ## Determine coordinates for each exon polygon and represent it
+    exon.x <- c(current.exon.start,current.exon.end,current.exon.end,current.exon.start)
+    exon.y <- c(gene.height + exon.width, gene.height + exon.width, gene.height - exon.width, gene.height - exon.width)
+    
+    polygon(x = exon.x, y = exon.y, col = "blue",border = "blue")
+  }
+  
+  if(nrow(cds.data.target.gene) > 0)
+  {
+    for(i in 1:nrow(cds.data.target.gene))
+    {
+      # Determine current cds start/end
+      current.cds.start <- cds.data.target.gene$start[i]
+      current.cds.end <- cds.data.target.gene$end[i]
+      
+      # Determine curret cds coordinates for the polygon and represent it
+      cds.x <- c(current.cds.start,current.cds.end,current.cds.end,current.cds.start)
+      cds.y <- c(gene.height + cds.width, gene.height + cds.width, gene.height - cds.width, gene.height - cds.width)
+      polygon(x = cds.x, y = cds.y, col = "blue",border = "blue")
+    }
+  }
+  
+  ## Draw arrow to represent transcription direction 
+  if(target.gene.strand == "+")
+  {
+    lines(c(promoter_length,promoter_length,promoter_length+100),
+          y=c(gene.height,gene.height+5,gene.height+5),lwd=3)
+    lines(c(promoter_length+50,promoter_length+100),y=c(gene.height+6,gene.height+5),lwd=3)
+    lines(c(promoter_length+50,promoter_length+100),y=c(gene.height+4,gene.height+5),lwd=3)
+  } else if (target.gene.strand == "-")
+  {
+    lines(c(current.length - promoter_length, current.length - promoter_length, current.length - promoter_length-100),y=c(gene.height,gene.height+5,gene.height+5),lwd=3)
+    lines(c(current.length - promoter_length-50, current.length - promoter_length - 100),y=c(gene.height + 6, gene.height + 5),lwd=3)
+    lines(c(current.length - promoter_length-50, current.length - promoter_length - 100),y=c(gene.height + 4, gene.height + 5),lwd=3)
+  }
+  
+  ## Draw promoter range
+  if(target.gene.strand == "+")
+  {
+    axis(side = 1,labels = c(- promoter_length, - promoter_length / 2,"TSS"),at = c(1,promoter_length/2,promoter_length),lwd=2,cex=1.5,las=2,cex=2)
+  } else if(target.gene.strand == "-")
+  {
+    axis(side = 1,labels = c("TSS",- promoter_length / 2,- promoter_length),at = c(current.length-promoter_length,current.length-promoter_length/2, current.length),lwd=2,cex=1.5,las=2,cex=2)
+  }
+  
+  ## Draw gene name
+  text(x = current.length / 2, y = -33 , 
+       labels = bquote(italic(.(gene.name))),cex = 1.7,font = 3)
+  
+  ## Extract bed file name 1 and read it
+  current.peaks <- read.table(file=selected.bed.files,header = F, as.is = T)
+  current.peaks <- current.peaks[,1:3]
+  colnames(current.peaks) <- c("seqnames","start","end")
+  peak.coordinates <- subset(current.peaks, seqnames == as.character(range.to.plot$seqnames) & start >= range.to.plot$start & end <= range.to.plot$end) 
+  current.peaks.to.plot <- peak.coordinates[,2:3]
+  
+  ## Transform coordinates 
+  current.peaks.to.plot <- current.peaks.to.plot - range.to.plot$start
+  
+  ## Check if there are peaks for the target gene
+  if(nrow(current.peaks.to.plot) > 0)
+  {
+    #motifs.in.peaks <- vector(mode="list", length=nrow(current.peaks.to.plot))
+    for(j in 1:nrow(current.peaks.to.plot))
+    {
+      ## Extract start and end point of each peak region
+      current.peak.start <- current.peaks.to.plot[j,1]
+      current.peak.end <- current.peaks.to.plot[j,2]
+      
+      ## Computer coordinates for polygon and draw it
+      peak.x <- c(current.peak.start,current.peak.end,
+                  current.peak.end,current.peak.start)
+      peak.y <- c(peak.width - 12,   peak.width - 12, 
+                  - peak.width - 12, - peak.width - 12)  
+      
+      polygon(x = peak.x, y = peak.y, col = "blue", border = "blue",lwd=2)
+    }
+  }
+  
+  ## Draw profiles if bw file is provided
+  ## Compute base line for current TF
+  current.base.line <- - 10
+  
+  i <- 4
+  
+  for(i in 1:length(selected.bigwig.files))
+  {
+    ## Represent signal from the current TF
+    lines(chip.signal.mean[i,]+current.base.line,type="l",col=cols[i],lwd=3)
+    ## Determine polygon coordinates and represent it
+    cord.y <- c(current.base.line,chip.signal.mean[i,]+current.base.line,current.base.line)
+    cord.x <- 1:length(cord.y)
+    polygon(cord.x,cord.y,col=cols[i])
+  }
+  
+  axis(side = 2,lwd = 2,
+       at = seq(from=0,to=ceiling(upper.lim/10)*10,by=10)+current.base.line,
+       labels = seq(from=0,to=ceiling(upper.lim/10)*10,by=10))
+}
+
+
+
+
+
+
+gene.id <- "ostta14g02090" #AP2
+
+gene.expression.barplot <- function(gene.id, gene.expression)
+{
+  gene.expression.10 <- unlist(gene.expression[gene.id,paste("t10C",1:3,sep="_")])
+  gene.expression.14 <- unlist(gene.expression[gene.id,paste("t14C",1:3,sep="_")])
+  gene.expression.20 <- unlist(gene.expression[gene.id,paste("t20C",1:3,sep="_")])
+  gene.expression.26 <- unlist(gene.expression[gene.id,paste("t26C",1:3,sep="_")])
+  
+  means <- c(mean(gene.expression.10),
+             mean(gene.expression.14),
+             mean(gene.expression.20),
+             mean(gene.expression.26))
+  
+  sds <- c(sd(gene.expression.10),
+           sd(gene.expression.14),
+           sd(gene.expression.20),
+           sd(gene.expression.26))
+  
+  y.max <- 1.2*max(means + sds)
+  
+  par(lwd=2)
+  xpos <- barplot(means,ylim=c(0,y.max),
+                  col = colorRampPalette(c("blue", "red"))(4),cex.axis = 1.5,
+                  names.arg = c("10ºC","14ºC","20ºC","26ºC"),cex.names=2,lwd=2)
+  par(lwd=1)
+  arrows(x0 = xpos,y0 = means-sds/sqrt(3), x1 = xpos,y1=means+sds/sqrt(3),code=3,angle=90,length=0.07,lwd=2)
+  
+  
+  points(x = rep(xpos+0.2,each=3),y=c(gene.expression.10,
+                                      gene.expression.14,
+                                      gene.expression.20,
+                                      gene.expression.26),lwd=2)
+  
+}
+
+jpeg(filename = "images/tuba_ostta08g03710.jpg",res = 100,width = 600,height = 580)
+gene.profile.complete(gene.name = "ostta08g03710", #TUBA
+                      promoter_length=1000, 
+                      selected.bigwig.files = c("h3k27me3/h3k27me3_ll_26_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_20_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_14_chip_1.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
+                      cols = rev(colorRampPalette(c("blue", "red"))(4)),
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+dev.off()
+
+jpeg(filename = "images/tuba_ostta08g03710_expression.jpg",res = 100,width = 600,height = 580)
+gene.expression.barplot(gene.id = "ostta08g03710", gene.expression=gene.expression)
+dev.off()
+
+jpeg(filename = "images/tubb_ostta01g04320.jpg",res = 100,width = 600,height = 580)
+gene.profile.complete(gene.name = "ostta01g04320", #TUBB
+                      promoter_length=1000, 
+                      selected.bigwig.files = c("h3k27me3/h3k27me3_ll_26_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_20_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_14_chip_1.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
+                      cols = rev(colorRampPalette(c("blue", "red"))(4)),
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+dev.off()
+
+jpeg(filename = "images/tubb_ostta01g04320_expression.jpg",res = 100,width = 600,height = 580)
+gene.expression.barplot(gene.id = "ostta01g04320", gene.expression=gene.expression)
+dev.off()
+
+jpeg(filename = "images/actin_ostta14g02920.jpg",res = 100,width = 600,height = 580)
+gene.profile.complete(gene.name = "ostta14g02920", #Actin
+                      promoter_length=1000, 
+                      selected.bigwig.files = c("h3k27me3/h3k27me3_ll_26_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_20_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_14_chip_1.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
+                      cols = rev(colorRampPalette(c("blue", "red"))(4)),
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+dev.off()
+
+jpeg(filename = "images/actin_ostta14g02920_expression.jpg",res = 100,width = 600,height = 580)
+gene.expression.barplot(gene.id = "ostta14g02920", gene.expression=gene.expression)
+dev.off()
+
+jpeg(filename = "images/filamin_ostta09g01910.jpg",res = 100,width = 600,height = 580)
+gene.profile.complete(gene.name = "ostta09g01910", #Filamin
+                      promoter_length=1000, 
+                      selected.bigwig.files = c("h3k27me3/h3k27me3_ll_26_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_20_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_14_chip_1.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
+                      cols = rev(colorRampPalette(c("blue", "red"))(4)),
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+dev.off()
+
+jpeg(filename = "images/filamin_ostta09g01910_expression.jpg",res = 100,width = 600,height = 580)
+gene.expression.barplot(gene.id = "ostta09g01910", gene.expression=gene.expression)
+dev.off()
+
+jpeg(filename = "images/aurora_ostta10g01050.jpg",res = 100,width = 600,height = 580)
+gene.profile.complete(gene.name = "ostta10g01050", #Aurora
+                      promoter_length=1000, 
+                      selected.bigwig.files = c("h3k27me3/h3k27me3_ll_26_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_20_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_14_chip_1.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
+                      cols = rev(colorRampPalette(c("blue", "red"))(4)),
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+dev.off()
+
+jpeg(filename = "images/aurora_ostta10g01050_expression.jpg",res = 100,width = 600,height = 580)
+gene.expression.barplot(gene.id = "ostta10g01050", gene.expression=gene.expression)
+dev.off()
+
+jpeg(filename = "images/kinesin_ostta04g03110.jpg",res = 100,width = 600,height = 580)
+gene.profile.complete(gene.name = "ostta04g03110", #Kinesin
+                      promoter_length=1000, 
+                      selected.bigwig.files = c("h3k27me3/h3k27me3_ll_26_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_20_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_14_chip_1.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
+                      cols = rev(colorRampPalette(c("blue", "red"))(4)),
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+dev.off()
+
+jpeg(filename = "images/kinesin_ostta04g03110_expression.jpg",res = 100,width = 600,height = 580)
+gene.expression.barplot(gene.id = "ostta04g03110", gene.expression=gene.expression)
+dev.off()
+
+jpeg(filename = "images/myosin_ostta06g03320.jpg",res = 100,width = 600,height = 580)
+gene.profile.complete(gene.name = "ostta06g03320", #Myosin
+                      promoter_length=1000, 
+                      selected.bigwig.files = c("h3k27me3/h3k27me3_ll_26_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_20_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_14_chip_1.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
+                      cols = rev(colorRampPalette(c("blue", "red"))(4)),
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+dev.off()
+
+jpeg(filename = "images/myosin_ostta06g03320_expression.jpg",res = 100,width = 600,height = 580)
+gene.expression.barplot(gene.id = "ostta06g03320", gene.expression=gene.expression)
+dev.off()
+
+jpeg(filename = "images/ENR_ostta17g00300.jpg",res = 100,width = 600,height = 580)
+gene.profile.complete(gene.name = "ostta17g00300", #ENR
+                      promoter_length=1000, 
+                      selected.bigwig.files = c("h3k27me3/h3k27me3_ll_26_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_20_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_14_chip_1.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
+                      cols = rev(colorRampPalette(c("blue", "red"))(4)),
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+dev.off()
+
+jpeg(filename = "images/ENR_ostta17g00300_expression.jpg",res = 100,width = 600,height = 580)
+gene.expression.barplot(gene.id = "ostta17g00300", gene.expression=gene.expression)
+dev.off()
+
+
+jpeg(filename = "images/DGAT_ostta16g00910.jpg",res = 100,width = 600,height = 580)
+gene.profile.complete(gene.name = "ostta16g00910", #DGAT
+                      promoter_length=1000, 
+                      selected.bigwig.files = c("h3k27me3/h3k27me3_ll_26_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_20_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_14_chip_1.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
+                      cols = rev(colorRampPalette(c("blue", "red"))(4)),
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+dev.off()
+
+jpeg(filename = "images/DGAT_ostta16g00910_expression.jpg",res = 100,width = 600,height = 580)
+gene.expression.barplot(gene.id = "ostta16g00910", gene.expression=gene.expression)
+dev.off()
+
+jpeg(filename = "images/ABC_ostta09g01615.jpg",res = 100,width = 600,height = 580)
+gene.profile.complete(gene.name = "ostta09g01615", #ABC
+                      promoter_length=1000, 
+                      selected.bigwig.files = c("h3k27me3/h3k27me3_ll_26_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_20_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_14_chip_1.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
+                      cols = rev(colorRampPalette(c("blue", "red"))(4)),
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+dev.off()
+
+jpeg(filename = "images/ABC_ostta09g01615_expression.jpg",res = 100,width = 600,height = 580)
+gene.expression.barplot(gene.id = "ostta09g01615", gene.expression=gene.expression)
+dev.off()
+
+
+
+
+
+
+
+
+write.table(x = k27.go.terms.df, file = "go_enrichment_k27.tsv",
+            quote = F,sep = "\t",row.names = F)
+
+treeplot(x = pairwise_termsim(k27.go.terms.filtered))
+
+tf.data <- read.table(file="transcription_factors_extended_list.csv",header=T)
+
+length(intersect(all.k27.genes,tf.data$name))/nrow(tf.data)
+length(all.k27.genes)
+
+intersect(temp.repressed.k27.higher.genes,tf.data$name)
+
+intersect(all.k27.genes,tf.data$name)
+colorRampPalette(c("blue", "red"))(4)
+
+
+## Transcription factos
+##ostta01g05160 FLC cambia marca no expresion
+##ostta11g02490 WRKY cambia maraca y expresion
+##ostta14g01760 SMALL SUBUNIT OF MINU1/2-ASSOCIATED SWI/SNF COMPLEX cambia marca
+##ostta03g03430  specific subunit of MINU1/2-associated SWI/SNF complex, aka MAS complex 
+##ostta17g00450 BEL1-LIKE HOMEODOMAIN 9 cambia marca
+##ostta02g03030 CSP cambiar marca y expresión
+##ostta03g02220 BBM cambia marca
+##ostta06g01110 AP2 cambia marca SNZ
+##ostta07g04340 WRKY cambia marcar
+##ostta08g02190 WRKY cambia marca
+##ostta03g02750 zinc finger
+
+
+## cambia marca y expresión de forma significativa
+##"ostta11g02490" "ostta02g03030" "ostta14g01760" "ostta06g01110" "ostta03g02220"
+
+lipid.genes.data <- read.table(file="lipid_genes.tsv",header=T)
+head(lipid.genes.data)
+length(intersect(all.k27.genes,lipid.genes.data$name))/nrow(lipid.genes.data)
+length(all.k27.genes)
+
+intersect(temp.repressed.k27.higher.genes,lipid.genes.data$name)
+
+intersect(all.k27.genes,lipid.genes.data$name)
+
+
+current.gene <- "ostta06g01550" #ABC transporter
+current.gene <- "ostta09g01615" #ABC transporter
+current.gene <- "ostta16g00910" #Diacylglycerol acyltransferase
+current.gene <- "ostta17g00300" # ENR
+##ostta09g01910  	MORN Filamin Invasin_D3 GBD_IRG7_N
+
+
+##no cambian algo
+current.gene <- "ostta02g00800"  	#ketoacyl-synt
+current.gene <- "ostta04g01940" # Lipase_3 Abhydrolase_6 Esterase PGAP1
+current.gene <- "ostta04g02240"#  Diacylglycerol kinase
+current.gene <- "ostta04g03540" # ABC-2 type transporter
+current.gene <- "ostta05g03500" # ABC-2 type transporter
+current.gene <- "ostta07g00680" # Lipin/Ned1/Smp2
+current.gene <- "ostta09g01615" # ABC-2 type transporter
+
+
+
+gene.profile.complete(gene.name = current.gene,
+                      promoter_length=1000, 
+                      selected.bigwig.files = c("h3k27me3/h3k27me3_ll_26_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_20_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_14_chip_1.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
+                      cols = rev(colorRampPalette(c("blue", "red"))(4)),
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+
+gene.expression.barplot(gene.id = current.gene, gene.expression=gene.expression)
+
+
+
+ostta.atha.orthogroups <- read.table(file="ostta_atha_orthogroups.tsv",header=T,sep="\t")
+ostta.atha.orthogroups <- subset(ostta.atha.orthogroups, 
+                                 ostreococcus_tauri != "" | arabidopsis_thaliana != "")
+nrow(ostta.atha.orthogroups)
+
+head(ostta.atha.orthogroups)
+number.orthogroups <- nrow(ostta.atha.orthogroups)
+ostta.orthogroups <- c()
+for(i in 1:length(all.k27.genes))
+{
+  print(i)
+  current.gene <- all.k27.genes[[i]]
+  
+  j <- 1
+  while(j < number.orthogroups & !current.gene %in% 
+        strsplit(x = ostta.atha.orthogroups$ostreococcus_tauri[[j]],
+                 split = ", ")[[1]])
+  {
+    j <- j + 1
+  }
+  
+  if(current.gene %in% 
+     strsplit(x = ostta.atha.orthogroups$ostreococcus_tauri[[j]],
+              split = ", ")[[1]])
+  {
+    ostta.orthogroups <- c(ostta.orthogroups, 
+                           ostta.atha.orthogroups$Orthogroup[j]) 
+  }
+}
+length(ostta.orthogroups)
+ostta.orthogroups <-  unique(ostta.orthogroups)
+length(ostta.orthogroups)
+
+
+
+atha.k27.genes <- unique(c(read.table(file="h3k27me3_h2aub_atha.txt",header = F,as.is=T)[[1]],
+                    read.table(file="only_h3k27me3_atha.txt",header = F,as.is=T)[[1]]))
+
+atha.orthogroups <- c()
+for(i in 1:length(atha.k27.genes))
+{
+  print(i)
+  current.gene <- atha.k27.genes[[i]]
+  
+  j <- 1
+  while(j < number.orthogroups & !current.gene %in% 
+        strsplit(x = ostta.atha.orthogroups$arabidopsis_thaliana[[j]],
+                 split = ", ")[[1]])
+  {
+    j <- j + 1
+  }
+  
+  if(current.gene %in% 
+     strsplit(x = ostta.atha.orthogroups$arabidopsis_thaliana[[j]],
+              split = ", ")[[1]])
+  {
+    atha.orthogroups <- c(atha.orthogroups, 
+                           ostta.atha.orthogroups$Orthogroup[j]) 
+  }
+}
+length(atha.orthogroups)
+atha.orthogroups <-  unique(atha.orthogroups)
+length(atha.orthogroups)
+
+all.k27.ostta.atha <- intersect(ostta.orthogroups,atha.orthogroups)
+
+library(VennDiagram)
+
+#jpeg(filename = "images/venn_diagram_k27_increase_repressed.jpg",res = 160,width = 1000,height = 1000)
+grid.newpage()
+draw.pairwise.venn(area1 = length(ostta.orthogroups),
+                   area2 = length(atha.orthogroups),
+                   cross.area =  length(all.k27.ostta.atha),
+                   lwd = 5,category = c("",""),
+                   euler.d = T,
+                   col = c("darkgreen","green"),
+                   fill = c("darkgreen","green"),
+                   alpha = 0.5,cex = 3,cat.cex = 2)
+#dev.off()
+
+overlap <- length(all.k27.ostta.atha)
+size.1 <- length(ostta.orthogroups)
+size.2 <- length(atha.orthogroups)
+total.orthogroups <- nrow(ostta.atha.orthogroups)
+phyper(overlap - 1, size.1, total.orthogroups - size.1, size.2, lower.tail = FALSE)
+
+
+atha.specific.k27.orthogroups <- setdiff(atha.orthogroups,ostta.orthogroups)
+length(atha.specific.k27.orthogroups)
+ostta.specific.k27.orthogroups <- setdiff(ostta.orthogroups,atha.orthogroups)
+length(ostta.specific.k27.orthogroups)
+
+sum(subset(ostta.atha.orthogroups, Orthogroup %in% atha.specific.k27.orthogroups)$ostreococcus_tauri != "")/length(atha.specific.k27.orthogroups)
+sum(subset(ostta.atha.orthogroups, Orthogroup %in% ostta.specific.k27.orthogroups)$arabidopsis_thaliana != "")/length(ostta.specific.k27.orthogroups)
+
+ostta.k27.ostta.atha <- unlist(strsplit(x = subset(ostta.atha.orthogroups, Orthogroup %in% all.k27.ostta.atha)$ostreococcus_tauri,split=", "))
+
+library(clusterProfiler)
+library(enrichplot)
+library(org.Otauriv5.eg.db)
+ostta.k27.ostta.atha.go.terms <- enrichGO(gene = intersect(all.k27.genes,ostta.k27.ostta.atha), pvalueCutoff = 0.05,
+                         qvalueCutoff = 0.05,
+                         OrgDb = org.Otauriv5.eg.db,
+                         ont = "BP", 
+                         keyType = "GID")
+as.data.frame(ostta.k27.ostta.atha.go.terms)
+treeplot(x = pairwise_termsim(ostta.k27.ostta.atha.go.terms))
+
+library(org.At.tair.db)
+atha.k27.ostta.atha <- unlist(strsplit(x = subset(ostta.atha.orthogroups, Orthogroup %in% all.k27.ostta.atha)$arabidopsis_thaliana,split=", "))
+atha.k27.ostta.atha.go.terms <- enrichGO(gene = intersect(atha.k27.genes,atha.k27.ostta.atha), pvalueCutoff = 0.05,
+                                          qvalueCutoff = 0.05,
+                                          OrgDb = org.At.tair.db,
+                                          ont = "BP", 
+                                          keyType = "TAIR")
+as.data.frame(atha.k27.ostta.atha.go.terms)
+treeplot(x = pairwise_termsim(atha.k27.ostta.atha.go.terms))
+
+
+atha.specific.k27 <- unlist(strsplit(x = subset(ostta.atha.orthogroups, Orthogroup %in% atha.specific.k27.orthogroups)$arabidopsis_thaliana,split=", "))
+atha.specific.k27.go.terms <- enrichGO(gene = intersect(atha.k27.genes,atha.specific.k27), pvalueCutoff = 0.05,
+                                         qvalueCutoff = 0.05,
+                                         OrgDb = org.At.tair.db,
+                                         ont = "BP", 
+                                         keyType = "TAIR")
+as.data.frame(atha.specific.k27.go.terms)
+treeplot(x = pairwise_termsim(atha.specific.k27.go.terms))
+
+
+
+ostta.specific.k27 <- unlist(strsplit(x = subset(ostta.atha.orthogroups, Orthogroup %in% ostta.specific.k27.orthogroups)$ostreococcus_tauri,split=", "))
+ostta.specific.k27.go.terms <- enrichGO(gene = intersect(all.k27.genes,ostta.specific.k27), pvalueCutoff = 0.05,
+                                       qvalueCutoff = 0.05,
+                                       OrgDb = org.Otauriv5.eg.db,
+                                       ont = "BP", 
+                                       keyType = "GID")
+as.data.frame(ostta.specific.k27.go.terms)
+treeplot(x = pairwise_termsim(ostta.specific.k27.go.terms))
+
+
+current.gene <- "ostta12g01020"
+current.gene <- "ostta13g00120" # DNA topoisomerase
+current.gene <- "ostta16g01200" # regulator of telomere elongation helicase 1
+current.gene <- "ostta03g00320" # F box DNA helicase
+
+current.gene <- "ostta11g01720" # meiotic recombination protein DMC1
+current.gene <- "ostta12g01965" # serine-protein kinase ATM meiosis specific protein
+current.gene <- "ostta13g00120" # DNA topoisomerase II 
+current.gene <- "ostta05g02370" # pachytene checkpoint protein 2
+current.gene <- "ostta07g03600" # SPOO22 meiosis?
+
+
+
+current.gene <- "ostta04g05590" # Transposase IS605
+current.gene <- "ostta08g02610" # Integrase 
+current.gene <- "ostta11g02575" # Integrase 
+current.gene <- "ostta19g00515" # Reverse transcriptase, RNA-dependent DNA polymerase
+current.gene <- "ostta08g00390" # Reverse transcriptase, RNA-dependent DNA polymerase
+
+current.gene <- "ostta14g00070" # dynein axonemal heavy chain
+current.gene <- "ostta18g01040" # kinesin family member 2/24
+current.gene <- "ostta06g04460" # dynein axonemal heavy chain
+current.gene <- "ostta07g03080" # kinesin
+current.gene <- "ostta08g03710" # tuba
+
+current.gene <- "ostta06g04460"
+
+gene.profile.complete(gene.name = current.gene, #ABC
+                      promoter_length=1000, 
+                      selected.bigwig.files = c("h3k27me3/h3k27me3_ll_26_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
+                      cols = rev(colorRampPalette(c("blue", "red"))(4)),
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+
+
+  #dev.off()
+
+#jpeg(filename = "images/ABC_ostta09g01615_expression.jpg",res = 100,width = 600,height = 580)
+gene.expression.barplot(gene.id = current.gene, gene.expression=gene.expression)
+
+
+
+
+
+## Common
+
+## Cell differentiation
+#ARP2 ostta14g01800
+##MYO ostta06g03320
+##
+
+## gene expression regulation
+# ostta11g02490 WRKY
+# ostta15g01430 MYB
