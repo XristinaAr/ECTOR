@@ -4238,8 +4238,12 @@ gene.profile.complete <- function(gene.name,
                          promoter_length=1000, 
                          selected.bigwig.files,
                          cols,
-                         selected.bed.files)
+                         selected.bed.files,
+                         txdb)
 {
+  genes.data.df <- as.data.frame(genes(txdb))
+  cds.data <- as.data.frame(cds(txdb))
+  exons.data <- as.data.frame(exons(txdb))
   target.gene.body <- genes.data.df[gene.name,]
   target.gene.chr <- as.character(target.gene.body$seqnames)
   target.gene.start <- target.gene.body$start
@@ -4919,10 +4923,23 @@ gene.expression.barplot(gene.id = current.gene, gene.expression=gene.expression)
 ## Common
 
 ## Cell differentiation
-#ARP2 ostta14g01800
+#ARP2 ostta14g01800 # AT2G42090
 ##MYO ostta06g03320
 ##
 
+intersect(unlist(
+  strsplit(x = subset(ostta.atha.orthogroups, 
+                      ostreococcus_tauri == "ostta01g05630, ostta07g03900, ostta07g04290, ostta09g01150, ostta12g02840, ostta17g01830")$arabidopsis_thaliana, split = ", ")),atha.k27.genes)
+
+
 ## gene expression regulation
-# ostta11g02490 WRKY
+# ostta06g01110
+# ostta11g02490 ostta08g02190 ostta07g04340 WRKY
 # ostta15g01430 MYB
+
+
+ostta.tfs <- read.table(file="transcription_factors_extended_list.csv",header=T)[[1]]
+length(ostta.tfs)
+length(intersect(ostta.tfs,all.k27.genes)) #18 TFs
+
+# ostta06g01110

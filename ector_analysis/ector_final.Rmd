@@ -3429,8 +3429,13 @@ gene.profile.complete <- function(gene.name,
                          promoter_length=1000, 
                          selected.bigwig.files,
                          cols,
-                         selected.bed.files)
+                         selected.bed.files,
+                         txdb)
 {
+  
+  genes.data.df <- as.data.frame(genes(txdb))
+  cds.data <- as.data.frame(cds(txdb))
+  exons.data <- as.data.frame(exons(txdb))
   target.gene.body <- genes.data.df[gene.name,]
   target.gene.chr <- as.character(target.gene.body$seqnames)
   target.gene.start <- target.gene.body$start
@@ -3699,7 +3704,8 @@ gene.profile.complete(gene.name = "ostta08g03710", #TUBA
                                                 "h3k27me3/h3k27me3_ll_14_chip_1.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb=TxDb.Otauri.JGI)
 #dev.off()
 
 #jpeg(filename = "images/tuba_ostta08g03710_expression.jpg",res = 100,width = 600,height = 580)
@@ -3714,7 +3720,8 @@ gene.profile.complete(gene.name = "ostta01g04320", #TUBB
                                                 "h3k27me3/h3k27me3_ll_14_chip_1.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb=TxDb.Otauri.JGI)
 #dev.off()
 
 #jpeg(filename = "images/tubb_ostta01g04320_expression.jpg",res = 100,width = 600,height = 580)
@@ -3728,7 +3735,8 @@ gene.profile.complete(gene.name = "ostta08g03710", #TUBA
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb=TxDb.Otauri.JGI)
 
 gene.profile.complete(gene.name = "ostta01g04320", #TUBB
                       promoter_length=1000, 
@@ -3737,7 +3745,8 @@ gene.profile.complete(gene.name = "ostta01g04320", #TUBB
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb=TxDb.Otauri.JGI)
 
 ```
 Genes involved in cortical actin network remodelling. ARP2 (ostta14g02920) is 
@@ -3756,7 +3765,8 @@ gene.profile.complete(gene.name = "ostta14g02920", #ARP2
                                                 "h3k27me3/h3k27me3_ll_14_chip_1.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb=TxDb.Otauri.JGI)
 #dev.off()
 
 gene.profile.complete(gene.name = "ostta14g02920", #ARP2
@@ -3766,7 +3776,8 @@ gene.profile.complete(gene.name = "ostta14g02920", #ARP2
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb=TxDb.Otauri.JGI)
 
 
 #jpeg(filename = "images/actin_ostta14g02920_expression.jpg",res = 100,width = 600,height = 580)
@@ -3781,7 +3792,8 @@ gene.profile.complete(gene.name = "ostta09g01910", #Filamin
                                                 "h3k27me3/h3k27me3_ll_14_chip_1.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb=TxDb.Otauri.JGI)
 #dev.off()
 
 gene.profile.complete(gene.name = "ostta09g01910", #Filamin
@@ -3791,7 +3803,8 @@ gene.profile.complete(gene.name = "ostta09g01910", #Filamin
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb=TxDb.Otauri.JGI)
 
 #jpeg(filename = "images/filamin_ostta09g01910_expression.jpg",res = 100,width = 600,height = 580)
 gene.expression.barplot(gene.id = "ostta09g01910", gene.expression=gene.expression)
@@ -3810,7 +3823,8 @@ gene.profile.complete(gene.name = "ostta10g01050", #Aurora
                                                 "h3k27me3/h3k27me3_ll_14_chip_1.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb=TxDb.Otauri.JGI)
 #dev.off()
 
 gene.profile.complete(gene.name = "ostta10g01050", #Aurora
@@ -3820,7 +3834,8 @@ gene.profile.complete(gene.name = "ostta10g01050", #Aurora
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb=TxDb.Otauri.JGI)
 
 
 gene.profile.complete(gene.name = "ostta10g01050", #Aurora
@@ -3830,7 +3845,8 @@ gene.profile.complete(gene.name = "ostta10g01050", #Aurora
                                                 "h3k27me3/h3k27me3_ll_14_chip_1.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb=TxDb.Otauri.JGI)
 
 
 #jpeg(filename = "images/aurora_ostta10g01050_expression.jpg",res = 100,width = 600,height = 580)
@@ -3853,7 +3869,8 @@ gene.profile.complete(gene.name = "ostta04g03110", #Kinesin
                                                 "h3k27me3/h3k27me3_ll_14_chip_1.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb=TxDb.Otauri.JGI)
 
 
 gene.profile.complete(gene.name = "ostta04g03110", #Kinesin
@@ -3863,7 +3880,8 @@ gene.profile.complete(gene.name = "ostta04g03110", #Kinesin
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb=TxDb.Otauri.JGI)
 
 
 #dev.off()
@@ -3880,7 +3898,8 @@ gene.profile.complete(gene.name = "ostta06g03320", #Myosin
                                                 "h3k27me3/h3k27me3_ll_14_chip_1.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb=TxDb.Otauri.JGI)
 
 
 gene.profile.complete(gene.name = "ostta06g03320", #Myosin
@@ -3890,7 +3909,8 @@ gene.profile.complete(gene.name = "ostta06g03320", #Myosin
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb=TxDb.Otauri.JGI)
 
 
 #dev.off()
@@ -3923,7 +3943,8 @@ gene.profile.complete(gene.name = "ostta17g00300", #ENR
                                                 "h3k27me3/h3k27me3_ll_14_chip_1.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb=TxDb.Otauri.JGI)
 
 gene.profile.complete(gene.name = "ostta17g00300", #ENR
                       promoter_length=1000, 
@@ -3932,7 +3953,8 @@ gene.profile.complete(gene.name = "ostta17g00300", #ENR
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb=TxDb.Otauri.JGI)
 
 
 #dev.off()
@@ -3950,7 +3972,8 @@ gene.profile.complete(gene.name = "ostta16g00910", #DGAT
                                                 "h3k27me3/h3k27me3_ll_14_chip_1.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb=TxDb.Otauri.JGI)
 
 gene.profile.complete(gene.name = "ostta16g00910", #DGAT
                       promoter_length=1000, 
@@ -3959,7 +3982,8 @@ gene.profile.complete(gene.name = "ostta16g00910", #DGAT
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb=TxDb.Otauri.JGI)
 
 
 
@@ -3977,7 +4001,8 @@ gene.profile.complete(gene.name = "ostta09g01615", #ABC
                                                 "h3k27me3/h3k27me3_ll_14_chip_1.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb=TxDb.Otauri.JGI)
 
 gene.profile.complete(gene.name = "ostta09g01615", #ABC
                       promoter_length=1000, 
@@ -3986,7 +4011,8 @@ gene.profile.complete(gene.name = "ostta09g01615", #ABC
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb=TxDb.Otauri.JGI)
 
 
 #dev.off()
@@ -4015,6 +4041,12 @@ length(atha.k27.genes)
 length(atha.k27.genes)/34100
 length(all.k27.genes)
 length(all.k27.genes)/7668
+
+at.transposons <- read.table(file="atha_data/transposable_elements.txt",as.is=T)[[1]]
+length(intersect(atha.k27.genes,at.transposons))
+
+length(intersect(atha.k27.genes,at.transposons))/length(at.transposons)
+length(intersect(atha.k27.genes,at.transposons))/length(atha.k27.genes)
 ```
 
 H3k27me3 marks are found in 6843 genes in Arabidopsis accounting for 20% of its
@@ -4160,6 +4192,183 @@ treeplot(x = pairwise_termsim(atha.k27.ostta.atha.go.terms),cluster.params = lis
 #dev.off()
 ```
 
+Gene expression control was the biological process most significant in the 
+commonly H3K27me3 orthogroups in both species. 18 genes codifying for
+transcriptions factors in Ostreococcus, 10.7% of the entire set of transcription
+factors.
+
+* ostta03g02220, ostta06g01110 and ostta14g02090 are three of the six AP2 
+transcription factors in Ostreococcus tauri that are marked by H3K27me3. These
+genes belong to the same orthogroup as the Arabidopsis thaliana H3K27me3 marked
+genes AINTEGUMENTA (AT4G37750), BABY BOOM (AT5G17430) and PLETHORA1 (AT3G20840)
+that are involved in the control of cell proliferation and stem cell 
+establishment. Their role in Ostreococcus tauri remains to be characterized.
+Their H3K27me3 ChIP signal and expression level change significantly depending
+on the temperature, specially for ostta14g02090, suggesting a role in 
+temperature acclimation.
+
+```{r ostta14g02090}
+#jpeg(filename = "images/AP2_ostta14g02090.jpg",res = 100,width = 600,height = 580)
+gene.profile.complete(gene.name = "ostta14g02090",
+                      promoter_length=1000, 
+                      selected.bigwig.files = c("h3k27me3/h3k27me3_ll_26_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
+                      cols = rev(colorRampPalette(c("blue", "red"))(4)),
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb = TxDb.Otauri.JGI)
+#dev.off()
+
+gene.expression.barplot(gene.id = "ostta14g02090", gene.expression=gene.expression)
+
+library("TxDb.Athaliana.BioMart.plantsmart51")
+gene.profile.complete(gene.name = "AT4G37750",
+                      promoter_length=5000, 
+                      selected.bigwig.files = c("atha_data/h3k27me3_col0_7dag_original_1.bw"),
+                      cols = "lightblue",
+                      selected.bed.files = "atha_data/h3k27me3_col0.bed",
+                      txdb = TxDb.Athaliana.BioMart.plantsmart51)
+
+#jpeg(filename = "images/BBM_AT5G17430.jpg",res = 100,width = 600,height = 580)
+gene.profile.complete(gene.name = "AT5G17430",
+                      promoter_length=5000, 
+                      selected.bigwig.files = c("atha_data/h3k27me3_col0_7dag_original_1.bw"),
+                      cols = "lightblue",
+                      selected.bed.files = "atha_data/h3k27me3_col0.bed",
+                      txdb = TxDb.Athaliana.BioMart.plantsmart51)
+#dev.off()
+
+gene.profile.complete(gene.name = "AT3G20840",
+                      promoter_length=5000, 
+                      selected.bigwig.files = c("atha_data/h3k27me3_col0_7dag_original_1.bw"),
+                      cols = "lightblue",
+                      selected.bed.files = "atha_data/h3k27me3_col0.bed",
+                      txdb = TxDb.Athaliana.BioMart.plantsmart51)
+
+
+```
+
+* ostta07g04340, ostta08g02190 and ostta11g02490 are the three WRKY 
+transcription factors all of the them are H3K27me3 marked belonging to the 
+orthogroup that contains the Group-II WRKY transcription factors that are also 
+H3K27me3 marked in Arabidopsis thaliana being involved in biotic stress 
+response such as WRKY40 (AT1G80840) and WRKY48 (AT5G49520) and cold stress
+response as WRY42 (AT4G04450). Their role in Ostreococcus tauri remains to be 
+characterized. The H3K27me3 ChIP signal and expression level change significantly 
+depending on the temperature for ostta11g02490, suggesting a role in temperature 
+acclimation.
+
+```{r ostta11g02490}
+#jpeg(filename = "images/WRKY_ostta11g02490.jpg",res = 100,width = 600,height = 580)
+gene.profile.complete(gene.name = "ostta11g02490",
+                      promoter_length=1000, 
+                      selected.bigwig.files = c("h3k27me3/h3k27me3_ll_26_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
+                      cols = rev(colorRampPalette(c("blue", "red"))(4)),
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb = TxDb.Otauri.JGI)
+#dev.off()
+
+gene.expression.barplot(gene.id = "ostta11g02490", gene.expression=gene.expression)
+
+jpeg(filename = "images/WRKY42_AT4G04450.jpg",res = 100,width = 600,height = 580)
+gene.profile.complete(gene.name = "AT4G04450",
+                      promoter_length=5000, 
+                      selected.bigwig.files = c("atha_data/h3k27me3_col0_7dag_original_1.bw"),
+                      cols = "lightblue",
+                      selected.bed.files = "atha_data/h3k27me3_col0.bed",
+                      txdb = TxDb.Athaliana.BioMart.plantsmart51)
+dev.off()
+
+
+
+```
+
+* ostta14g01760 is a RWP-RK transcription factor that belongs to the same 
+orthogroup as the Arabidopsis thaliana RWP-RK AT1G18790 and AT5G66990. Both its
+H3K27me3 ChIP signal and expression level change significantly depeending on 
+temperature suggesting a role in temperature acclimation in Ostreococcus. 
+
+```{r ostta11g02490}
+#jpeg(filename = "images/INT_ostta11g02575.jpg",res = 100,width = 600,height = 580)
+gene.profile.complete(gene.name = "ostta14g01760",
+                      promoter_length=1000, 
+                      selected.bigwig.files = c("h3k27me3/h3k27me3_ll_26_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
+                      cols = rev(colorRampPalette(c("blue", "red"))(4)),
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb = TxDb.Otauri.JGI)
+#dev.off()
+
+gene.expression.barplot(gene.id = "ostta14g01760", gene.expression=gene.expression)
+```
+* The single MADS-box transcription factor in Ostreococcus, ostta01g05160, is 
+H3K27me3 marked. It belongs to the same orthogroup as MADS-box H3K27me3 marked
+genes in Arabidopsis such as FLOWERING LOCUS C (AT5G10140), SHORT VEGETATIVE 
+PHASE (AT2G22540) and AGAMOUS (AT4G18960). 
+These Arabidopsis genes are involved in the floral transition and 
+floral meristem identity. The role of this MADS-box transcription factor in 
+Ostreococcus remains to be characterized. Although its H3K27me3 ChIP signal
+changes significantly depending on temperature its expression level is 
+unaffected.
+
+
+```{r ostta01g05160}
+#jpeg(filename = "images/MADs_ostta01g05160.jpg",res = 100,width = 600,height = 580)
+gene.profile.complete(gene.name = "ostta01g05160",
+                      promoter_length=1000, 
+                      selected.bigwig.files = c("h3k27me3/h3k27me3_ll_26_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
+                      cols = rev(colorRampPalette(c("blue", "red"))(4)),
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb=TxDb.Otauri.JGI,
+                      txdb = TxDb.Otauri.JGI)
+#dev.off()
+
+gene.expression.barplot(gene.id = "ostta01g05160", gene.expression=gene.expression)
+
+#jpeg(filename = "images/FLC_AT5G10140.jpg",res = 100,width = 600,height = 580)
+gene.profile.complete(gene.name = "AT5G10140",
+                      promoter_length=5000, 
+                      selected.bigwig.files = c("atha_data/h3k27me3_col0_7dag_original_1.bw"),
+                      cols = "lightblue",
+                      selected.bed.files = "atha_data/h3k27me3_col0.bed",
+                      txdb = TxDb.Athaliana.BioMart.plantsmart51)
+#dev.off()
+
+
+```
+
+
+* ostta15g01430 is a H3K27me3 marked MYB gene belonging to the same orthogroup
+of H3K27me3 marked Arabidopsis MYBs as involved in meristem formation regulation
+REGULATOR OF AXILLARY MERISTEMS3 (AT3G49690) and LATERAL ORGAN FUSION 2 
+(AT1G69560).
+
+```{r ostta15g01430}
+#jpeg(filename = "images/INT_ostta11g02575.jpg",res = 100,width = 600,height = 580)
+gene.profile.complete(gene.name = "ostta15g01430",
+                      promoter_length=1000, 
+                      selected.bigwig.files = c("h3k27me3/h3k27me3_ll_26_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw",
+                                                "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
+                      cols = rev(colorRampPalette(c("blue", "red"))(4)),
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb = TxDb.Otauri.JGI)
+#dev.off()
+
+gene.expression.barplot(gene.id = "ostta15g01430", gene.expression=gene.expression)
+```
+
+
 
 Next we explore the Ostreococcus tauri specific H3K27me3 marked orthogroups 
 using GO and KEGG term enrichment analysis.
@@ -4181,6 +4390,7 @@ write.table(x = as.data.frame(ostta.specific.k27.go.terms),file="tables/go_enric
 treeplot(x = pairwise_termsim(ostta.specific.k27.go.terms),cluster.params = list(n = 2))
 #dev.off()
 ```
+
 We identified 672 orthogroups only marked in Ostreococcus tauri. 52.2% of these
 orthogroups also contained Arabidopsis genes. Therefore the reason why these
 orthogroups are specific to Ostreococcus is not related to the absence of 
@@ -4200,7 +4410,8 @@ gene.profile.complete(gene.name = "ostta11g02575",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb = TxDb.Otauri.JGI)
 #dev.off()
 
 gene.expression.barplot(gene.id = "ostta11g02575", gene.expression=gene.expression)
@@ -4212,7 +4423,8 @@ gene.profile.complete(gene.name = "ostta19g00515",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb = TxDb.Otauri.JGI)
 
 gene.expression.barplot(gene.id = "ostta19g00515", gene.expression=gene.expression)
 ```
@@ -4231,7 +4443,8 @@ gene.profile.complete(gene.name = "ostta11g01720",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb = TxDb.Otauri.JGI)
 
 gene.expression.barplot(gene.id = "ostta11g01720", gene.expression=gene.expression)
 
@@ -4243,7 +4456,8 @@ gene.profile.complete(gene.name = "ostta07g03600",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb = TxDb.Otauri.JGI)
 #dev.off()
 gene.expression.barplot(gene.id = "ostta07g03600", gene.expression=gene.expression)
 
@@ -4254,7 +4468,8 @@ gene.profile.complete(gene.name = "ostta05g02370",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb = TxDb.Otauri.JGI)
 
 gene.expression.barplot(gene.id = "ostta05g02370", gene.expression=gene.expression)
 ```
@@ -4271,11 +4486,12 @@ gene.profile.complete(gene.name = "ostta08g03710",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb = TxDb.Otauri.JGI)
 
 gene.expression.barplot(gene.id = "ostta08g03710", gene.expression=gene.expression)
 
-jpeg(filename = "images/DYN_ostta06g04460.jpg",res = 100,width = 600,height = 580)
+#jpeg(filename = "images/DYN_ostta06g04460.jpg",res = 100,width = 600,height = 580)
 gene.profile.complete(gene.name = "ostta06g04460",
                       promoter_length=1000, 
                       selected.bigwig.files = c("h3k27me3/h3k27me3_ll_26_chip_2.bw",
@@ -4283,8 +4499,9 @@ gene.profile.complete(gene.name = "ostta06g04460",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
-dev.off()
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb = TxDb.Otauri.JGI)
+#dev.off()
 
 gene.expression.barplot(gene.id = "ostta06g04460", gene.expression=gene.expression)
 
@@ -4295,7 +4512,17 @@ gene.profile.complete(gene.name = "ostta14g00070",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw",
                                                 "h3k27me3/h3k27me3_ll_10_chip_2.bw"),
                       cols = rev(colorRampPalette(c("blue", "red"))(4)),
-                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed")
+                      selected.bed.files = "h3k27me3/h3k27me3_peaks.bed",
+                      txdb = TxDb.Otauri.JGI)
 
 gene.expression.barplot(gene.id = "ostta14g00070", gene.expression=gene.expression)
 ```
+
+
+```{r enrichment_h3k27me3_atha_specific_orthogroups}
+
+
+```
+
+
+
