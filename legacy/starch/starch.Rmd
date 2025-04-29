@@ -1,0 +1,38 @@
+---
+title: "Starch_ll_20_10"
+output: html_document
+date: "2025-01-21"
+---
+
+
+```{r}
+
+lc.10 <- c(19.1,24.28,28.27)
+lc.20 <- c(16.77,6,7.52)
+
+mean.lc.10 <- mean(lc.10)
+mean.lc.20 <- mean(lc.20)
+
+sd.lc.10 <- sd(lc.10)
+sd.lc.20 <- sd(lc.20)
+
+means <- c(mean.lc.10, mean.lc.20)
+sds <- c(sd.lc.10, sd.lc.20)
+
+pos <- barplot(means,
+        beside = TRUE,
+        names.arg = c("10ºC", "20ºC"),
+        col = c("blue", "green"),
+        ylim = c(0, max(means + sds) + 5),
+        ylab = "Starch Content (%)")
+
+arrows(x0 = pos , y0 = means - sds, x1 = pos, y1 = means + sds,
+       angle = 90, code = 3, length = 0.1, col = "black")
+
+
+wilcox.test(mean.lc.10, mean.lc.20, alternative = "greater")
+
+
+
+`````````
+

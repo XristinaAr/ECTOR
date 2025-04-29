@@ -1,0 +1,935 @@
+---
+title: "Epigenetic Control of Temperature Response in Ostreococcus tauri (ECTOR)"
+author: "Christina Arvanitidou"
+date: "2023-05-02"
+output: pdf_document
+---
+
+## Loading data and preprocessing
+
+```{r }
+mapped.reads.k27.10c.1 <- 6764067/1E6 
+mapped.reads.k27.10c.2 <- 6429853/1E6
+mapped.reads.k27.10c.3 <- 6625634/1E6
+
+mapped.reads.k27.14c.1 <- 24537863/1E6 
+mapped.reads.k27.14c.2 <- 6592650/1E6
+mapped.reads.k27.14c.3 <- 4317544/1E6
+
+mapped.reads.k27.20c.1 <- 3146662/1E6 
+mapped.reads.k27.20c.2 <- 7702115/1E6
+mapped.reads.k27.20c.3 <- 7102648/1E6
+mapped.reads.k27.20c.zt8.1 <- 2254676/1E6 
+mapped.reads.k27.20c.zt8.2 <- 2639017/1E6
+mapped.reads.k27.20c.zt16.1 <- 3605883/1E6
+mapped.reads.k27.20c.zt16.2 <- 3405826/1E6
+
+mapped.reads.k27.24c.1 <- 1614527/1E6 
+mapped.reads.k27.24c.2 <- 7391997/1E6
+mapped.reads.k27.24c.3 <- 1595575/1E6
+
+mapped.reads.k27.26c.1 <- 5635098/1E6 
+mapped.reads.k27.26c.2 <- 4986577/1E6
+mapped.reads.k27.26c.3 <-4586942/1E6
+
+read.counts.k27.temp10c.1 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp10c/h3k27me3_10_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.k27.temp10c.2 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp10c/h3k27me3_10_chip_2_counts.bed", header = F, sep = "\t" )
+read.counts.k27.temp10c.3 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp10c/h3k27me3_10_chip_3_counts.bed", header = F, sep = "\t" )
+
+read.counts.k27.temp14c.1 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp14c/h3k27me3_14_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.k27.temp14c.2 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp14c/h3k27me3_14_chip_2_counts.bed", header = F, sep = "\t" )
+read.counts.k27.temp14c.3 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp14c/h3k27me3_14_chip_3n_counts.bed", header = F, sep = "\t" )
+
+read.counts.k27.temp20c.1 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp20c/h3k27me3_20_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.k27.temp20c.2 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp20c/h3k27me3_20_chip_2n_counts.bed", header = F, sep = "\t" )
+read.counts.k27.temp20c.3 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp20c/h3k27me3_20_chip_3n_counts.bed", header = F, sep = "\t" )
+
+read.counts.k27.20c.zt8.1 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp20c/h3k27me3_ld_20_zt8_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.k27.20c.zt8.2 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp20c/h3k27me3_ld_20_zt8_chip_2_counts.bed", header = F, sep = "\t" )
+read.counts.k27.20c.zt16.1 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp20c/h3k27me3_ld_20_zt16_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.k27.20c.zt16.2 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp20c/h3k27me3_ld_20_zt16_chip_2_counts.bed", header = F, sep = "\t" )
+
+read.counts.k27.temp24c.1 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp24c/h3k27me3_24_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.k27.temp24c.2 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp24c/h3k27me3_24_chip_2n_counts.bed", header = F, sep = "\t" )
+read.counts.k27.temp24c.3 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp24c/h3k27me3_24_chip_3_counts.bed", header = F, sep = "\t" )
+
+read.counts.k27.temp26c.1 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp26c/h3k27me3_26_chip_1_counts.bed", header = F, sep = "\t" )
+read.counts.k27.temp26c.2 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp26c/h3k27me3_26_chip_2_counts.bed", header = F, sep = "\t" )
+read.counts.k27.temp26c.3 <- read.table(file = "chipseq_data/bed_data/h3k27me3/temp26c/h3k27me3_26_chip_3_counts.bed", header = F, sep = "\t" )
+
+```
+
+
+```{r}
+peak.cpm <- matrix(data = NA, nrow = nrow(read.counts.k27.temp10c.1), ncol = 22 )
+colnames(peak.cpm) <-c("chr","start","end","k27_temp10_1","k27_temp10_2","k27_temp10_3", "k27_temp14_1","k27_temp14_2","k27_temp14_3","k27_temp20_1","k27_temp20_2","k27_temp20_3","k27_temp20_zt8_1","k27_temp20_zt8_2","k27_temp20_zt16_1","k27_temp20_zt16_2","k27_temp24_1","k27_temp24_2","k27_temp24_3","k27_temp26_1","k27_temp26_2","k27_temp26_3")
+
+peak.cpm[,1]<- read.counts.k27.temp10c.1[,1]
+peak.cpm[,2]<- read.counts.k27.temp10c.1[,2]
+peak.cpm[,3]<- read.counts.k27.temp10c.1[,3]
+
+peak.cpm[,4]<- read.counts.k27.temp10c.1[,4]/mapped.reads.k27.10c.1
+peak.cpm[,5]<- read.counts.k27.temp10c.2[,4]/mapped.reads.k27.10c.2
+peak.cpm[,6]<- read.counts.k27.temp10c.3[,4]/mapped.reads.k27.10c.3
+
+peak.cpm[,7]<- read.counts.k27.temp14c.1[,4]/mapped.reads.k27.14c.1
+peak.cpm[,8]<- read.counts.k27.temp14c.2[,4]/mapped.reads.k27.14c.2
+peak.cpm[,9]<- read.counts.k27.temp14c.3[,4]/mapped.reads.k27.14c.3
+
+peak.cpm[,10]<- read.counts.k27.temp20c.1[,4]/mapped.reads.k27.20c.1
+peak.cpm[,11]<- read.counts.k27.temp20c.2[,4]/mapped.reads.k27.20c.2
+peak.cpm[,12]<- read.counts.k27.temp20c.3[,4]/mapped.reads.k27.20c.3
+peak.cpm[,13]<- read.counts.k27.20c.zt8.1[,4]/mapped.reads.k27.20c.zt8.1
+peak.cpm[,14]<- read.counts.k27.20c.zt8.2[,4]/mapped.reads.k27.20c.zt8.2
+peak.cpm[,15]<- read.counts.k27.20c.zt16.1[,4]/mapped.reads.k27.20c.zt16.1
+peak.cpm[,16]<- read.counts.k27.20c.zt16.2[,4]/mapped.reads.k27.20c.zt16.2
+
+peak.cpm[,17]<- read.counts.k27.temp24c.1[,4]/mapped.reads.k27.24c.1
+peak.cpm[,18]<- read.counts.k27.temp24c.2[,4]/mapped.reads.k27.24c.2
+peak.cpm[,19]<- read.counts.k27.temp24c.3[,4]/mapped.reads.k27.24c.3
+
+peak.cpm[,20]<- read.counts.k27.temp26c.1[,4]/mapped.reads.k27.26c.1
+peak.cpm[,21]<- read.counts.k27.temp26c.2[,4]/mapped.reads.k27.26c.2
+peak.cpm[,22]<- read.counts.k27.temp26c.3[,4]/mapped.reads.k27.26c.3
+
+head(peak.cpm)
+dim(peak.cpm)
+
+peak.cpm <- as.data.frame(peak.cpm)
+```
+
+
+
+#Temperature 10ºC scatterplots
+```{r temp10c replicates scatterplots}
+plot(x = log2(peak.cpm$k27_temp10_1), y= log2(peak.cpm$k27_temp10_2), pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+plot(x = log2(peak.cpm$k27_temp10_1), y= log2(peak.cpm$k27_temp10_3), pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+plot(x = log2(peak.cpm$k27_temp10_2), y= log2(peak.cpm$k27_temp10_3), pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+```
+
+
+#Temperature 14ºC scatterplots
+```{r temp14c replicates scatterplots}
+
+plot(x = log2(peak.cpm$k27_temp14_1), y= log2(peak.cpm$k27_temp14_2), pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+plot(x = log2(peak.cpm$k27_temp14_1), y= log2(peak.cpm$k27_temp14_3), pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+plot(x = log2(peak.cpm$k27_temp14_2), y= log2(peak.cpm$k27_temp14_3), pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+```
+
+#Temperature 20ºC scatterplots
+```{r temp20c replicates scatterplots}
+
+plot(x = log2(peak.cpm$k27_temp20_1), y= log2(peak.cpm$k27_temp20_2), pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+plot(x = log2(peak.cpm$k27_temp20_1), y= log2(peak.cpm$k27_temp20_3), pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+plot(x = log2(peak.cpm$k27_temp20_2), y= log2(peak.cpm$k27_temp20_3), pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+```
+
+
+#Temperature 24ºC scatterplots
+```{r temp24c replicates scatterplots}
+
+plot(x = log2(peak.cpm$k27_temp24_1), y= log2(peak.cpm$k27_temp24_2), pch = 20,xlim=c(0,13),ylim=c(0,13))
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+#plot(x = log2(peak.cpm$k27_temp24_1)+2.83, y= log2(peak.cpm$k27_temp24_2), pch = 20,xlim=c(0,13),ylim=c(0,13))
+#lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+plot(x = log2(peak.cpm$k27_temp24_1), y= log2(peak.cpm$k27_temp24_3), pch = 20,xlim=c(0,13),ylim=c(0,13))
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+
+#plot(x = log2(peak.cpm$k27_temp24_1)+2.83, y= log2(peak.cpm$k27_temp24_3), pch = 20,xlim=c(0,13),ylim=c(0,13))
+#lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+plot(x = log2(peak.cpm$k27_temp24_2), y= log2(peak.cpm$k27_temp24_3), pch = 20,xlim=c(0,13),ylim=c(0,13))
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+```
+#Temperature 26ºC scatterplots
+```{r temp26c replicates scatterplots}
+
+plot(x = log2(peak.cpm$k27_temp26_1), y= log2(peak.cpm$k27_temp26_2), pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+plot(x = log2(peak.cpm$k27_temp26_1), y= log2(peak.cpm$k27_temp26_3), pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+plot(x = log2(peak.cpm$k27_temp26_2), y= log2(peak.cpm$k27_temp26_3), pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+```
+#Scatterplots representing changes observed between temperature conditions
+
+```{r temp10c-temp14c scatterplots}
+
+plot(x = log2(peak.cpm$k27_temp10_1), y= log2(peak.cpm$k27_temp14_1), pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+```
+
+```{r temp10c-temp20c scatterplots}
+
+plot(x = log2(peak.cpm$k27_temp10_1), y= log2(peak.cpm$k27_temp20_1), pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+```
+```{r temp10c-temp24c scatterplots}
+
+plot(x = log2(peak.cpm$k27_temp10_1), y= log2(peak.cpm$k27_temp24_1)+2.83, pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+plot(x = log2(peak.cpm$k27_temp10_1), y= log2(peak.cpm$k27_temp24_2), pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+plot(x = log2(peak.cpm$k27_temp10_1), y= log2(peak.cpm$k27_temp24_3), pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+plot(x = log2(peak.cpm$k27_temp10_2), y= log2(peak.cpm$k27_temp24_3), pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+plot(x = log2((peak.cpm$k27_temp10_1 + peak.cpm$k27_temp10_2 +peak.cpm$k27_temp10_3)/3), y= log2((peak.cpm$k27_temp24_1 + peak.cpm$k27_temp24_2 + peak.cpm$k27_temp24_3)/3), pch = 20,xlab="Temperature 10ºC (CPM)",ylab="Temperature 24ºC (CPM)",main="24ºC vs 10ºC")
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+```
+
+```{r temp10c-temp26c scatterplots}
+
+plot(x = log2(peak.cpm$k27_temp10_1), y= log2(peak.cpm$k27_temp26_1), pch = 20,xlab="Temperature 10ºC",ylab="Temperature 26ºC",main="26ºC vs 10ºC")
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+
+plot(x = log2((peak.cpm$k27_temp10_1 + peak.cpm$k27_temp10_2 +peak.cpm$k27_temp10_3)/3), y= log2((peak.cpm$k27_temp26_1 + peak.cpm$k27_temp26_2 + peak.cpm$k27_temp26_3)/3), pch = 20,xlab="H3K27me3 10ºC (CPM)",ylab="H3K27me3 26ºC (CPM)")#,main="26ºC vs 10ºC")
+lines(x = c(0,20), y = c(0,20), type = "l", col="dodgerblue2")
+
+boxplot(log2((peak.cpm$k27_temp10_1 + peak.cpm$k27_temp10_2 +peak.cpm$k27_temp10_3)/3),
+        log2((peak.cpm$k27_temp26_1 + peak.cpm$k27_temp26_2 + peak.cpm$k27_temp26_3)/3))
+```
+
+
+```{r boxplot global cpm}
+
+#boxplot((peak.cpm$k27_temp10_1 + peak.cpm$k27_temp10_2 +peak.cpm$k27_temp10_3)/3,
+#        (peak.cpm$k27_temp14_1 + peak.cpm$k27_temp14_2 +peak.cpm$k27_temp14_3)/3,
+#        (peak.cpm$k27_temp20_1 + peak.cpm$k27_temp20_2 +peak.cpm$k27_temp20_3)/3,
+#        ((peak.cpm$k27_temp24_1+2.83) + peak.cpm$k27_temp24_2 + peak.cpm$k27_temp24_3)/3,
+#       (peak.cpm$k27_temp26_1 + peak.cpm$k27_temp26_2 + peak.cpm$k27_temp26_3)/3,outline=F,col=c("#00FFFF","#6699FF", "#CC33FF","#FF0000", "grey"),ylab="CPM",names=c("10ºC","14ºC","20ºC","24ºC","26ºC"),las=2,cex.lab=2)
+
+
+
+boxplot((peak.cpm$k27_temp10_1 + peak.cpm$k27_temp10_2 +peak.cpm$k27_temp10_3)/3,
+        (peak.cpm$k27_temp14_1 + peak.cpm$k27_temp14_2 +peak.cpm$k27_temp14_3)/3,
+        (peak.cpm$k27_temp20_1 + peak.cpm$k27_temp20_2 +peak.cpm$k27_temp20_3)/3,
+        ((peak.cpm$k27_temp24_1) + peak.cpm$k27_temp24_2 + peak.cpm$k27_temp24_3)/3,
+        (peak.cpm$k27_temp26_1 + peak.cpm$k27_temp26_2 + peak.cpm$k27_temp26_3)/3,outline=F,col=c("#00FFFF","#6699FF", "#CC33FF","#FF0000", "grey"),ylab="CPM",names=c("10ºC","14ºC","20ºC","24ºC","26ºC"),las=2,cex.lab=2)
+
+wilcox.test(x = (peak.cpm$k27_temp10_1 + peak.cpm$k27_temp10_2 +peak.cpm$k27_temp10_3)/3, y = (peak.cpm$k27_temp14_1 + peak.cpm$k27_temp14_2 +peak.cpm$k27_temp14_3)/3,alternative = "less")
+
+wilcox.test(x = (peak.cpm$k27_temp14_1 + peak.cpm$k27_temp14_2 +peak.cpm$k27_temp14_3)/3, y = (peak.cpm$k27_temp20_1 + peak.cpm$k27_temp20_2 +peak.cpm$k27_temp20_3)/3,alternative = "less")
+
+wilcox.test(x = (peak.cpm$k27_temp10_1 + peak.cpm$k27_temp10_2 +peak.cpm$k27_temp10_3)/3, y = (peak.cpm$k27_temp20_1 + peak.cpm$k27_temp20_2 +peak.cpm$k27_temp20_3)/3,alternative = "less")
+
+
+wilcox.test(x = (peak.cpm$k27_temp20_1 + peak.cpm$k27_temp20_2 +peak.cpm$k27_temp20_3)/3, y = (peak.cpm$k27_temp26_1 + peak.cpm$k27_temp26_2 +peak.cpm$k27_temp26_3)/3,alternative = "less")
+
+wilcox.test(x = (peak.cpm$k27_temp24_1 + peak.cpm$k27_temp24_2 +peak.cpm$k27_temp24_3)/3, y = (peak.cpm$k27_temp26_1 + peak.cpm$k27_temp26_2 +peak.cpm$k27_temp26_3)/3,alternative = "less")
+
+```
+
+```{r temp20c LD replicates scatterplots}
+plot(x = log2(peak.cpm$k27_temp20_zt8_1), y= log2(peak.cpm$k27_temp20_zt8_2), pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+plot(x = log2(peak.cpm$k27_temp20_zt16_1), y= log2(peak.cpm$k27_temp20_zt16_2), pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+plot(x = log2(peak.cpm$k27_temp20_zt8_1 + peak.cpm$k27_temp20_zt8_2)/2, 
+     y= log2(peak.cpm$k27_temp20_zt16_1 + peak.cpm$k27_temp20_zt16_2)/2, pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+```
+
+
+```{r temp20c LL- temp20c LD scatterplots}
+plot(x = log2(peak.cpm$k27_temp20_1 + peak.cpm$k27_temp20_2 + peak.cpm$k27_temp20_3)/3,
+     y = log2(peak.cpm$k27_temp20_zt8_1 + peak.cpm$k27_temp20_zt8_2 + peak.cpm$k27_temp20_zt16_1 + peak.cpm$k27_temp20_zt16_2)/4, 
+     pch = 20)
+lines(x = c(0,20), y = c(0,20), type = "l", col="blue")
+
+```
+
+
+```{r}
+peak.names <- paste(paste(peak.cpm$chr, peak.cpm$start, sep = "_"), peak.cpm$end, sep = "_")
+log2.peak.cpm <- matrix(data = NA, nrow = nrow(read.counts.k27.temp10c.1), ncol = 19)
+colnames(log2.peak.cpm) <- c("k27_temp10_1","k27_temp10_2","k27_temp10_3", "k27_temp14_1","k27_temp14_2","k27_temp14_3","k27_temp20_1","k27_temp20_2","k27_temp20_3","k27_temp20_zt8_1","k27_temp20_zt8_2","k27_temp20_zt16_1","k27_temp20_zt16_2","k27_temp24_1","k27_temp24_2","k27_temp24_3","k27_temp26_1","k27_temp26_2","k27_temp26_3")
+rownames(log2.peak.cpm) <- peak.names 
+
+log2.peak.cpm[,"k27_temp10_1"] <- log2(peak.cpm$k27_temp10_1)
+log2.peak.cpm[,"k27_temp10_2"] <- log2(peak.cpm$k27_temp10_2)
+log2.peak.cpm[,"k27_temp10_3"] <- log2(peak.cpm$k27_temp10_3)
+
+log2.peak.cpm[,"k27_temp14_1"] <- log2(peak.cpm$k27_temp14_1)
+log2.peak.cpm[,"k27_temp14_2"] <- log2(peak.cpm$k27_temp14_2)
+log2.peak.cpm[,"k27_temp14_3"] <- log2(peak.cpm$k27_temp14_3)
+
+log2.peak.cpm[,"k27_temp20_1"] <- log2(peak.cpm$k27_temp20_1)
+log2.peak.cpm[,"k27_temp20_2"] <- log2(peak.cpm$k27_temp20_2)
+log2.peak.cpm[,"k27_temp20_3"] <- log2(peak.cpm$k27_temp20_3)
+
+log2.peak.cpm[,"k27_temp20_zt8_1"] <- log2(peak.cpm$k27_temp20_zt8_1)
+log2.peak.cpm[,"k27_temp20_zt8_2"] <- log2(peak.cpm$k27_temp20_zt8_2)
+log2.peak.cpm[,"k27_temp20_zt16_1"] <- log2(peak.cpm$k27_temp20_zt16_1)
+log2.peak.cpm[,"k27_temp20_zt16_2"] <- log2(peak.cpm$k27_temp20_zt16_2)
+
+
+log2.peak.cpm[,"k27_temp24_1"] <- log2(peak.cpm$k27_temp24_1) 
+log2.peak.cpm[,"k27_temp24_2"] <- log2(peak.cpm$k27_temp24_2)
+log2.peak.cpm[,"k27_temp24_3"] <- log2(peak.cpm$k27_temp24_3)
+
+log2.peak.cpm[,"k27_temp26_1"] <- log2(peak.cpm$k27_temp26_1)
+log2.peak.cpm[,"k27_temp26_2"] <- log2(peak.cpm$k27_temp26_2)
+log2.peak.cpm[,"k27_temp26_3"] <- log2(peak.cpm$k27_temp26_3)
+
+
+head(log2.peak.cpm)
+
+boxplot(log2.peak.cpm, las=2)
+
+
+
+
+```
+
+#Creating matrix 
+```{r}
+#peak.names <- paste(paste(peak.cpm$chr, peak.cpm$start, sep = "_"), peak.cpm$end, sep = "_")
+#log2.peak.cpm <- matrix(data = NA, nrow = nrow(read.counts.k27.temp10c.1), ncol = 19)
+#colnames(log2.peak.cpm) <- c("k27_temp10_1","k27_temp10_2","k27_temp10_3", "k27_temp14_1","k27_temp14_2","k27_temp14_3","k27_temp20_1","k27_temp20_2","k27_temp20_3","k27_temp20_zt8_1","k27_temp20_zt8_2","k27_temp20_zt16_1","k27_temp20_zt16_2","k27_temp24_1","k27_temp24_2","k27_temp24_3","k27_temp26_1","k27_temp26_2","k27_temp26_3")
+#rownames(log2.peak.cpm) <- peak.names 
+
+#log2.peak.cpm[,"k27_temp10_1"] <- log2(peak.cpm$k27_temp10_1)
+#log2.peak.cpm[,"k27_temp10_2"] <- log2(peak.cpm$k27_temp10_2)
+#log2.peak.cpm[,"k27_temp10_3"] <- log2(peak.cpm$k27_temp10_3)
+
+#log2.peak.cpm[,"k27_temp14_1"] <- log2(peak.cpm$k27_temp14_1)
+#log2.peak.cpm[,"k27_temp14_2"] <- log2(peak.cpm$k27_temp14_2)
+#log2.peak.cpm[,"k27_temp14_3"] <- log2(peak.cpm$k27_temp14_3)
+
+#log2.peak.cpm[,"k27_temp20_1"] <- log2(peak.cpm$k27_temp20_1)
+#log2.peak.cpm[,"k27_temp20_2"] <- log2(peak.cpm$k27_temp20_2)
+#log2.peak.cpm[,"k27_temp20_3"] <- log2(peak.cpm$k27_temp20_3)
+
+#log2.peak.cpm[,"k27_temp20_zt8_1"] <- log2(peak.cpm$k27_temp20_zt8_1)
+#log2.peak.cpm[,"k27_temp20_zt8_2"] <- log2(peak.cpm$k27_temp20_zt8_2)
+#log2.peak.cpm[,"k27_temp20_zt16_1"] <- log2(peak.cpm$k27_temp20_zt16_1)
+#log2.peak.cpm[,"k27_temp20_zt16_2"] <- log2(peak.cpm$k27_temp20_zt16_2)
+
+#log2.peak.cpm[,"k27_temp24_1"] <- log2(peak.cpm$k27_temp24_1) + 2.83
+#log2.peak.cpm[,"k27_temp24_2"] <- log2(peak.cpm$k27_temp24_2)
+#log2.peak.cpm[,"k27_temp24_3"] <- log2(peak.cpm$k27_temp24_3)
+
+#log2.peak.cpm[,"k27_temp26_1"] <- log2(peak.cpm$k27_temp26_1)
+#log2.peak.cpm[,"k27_temp26_2"] <- log2(peak.cpm$k27_temp26_2)
+#log2.peak.cpm[,"k27_temp26_3"] <- log2(peak.cpm$k27_temp26_3)
+
+
+#head(log2.peak.cpm)
+
+#boxplot(log2.peak.cpm, las=2)
+
+
+
+
+```
+
+
+
+```{r limma }
+library(limma)
+
+experimental.design <- model.matrix(~ -1+factor(c(1,1,1,2,2,2,3,3,3,4,4,4,4,5,5,5,6,6,6)))
+colnames(experimental.design) <- c("k27_temp10",
+                                        "k27_temp14",
+                                        "k27_temp20_ll",
+                                        "k27_temp20_ld",
+                                        "k27_temp24",
+                                        "k27_temp26")
+
+experimental.design
+
+linear.fit <- lmFit(log2.peak.cpm, experimental.design)
+
+head(log2.peak.cpm)
+
+contrast.matrix <- makeContrasts(k27_temp14-k27_temp10,
+                                     k27_temp20_ll-k27_temp10,
+                                     k27_temp24-k27_temp10,
+                                     k27_temp26-k27_temp10,
+                                     k27_temp20_ll-k27_temp20_ld,
+                                     levels=c("k27_temp10",
+                                        "k27_temp14",
+                                        "k27_temp20_ll",
+                                        "k27_temp20_ld",
+                                        "k27_temp24",
+                                        "k27_temp26"))
+
+contrast.linear.fit <- contrasts.fit(linear.fit, contrast.matrix)
+contrast.results <- eBayes(contrast.linear.fit)
+
+```
+
+
+
+```{r temp20c ll-temp20c ld  contrast}
+temp20.ll.vs.ld <- topTable(contrast.results, number=nrow(log2.peak.cpm),coef=5,sort.by="logFC")
+head(temp20.ll.vs.ld)
+peak.ids.temp20.ll.vs.ld <- rownames(temp20.ll.vs.ld) 
+fold.change.temp20.ll.vs.ld <- temp20.ll.vs.ld$logFC
+q.value.temp20.ll.vs.ld <- temp20.ll.vs.ld$adj.P.Val
+
+activated.peaks.temp20.ll.vs.ld <- peak.ids.temp20.ll.vs.ld[fold.change.temp20.ll.vs.ld > 1 & q.value.temp20.ll.vs.ld < 0.05]
+repressed.peaks.temp20.ll.vs.ld  <- peak.ids.temp20.ll.vs.ld[fold.change.temp20.ll.vs.ld < - 1 & q.value.temp20.ll.vs.ld < 0.05]
+
+length(activated.peaks.temp20.ll.vs.ld)
+length(repressed.peaks.temp20.ll.vs.ld)
+
+
+strsplit(x = activated.peaks.temp20.ll.vs.ld, split = "_")
+matrix.activated.peaks.temp20.ll.vs.ld <- as.matrix(t(as.data.frame(strsplit(x = activated.peaks.temp20.ll.vs.ld, split = "_"))))
+head(matrix.activated.peaks.temp20.ll.vs.ld)
+rownames(matrix.activated.peaks.temp20.ll.vs.ld) <- NULL
+head(matrix.activated.peaks.temp20.ll.vs.ld)
+
+activated.peaks.temp20.ll.vs.ld[1:3]
+head(matrix.activated.peaks.temp20.ll.vs.ld, n=3)
+
+write.table(matrix.activated.peaks.temp20.ll.vs.ld, file = "chipseq_results/h3k27me3/limma.k27.activated.peaks.temp20.ll.vs.ld.bed", sep = "\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
+
+library(ChIPseeker)
+library(TxDb.Otauri.JGI)
+txdb <- TxDb.Otauri.JGI
+
+temp20.ll.vs.ld.peaks <- readPeakFile(peakfile = "chipseq_results/h3k27me3/limma.k27.activated.peaks.temp20.ll.vs.ld.bed",header=FALSE)
+promoter <- getPromoters(TxDb=txdb, 
+                         upstream=1000, 
+                         downstream=1000)
+temp20.ll.vs.ld.peakAnno <- annotatePeak(peak = temp20.ll.vs.ld.peaks, 
+                             tssRegion=c(-1000, 1000),
+                             TxDb=txdb)
+
+plotAnnoPie(temp20.ll.vs.ld.peakAnno)
+plotAnnoBar(temp20.ll.vs.ld.peakAnno)
+plotDistToTSS(temp20.ll.vs.ld.peakAnno,
+              title="Distribution of genomic loci relative to TSS",
+              ylab = "Genomic Loci (%) (5' -> 3')")
+
+temp20.ll.vs.ld.annotation <- as.data.frame(temp20.ll.vs.ld.peakAnno)
+head(temp20.ll.vs.ld.annotation)
+
+target.genes.temp20.ll.vs.ld <- temp20.ll.vs.ld.annotation$geneId[temp20.ll.vs.ld.annotation$annotation != "Distal Intergenic"]
+length(target.genes.temp20.ll.vs.ld)
+
+write(x = target.genes.temp20.ll.vs.ld,file = "chipseq_results/h3k27me3/limma.k27.temp20.ll.vs.ld.peaks.genes.txt")
+
+```
+
+```{r temp14c-temp10c contrast}
+temp14c.vs.temp10c <- topTable(contrast.results, number=nrow(log2.peak.cpm),coef=1)#,sort.by="logFC")
+head(temp14c.vs.temp10c)
+temp14c.vs.temp10c[rownames(log2.peak.cpm),]
+peak.ids.14c.10c <- rownames(temp14c.vs.temp10c) 
+fold.change.14c.10c <- temp14c.vs.temp10c$logFC
+q.value.14c.10c <- temp14c.vs.temp10c$adj.P.Val
+
+activated.peaks.temp14c.vs.temp10c <- peak.ids.14c.10c[fold.change.14c.10c > 1 & q.value.14c.10c < 0.05]
+repressed.peaks.temp14c.vs.temp10c <- peak.ids.14c.10c[fold.change.14c.10c < - 1 & q.value.14c.10c < 0.05]
+
+length(activated.peaks.temp14c.vs.temp10c)
+length(repressed.peaks.temp14c.vs.temp10c)
+length(activated.peaks.temp14c.vs.temp10c)/length(peak.names)
+
+```
+
+
+```{r temp20c-temp10c contrast}
+temp20c.vs.temp10c <- topTable(contrast.results, number=nrow(log2.peak.cpm),coef=2,sort.by="logFC")
+head(temp20c.vs.temp10c)
+peak.ids.20c.10c <- rownames(temp20c.vs.temp10c) 
+fold.change.20c.10c <- temp20c.vs.temp10c$logFC
+q.value.20c.10c <- temp20c.vs.temp10c$adj.P.Val
+
+activated.peaks.temp20c.vs.temp10c <- peak.ids.20c.10c[fold.change.20c.10c > 1 & q.value.20c.10c < 0.05]
+repressed.peaks.temp20c.vs.temp10c <- peak.ids.20c.10c[fold.change.20c.10c < - 1 & q.value.20c.10c < 0.05]
+
+length(activated.peaks.temp20c.vs.temp10c)
+length(repressed.peaks.temp20c.vs.temp10c)
+
+length(activated.peaks.temp20c.vs.temp10c)/length(peak.names)
+```
+
+```{r temp24c-temp10c contrast}
+temp24c.vs.temp10c <- topTable(contrast.results, number=nrow(log2.peak.cpm),coef=3,sort.by="logFC")
+head(temp24c.vs.temp10c)
+peak.ids.24c.10c <- rownames(temp24c.vs.temp10c) 
+fold.change.24c.10c <- temp24c.vs.temp10c$logFC
+q.value.24c.10c <- temp24c.vs.temp10c$adj.P.Val
+
+activated.peaks.temp24c.vs.temp10c <- peak.ids.24c.10c[fold.change.24c.10c > 1 & q.value.24c.10c < 0.05]
+repressed.peaks.temp24c.vs.temp10c <- peak.ids.24c.10c[fold.change.24c.10c < - 1 & q.value.24c.10c < 0.05]
+
+length(activated.peaks.temp24c.vs.temp10c)
+length(repressed.peaks.temp24c.vs.temp10c)
+
+length(activated.peaks.temp24c.vs.temp10c)/length(peak.names)
+```
+
+```{r temp26c-temp10c contrast}
+temp26c.vs.temp10c <- topTable(contrast.results, number=nrow(log2.peak.cpm),coef=4,sort.by="logFC")
+head(temp26c.vs.temp10c)
+peak.ids.26c.10c <- rownames(temp26c.vs.temp10c) 
+fold.change.26c.10c <- temp26c.vs.temp10c$logFC
+q.value.26c.10c <- temp26c.vs.temp10c$adj.P.Val
+
+activated.peaks.temp26c.vs.temp10c <- peak.ids.26c.10c[fold.change.26c.10c > 1 & q.value.26c.10c < 0.05]
+repressed.peaks.temp26c.vs.temp10c <- peak.ids.26c.10c[fold.change.26c.10c < - 1 & q.value.26c.10c < 0.05]
+
+length(activated.peaks.temp26c.vs.temp10c)
+length(repressed.peaks.temp26c.vs.temp10c)
+length(peak.names)
+length(activated.peaks.temp26c.vs.temp10c)/length(peak.names)
+
+strsplit(x = activated.peaks.temp26c.vs.temp10c, split = "_")
+matrix.activated.peaks.temp26c.vs.temp10c <- as.matrix(t(as.data.frame(strsplit(x = activated.peaks.temp26c.vs.temp10c, split = "_"))))
+head(matrix.activated.peaks.temp26c.vs.temp10c)
+rownames(matrix.activated.peaks.temp26c.vs.temp10c) <- NULL
+head(matrix.activated.peaks.temp26c.vs.temp10c)
+
+activated.peaks.temp26c.vs.temp10c[1:3]
+head(matrix.activated.peaks.temp26c.vs.temp10c, n=3)
+
+write.table(matrix.activated.peaks.temp26c.vs.temp10c, file = "chipseq_results/h3k27me3/limma.k27.activated.peaks.temp26.vs.temp10.bed", sep = "\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
+
+library(ChIPseeker)
+library(TxDb.Otauri.JGI)
+txdb <- TxDb.Otauri.JGI
+
+temp26.vs.temp10.peaks <- readPeakFile(peakfile = "chipseq_results/h3k27me3/limma.k27.activated.peaks.temp26.vs.temp10.bed",header=FALSE)
+promoter <- getPromoters(TxDb=txdb, 
+                         upstream=1000, 
+                         downstream=1000)
+temp26.vs.temp10.peakAnno <- annotatePeak(peak = temp26.vs.temp10.peaks, 
+                             tssRegion=c(-1000, 1000),
+                             TxDb=txdb)
+
+plotAnnoPie(temp26.vs.temp10.peakAnno)
+plotAnnoBar(temp26.vs.temp10.peakAnno)
+plotDistToTSS(temp26.vs.temp10.peakAnno,
+              title="Distribution of genomic loci relative to TSS",
+              ylab = "Genomic Loci (%) (5' -> 3')")
+
+temp26.vs.temp10.annotation <- as.data.frame(temp26.vs.temp10.peakAnno)
+head(temp26.vs.temp10.annotation)
+
+target.genes <- temp26.vs.temp10.annotation$geneId[temp26.vs.temp10.annotation$annotation != "Distal Intergenic"]
+length(target.genes)
+
+write(x = target.genes,file = "chipseq_results/h3k27me3/limma.k27.temp26.vs.temp10.activated.peaks.genes.txt")
+
+boxplot(rowMeans(expression.matrix[target.genes,paste("T10ºC",1:3,sep="_")]),
+rowMeans(expression.matrix[target.genes,paste("T14ºC",1:3,sep="_")]),
+rowMeans(expression.matrix[target.genes,paste("T20ºC",1:3,sep="_")]),
+rowMeans(expression.matrix[target.genes,paste("T26ºC",1:3,sep="_")]),outline=F,col=c("#00FFFF","#6699FF", "#CC33FF","#FF0000"),ylab="FPKM",names=c("10ºC","14ºC","20ºC","26ºC"),las=2,cex.lab=1.3)
+
+wilcox.test(x = rowMeans(expression.matrix[target.genes,paste("T10ºC",1:3,sep="_")]), y = rowMeans(expression.matrix[target.genes,paste("T14ºC",1:3,sep="_")]),alternative = "greater")
+
+wilcox.test(x = rowMeans(expression.matrix[target.genes,paste("T14ºC",1:3,sep="_")]), y = rowMeans(expression.matrix[target.genes,paste("T20ºC",1:3,sep="_")]),alternative = "greater")
+
+wilcox.test(x = rowMeans(expression.matrix[target.genes,paste("T20ºC",1:3,sep="_")]), y = rowMeans(expression.matrix[target.genes,paste("T26ºC",1:3,sep="_")]),alternative = "greater")
+
+head(expression.matrix)
+
+```
+
+```{R scatterplot CPM vs FPKM}
+
+head(log2.peak.cpm)
+cpm.26 <- log2.peak.cpm[,17:19]
+head(cpm.26)
+peakID <- rownames(cpm.26)
+strsplit(x = peakID, split = "_")
+matrix.k27.peakID <- as.matrix(t(as.data.frame(strsplit(x = peakID, split = "_"))))
+head(matrix.k27.peakID)
+rownames(matrix.k27.peakID) <- NULL
+colnames(matrix.k27.peakID) <- c("chr","start", "end")
+head(matrix.k27.peakID)
+str(matrix.k27.peakID)
+matrix.k27.peakID <- apply(matrix.k27.peakID, 2 ,as.numeric)
+head(matrix.k27.peakID)
+
+
+write.table(matrix.k27.peakID, file = "chipseq_results/h3k27me3/k27_total_peaks.bed", sep = "\t", quote = FALSE, row.names = FALSE, col.names = FALSE)
+
+k27.peaks <- readPeakFile(peakfile = "chipseq_results/h3k27me3/k27_total_peaks.bed",header=FALSE)
+
+df.k27.peaks <-as.data.frame(k27.peaks)
+
+head(df.k27.peaks)
+
+
+## Definir la región que se considera promotor entorno al TSS
+promoter <- getPromoters(TxDb=txdb, 
+                         upstream=1000, 
+                         downstream=1000)
+
+## Anotación de los picos
+k27.peakAnno <- annotatePeak(peak = k27.peaks, 
+                             tssRegion=c(-1000, 1000),
+                             TxDb=txdb)
+
+## Convertir la anotación a data frame
+k27.annotation <- as.data.frame(k27.peakAnno)
+head(k27.annotation)
+
+#k27.total.target.genes <- k27.annotation[,c("seqnames","start","end","geneId")][k27.annotation$annotation != "Distal Intergenic"]
+                                             
+# Check the column names in k27.annotation
+#colnames(k27.annotation)
+
+# Create a logical vector for filtering
+#filter_condition <- k27.annotation$annotation != "Distal Intergenic"
+
+# Subset the data frame using filter_condition and select specific columns
+k27.total.target.genes <- k27.annotation[, c("seqnames", "start", "end", "geneId")]
+
+#head(k27.total.target.genes)
+dim(k27.total.target.genes)
+
+#matrix with counts from 26oC
+
+mean.cpm.26 <- rowMeans(cpm.26)
+matrix.mean.cpm.26 <- as.matrix(mean.cpm.26)
+rownames(matrix.mean.cpm.26) <- NULL
+head(matrix.mean.cpm.26)
+colnames(matrix.mean.cpm.26) <- "mean.cpm.26"
+head(matrix.mean.cpm.26)
+mean.cpm.26 <- as.data.frame(matrix.mean.cpm.26) 
+
+
+
+cpm.26 <- cbind(k27.total.target.genes, mean.cpm.26)
+head(cpm.26)
+dim(cpm.26)
+cpm.26 <- cpm.26[!duplicated(cpm.26$geneId), ]
+
+
+head(expression.matrix)
+dim(expression.matrix)
+
+#expression.matrix.k27.genes <- expression.matrix[rownames(expression.matrix) == cpm.26$geneId, ] ??
+expression.matrix.k27.genes <- expression.matrix[rownames(expression.matrix) %in% cpm.26$geneId, ]
+dim(expression.matrix.k27.genes)
+head(expression.matrix.k27.genes)
+expression.matrix.k27.genes.26 <- rowMeans(expression.matrix.k27.genes[,10:12])
+expression.matrix.k27.genes.20 <- rowMeans(expression.matrix.k27.genes[,7:9])
+expression.matrix.k27.genes.14 <- rowMeans(expression.matrix.k27.genes[,4:6])
+expression.matrix.k27.genes.10 <- rowMeans(expression.matrix.k27.genes[,1:3])
+
+cpm.expression.k27.26 <- cbind(cpm.26,expression.matrix.k27.genes.10, expression.matrix.k27.genes.14, expression.matrix.k27.genes.20, expression.matrix.k27.genes.26)
+
+#plot(x = log2(cpm.expression.k27.26$expression.matrix.k27.genes.26) , y=cpm.expression.k27.26$mean.cpm.26, pch = 20, ylab= "CPM", xlab= "FPKM", main= "26ºC")
+
+plot(x = cpm.expression.k27.26$expression.matrix.k27.genes.26 , y=2^(cpm.expression.k27.26$mean.cpm.26), pch = 20, ylab= "CPM", xlab= "FPKM", main= "26ºC", xlim = c(0,2000), ylim= c(0,2000))
+
+
+
+head(log2.peak.cpm)
+cpm <- log2.peak.cpm[,c(1:9,17:19)]
+head(cpm)
+peakID <- rownames(cpm)
+strsplit(x = peakID, split = "_")
+matrix.k27.peakID <- as.matrix(t(as.data.frame(strsplit(x = peakID, split = "_"))))
+head(matrix.k27.peakID)
+rownames(matrix.k27.peakID) <- NULL
+colnames(matrix.k27.peakID) <- c("chr","start", "end")
+head(matrix.k27.peakID)
+str(matrix.k27.peakID)
+matrix.k27.peakID <- apply(matrix.k27.peakID, 2 ,as.numeric)
+head(matrix.k27.peakID)
+
+mean.cpm.26 <- rowMeans(cpm[,10:12])
+matrix.mean.cpm.26 <- as.matrix(mean.cpm.26)
+rownames(matrix.mean.cpm.26) <- NULL
+head(matrix.mean.cpm.26)
+colnames(matrix.mean.cpm.26) <- "mean.cpm.26"
+head(matrix.mean.cpm.26)
+mean.cpm.26 <- as.data.frame(matrix.mean.cpm.26) 
+
+mean.cpm.20 <- rowMeans(cpm[,7:9])
+matrix.mean.cpm.20 <- as.matrix(mean.cpm.20)
+rownames(matrix.mean.cpm.20) <- NULL
+head(matrix.mean.cpm.20)
+colnames(matrix.mean.cpm.20) <- "mean.cpm.20"
+head(matrix.mean.cpm.20)
+mean.cpm.20 <- as.data.frame(matrix.mean.cpm.20)
+
+mean.cpm.14 <- rowMeans(cpm[,4:6])
+matrix.mean.cpm.14 <- as.matrix(mean.cpm.14)
+rownames(matrix.mean.cpm.14) <- NULL
+head(matrix.mean.cpm.14)
+colnames(matrix.mean.cpm.14) <- "mean.cpm.14"
+head(matrix.mean.cpm.14)
+mean.cpm.14 <- as.data.frame(matrix.mean.cpm.14) 
+
+
+mean.cpm.10 <- rowMeans(cpm[,1:3])
+matrix.mean.cpm.10 <- as.matrix(mean.cpm.10)
+rownames(matrix.mean.cpm.10) <- NULL
+head(matrix.mean.cpm.10)
+colnames(matrix.mean.cpm.10) <- "mean.cpm.10"
+head(matrix.mean.cpm.10)
+mean.cpm.10 <- as.data.frame(matrix.mean.cpm.10)
+
+
+cpm.total <- cbind(k27.total.target.genes, mean.cpm.10, mean.cpm.14, mean.cpm.20, mean.cpm.26)
+head(cpm.total)
+dim(cpm.total)
+cpm.total <- cpm.total[!duplicated(cpm.total$geneId), ]
+
+
+head(expression.matrix)
+dim(expression.matrix)
+
+#expression.matrix.k27.genes <- expression.matrix[rownames(expression.matrix) == cpm.26$geneId, ] ??
+expression.matrix.k27.genes <- expression.matrix[rownames(expression.matrix) %in% cpm.total$geneId, ]
+dim(expression.matrix.k27.genes)
+head(expression.matrix.k27.genes)
+expression.matrix.k27.genes.26 <- rowMeans(expression.matrix.k27.genes[,10:12])
+expression.matrix.k27.genes.20 <- rowMeans(expression.matrix.k27.genes[,7:9])
+expression.matrix.k27.genes.14 <- rowMeans(expression.matrix.k27.genes[,4:6])
+expression.matrix.k27.genes.10 <- rowMeans(expression.matrix.k27.genes[,1:3])
+
+cpm.expression.k27 <- cbind(cpm.total, expression.matrix.k27.genes.10, expression.matrix.k27.genes.14, expression.matrix.k27.genes.20, expression.matrix.k27.genes.26)
+
+#plot(x = log2(cpm.expression.k27.26$expression.matrix.k27.genes.26) , y=cpm.expression.k27.26$mean.cpm.26, pch = 20, ylab= "CPM", xlab= "FPKM", main= "26ºC")
+
+plot(x = cpm.expression.k27$expression.matrix.k27.genes.26 , y=2^(cpm.expression.k27$mean.cpm.26), pch = 20, ylab= "CPM", xlab= "FPKM", main= "26ºC", xlim = c(0,2000), ylim= c(0,2000))
+
+plot(x = cpm.expression.k27$expression.matrix.k27.genes.20 , y=2^(cpm.expression.k27$mean.cpm.20), pch = 20, ylab= "CPM", xlab= "FPKM", main= "20ºC", xlim = c(0,2000), ylim= c(0,2000))
+
+plot(x = cpm.expression.k27$expression.matrix.k27.genes.14 , y=2^(cpm.expression.k27$mean.cpm.14), pch = 20, ylab= "CPM", xlab= "FPKM", main= "14ºC", xlim = c(0,2000), ylim= c(0,2000))
+
+plot(x = cpm.expression.k27$expression.matrix.k27.genes.10 , y=2^(cpm.expression.k27$mean.cpm.10), pch = 20, ylab= "CPM", xlab= "FPKM", main= "10ºC", xlim = c(0,2000), ylim= c(0,2000))
+
+```
+
+
+ostta02g01020, ostta09g00730, ostta13g00710 hsps
+ostta01g05160  mads ap2 factores de transcripción
+ciclos celular
+síntesis de proteinas/ribosomas/rna
+acidos grasos
+
+```{r}
+boxplot(rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp10",1:3,sep="_")]),
+rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp14",1:3,sep="_")]),
+rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp20",1:3,sep="_")]),
+rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp24",1:3,sep="_")]),
+rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp26",1:3,sep="_")]),outline=F,col=c("#00FFFF","#6699FF", "#CC33FF","#BF3F3F", "#FF0000"),ylab="CPM",names=c("10ºC","14ºC","20ºC","24ºC","26ºC"),las=2,cex.lab=2)
+
+wilcox.test(x = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp10",1:3,sep="_")]), y = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp14",1:3,sep="_")]),alternative = "less")
+
+wilcox.test(x = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp14",1:3,sep="_")]), y = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp20",1:3,sep="_")]),alternative = "less")
+
+wilcox.test(x = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp20",1:3,sep="_")]), y = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp24",1:3,sep="_")]),alternative = "less")
+
+wilcox.test(x = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp24",1:3,sep="_")]), y = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp26",1:3,sep="_")]),alternative = "less")
+
+boxplot(rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp10",1:3,sep="_")]),
+rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp14",1:3,sep="_")]),
+rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp20",1:3,sep="_")]),
+rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp24",1:3,sep="_")]),
+rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp26",1:3,sep="_")]),outline=F,col=c("#00FFFF", "#3FBFBF", "#7F7F7F", "#BF3F3F", "#FF0000"),ylab="CPM",names=c("10ºC","14ºC","20ºC","24ºC","26ºC"),las=2,cex.lab=2)
+
+boxplot(rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp10",1:3,sep="_")]),
+rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp14",1:3,sep="_")]),
+rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp20",1:3,sep="_")]),
+rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp24",1:3,sep="_")]),
+rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp26",1:3,sep="_")]),outline=F,col=c("#00FFFF","#6699FF", "#CC33FF","#E5197F", "#FF0000"),ylab="CPM",names=c("10ºC","14ºC","20ºC","24ºC","26ºC"),las=2,cex.lab=1.3)
+
+wilcox.test(x = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp10",1:3,sep="_")]), y = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp14",1:3,sep="_")]),alternative = "less")
+
+wilcox.test(x = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp14",1:3,sep="_")]), y = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp20",1:3,sep="_")]),alternative = "less")
+
+wilcox.test(x = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp20",1:3,sep="_")]), y = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp24",1:3,sep="_")]),alternative = "less")
+
+wilcox.test(x = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp24",1:3,sep="_")]), y = rowMeans(2^log2.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp26",1:3,sep="_")]),alternative = "less")
+
+```
+
+
+
+
+```{r}
+boxplot(rowMeans(2^log2.normalized.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp10",1:3,sep="_")]),
+rowMeans(2^log2.normalized.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp14",1:3,sep="_")]),
+rowMeans(2^log2.normalized.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp20",1:3,sep="_")]),
+rowMeans(2^log2.normalized.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp24",1:3,sep="_")]),
+rowMeans(2^log2.normalized.peak.cpm[activated.peaks.temp26c.vs.temp10c,paste("k27_temp26",1:3,sep="_")]),outline=F,col=c("#00FFFF","#6699FF", "#CC33FF","#FF0000", "grey"),ylab="CPM",names=c("10ºC","14ºC","20ºC","24ºC","26ºC"),las=2,cex.lab=2)
+```
+
+
+```{r limma PCA}
+library(tidyverse)
+library(FactoMineR)
+library("factoextra")
+pca.peak.counts <- data.frame(colnames(log2.peak.cpm),t(log2.peak.cpm))
+colnames(pca.peak.counts)[1] <- "temperature"
+pheno.data <- read.table(file = "pheno_data_k27.csv", header = T)
+pheno.data
+
+res.pca <- PCA(pca.peak.counts, graph = FALSE,scale.unit = TRUE,quali.sup = 1 )
+png(filename = "chipseq_results/h3k27me3/pca_analysis_1_limma.png")
+fviz_eig(res.pca, addlabels = TRUE, ylim = c(0, 70),main = "")
+
+
+png(filename = "chipseq_results/h3k27me3/pca_analysis_2_limma.png")
+fviz_pca_ind(res.pca, col.ind = pheno.data$temperature[1:19], 
+             pointsize=2, pointshape=21,fill="black",
+             repel = TRUE, 
+             addEllipses = TRUE,ellipse.type = "confidence",
+             legend.title="Conditions",
+             title="Principal Components Analysis",
+             show_legend=TRUE,show_guide=TRUE) 
+
+
+```
+
+
+
+
+```{r DESeq2}
+library(DESeq2)
+
+peak.counts <- matrix(data = NA, nrow = nrow(read.counts.k27.temp10c.1), ncol = 19)
+colnames(peak.counts) <- c("k27_temp10_1","k27_temp10_2","k27_temp10_3", "k27_temp14_1","k27_temp14_2","k27_temp14_3","k27_temp20_1","k27_temp20_2","k27_temp20_3","k27_temp20_zt8_1","k27_temp20_zt8_2","k27_temp20_zt16_1","k27_temp20_zt16_2","k27_temp24_1","k27_temp24_2","k27_temp24_3","k27_temp26_1","k27_temp26_2","k27_temp26_3")
+rownames(peak.counts) <- peak.names
+
+peak.counts[,"k27_temp10_1"] <- read.counts.k27.temp10c.1$V4
+peak.counts[,"k27_temp10_2"] <- read.counts.k27.temp10c.2$V4
+peak.counts[,"k27_temp10_3"] <- read.counts.k27.temp10c.3$V4
+
+peak.counts[,"k27_temp14_1"] <- read.counts.k27.temp14c.1$V4
+peak.counts[,"k27_temp14_2"] <- read.counts.k27.temp14c.2$V4
+peak.counts[,"k27_temp14_3"] <- read.counts.k27.temp14c.3$V4
+
+peak.counts[,"k27_temp20_1"] <- read.counts.k27.temp20c.1$V4
+peak.counts[,"k27_temp20_2"] <- read.counts.k27.temp20c.2$V4
+peak.counts[,"k27_temp20_3"] <- read.counts.k27.temp20c.3$V4
+
+peak.counts[,"k27_temp20_zt8_1"] <- read.counts.k27.20c.zt8.1$V4
+peak.counts[,"k27_temp20_zt8_2"] <- read.counts.k27.20c.zt8.2$V4
+peak.counts[,"k27_temp20_zt16_1"] <- read.counts.k27.20c.zt16.1$V4
+peak.counts[,"k27_temp20_zt16_2"] <- read.counts.k27.20c.zt16.2$V4
+
+peak.counts[,"k27_temp24_1"] <- read.counts.k27.temp24c.1$V4
+peak.counts[,"k27_temp24_2"] <- read.counts.k27.temp24c.2$V4
+peak.counts[,"k27_temp24_3"] <- read.counts.k27.temp24c.3$V4
+
+peak.counts[,"k27_temp26_1"] <- read.counts.k27.temp26c.1$V4
+peak.counts[,"k27_temp26_2"] <- read.counts.k27.temp26c.2$V4
+peak.counts[,"k27_temp26_3"] <- read.counts.k27.temp26c.3$V4
+
+peak.counts["15_303698_304094",]
+log2.peak.cpm["15_303698_304094",]
+
+
+head(peak.counts)
+pheno.data <- read.table(file = "pheno_data_k27.csv", header = T)
+pheno.data
+
+dds <- DESeqDataSetFromMatrix(countData=peak.counts, colData=pheno.data, design = ~ temperature)
+
+dds <- DESeq(dds) 
+```
+
+```{r deseq2 temp14 vs temp10}
+temp14vstemp10 <- results(dds, contrast = c("temperature", "temp14", "temp10"))
+
+log.fold.change <- temp14vstemp10$log2FoldChange
+q.value <- temp14vstemp10$padj
+names(log.fold.change) <- rownames(temp14vstemp10)
+names(q.value) <- rownames(temp14vstemp10)
+
+activated.peaks.14.10.deseq2 <- rownames(temp14vstemp10)[log.fold.change > 1 & q.value < 0.05]
+length(activated.peaks.14.10.deseq2)
+write(x = activated.peaks.14.10.deseq2, file = "chipseq_results/h3k27me3/deseq2.k27.activated.peaks.14.10.txt")
+
+repressed.genes.14.10.deseq2 <- rownames(temp14vstemp10)[log.fold.change < -  1 & q.value < 0.05]
+length(repressed.genes.14.10.deseq2)
+write(x = repressed.genes.14.10.deseq2, file = "chipseq_results/h3k27me3/deseq2.k27.repressed.peaks.14.10.txt")
+```
+
+```{r deseq2 temp20 vs temp10}
+temp20vstemp10 <- results(dds, contrast = c("temperature", "temp20", "temp10"))
+
+log.fold.change <- temp20vstemp10$log2FoldChange
+q.value <- temp20vstemp10$padj
+names(log.fold.change) <- rownames(temp20vstemp10)
+names(q.value) <- rownames(temp20vstemp10)
+
+activated.peaks.20.10.deseq2 <- rownames(temp20vstemp10)[log.fold.change > 1 & q.value < 0.05]
+length(activated.peaks.20.10.deseq2)
+
+
+repressed.genes.20.10.deseq2 <- rownames(temp20vstemp10)[log.fold.change < -  1 & q.value < 0.05]
+length(repressed.genes.20.10.deseq2)
+
+```
+```{r deseq2 temp24 vs temp10}
+temp24vstemp10 <- results(dds, contrast = c("temperature", "temp24", "temp10"))
+
+log.fold.change <- temp24vstemp10$log2FoldChange
+q.value <- temp24vstemp10$padj
+names(log.fold.change) <- rownames(temp24vstemp10)
+names(q.value) <- rownames(temp24vstemp10)
+
+activated.peaks.24.10.deseq2 <- rownames(temp24vstemp10)[log.fold.change > 1 & q.value < 0.05]
+length(activated.peaks.24.10.deseq2)
+write(x = activated.peaks.24.10.deseq2, file = "chipseq_results/h3k27me3/deseq2.k27.activated.peaks.24.10.txt")
+
+repressed.genes.24.10.deseq2 <- rownames(temp24vstemp10)[log.fold.change < -  1 & q.value < 0.05]
+length(repressed.genes.24.10.deseq2)
+write(x = repressed.genes.24.10.deseq2, file = "chipseq_results/h3k27me3/deseq2.k27.activated.peaks.24.10.txt")
+```
+```{r deseq2 temp26 vs temp10}
+temp26vstemp10 <- results(dds, contrast = c("temperature", "temp26", "temp10"))
+
+log.fold.change <- temp26vstemp10$log2FoldChange
+q.value <- temp26vstemp10$padj
+names(log.fold.change) <- rownames(temp26vstemp10)
+names(q.value) <- rownames(temp26vstemp10)
+
+activated.peaks.26.10.deseq2 <- rownames(temp26vstemp10)[log.fold.change > 1 & q.value < 0.05]
+length(activated.peaks.26.10.deseq2)
+write(x = activated.peaks.26.10.deseq2, file = "chipseq_results/h3k27me3/deseq2.k27.activated.peaks.26.10.txt")
+
+repressed.genes.26.10.deseq2 <- rownames(temp26vstemp10)[log.fold.change < -  1 & q.value < 0.05]
+length(repressed.genes.26.10.deseq2)
+write(x = repressed.genes.26.10.deseq2, file = "chipseq_results/h3k27me3/deseq2.k27.repressed.peaks.26.10.txt")
+```
+
+
+

@@ -1,0 +1,16 @@
+import(methods)
+import(AnnotationDbi)
+
+### Only put what is statically exported here. All the AnnObj instances
+### created at load time are dynamically exported (refer to R/zzz.R for
+### the details).
+export(
+    org.Otauriv5.eg,
+    org.Otauriv5.eg_dbconn,
+    org.Otauriv5.eg_dbfile,
+    org.Otauriv5.eg_dbschema,
+    org.Otauriv5.eg_dbInfo,
+
+    org.Otauriv5.egORGANISM
+)
+

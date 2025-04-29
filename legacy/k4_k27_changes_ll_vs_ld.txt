@@ -1,0 +1,53 @@
+1:181798-181979		Not Clear
+2:250-487			Not Clear
+2:13571-13965		Not Clear
+2:29859-30265		Unknown transposon
+3:301329-301704		Not Clear
+7:303171-303545		Not Clear
+8:303819-304166		Not Clear
+9:710606-712580		Gene in Telomere ostta09g04530
+11:333391-333724	Not Clear
+14:125-734			Not Clear
+16:223972-224440	Not Clear
+17:30153-37856		Unknown transposon ostta1700190 Not Clear
+17:149848-149997	Not Clear
+17:380198-380350    Not Clear
+19:46568-48389		Not Clear
+19:84445-84919		Not Clear
+19:97889-98561		Not Clear
+19:101938-102329	Not Clear
+19:106305-106767	Not Clear
+20:76893-79274		Not Clear
+
+
+
+2:161795-165554		ostta02g00710 unkonw transposon		Polyketide synthase, KR
+2:172046-175024		ostta02g00710 unkonw transposon		Polyketide synthase, KR 
+4:899434-900948		ostta04g05370						T-complex 11	
+5:320892-321615		ostta05g02060						Quinoprotein amine dehydrogenase, beta chain-like
+6:380284-381435		ostta06g02310						Zinc/iron permease				
+8:257084-258143		ostta08g01440						Bestrophin/UPF0187
+8:636450-637282		ostta08g03780						FAS1 domain
+9:274122-275430		ostta09g01830						Cation-transporting P-type ATPase
+10:20033-20616		ostta10g00080						Helicase, C-terminal  
+10:28951-30017		ostta10g00130						FAS1 domain 
+
+
+
+
+k4
+
+2:61932-62047		ostta02g00200 (GNS1/SUR4 membrane protein), ostta02g0010 (Aspartyl/Asparaginyl beta-hydroxylase), ostta02g00220 (unnamed product), ostta02g00230 (unnamed product)
+2:78124-78926		ostta02g00290 (Methyltransferase domain)
+2:90814-91565		ostta02g00360 (ATPase, AAA-type, CDC48)	
+2:93782-94173		ostta02g00370 (Signal recognition particle, SRP54 subunit, helical bundle)
+2:281724-282110		ostta02g01100 (Major facilitator superfamily domain, general substrate transporter)
+2:337294-337513		ostta02g01460 (Proteasome A-type subunit)
+2:554056-554501		ostta02g02710 (UbiA prenyltransferase family)
+2:513685-514220		ostta02g02490 (WD40 repeat)
+2:545909-546253		ostta02g02660 (unnamed product)
+5:476318-476439		ostta05g02860 (HSP20-like chaperone)  	
+
+
+9:79684-79971		Not clear
+12:395905-396084  	Not clear

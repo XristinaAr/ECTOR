@@ -1,0 +1,7 @@
+Warning: gzbuffer added in zlib v1.2.3.5. Unable to change buffer size from default of 8192.
+5070734 reads; of these:
+  5070734 (100.00%) were unpaired; of these:
+    456723 (9.01%) aligned 0 times
+    4251439 (83.84%) aligned exactly 1 time
+    362572 (7.15%) aligned >1 times
+90.99% overall alignment rate
